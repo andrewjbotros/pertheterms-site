@@ -26,11 +26,11 @@ const RTO=['Points','Cash back','Travel/airline miles','Store dollars','No rewar
  FEEO=[['$0/yr',c=>c.fee===0],['≤ $50',c=>c.fee!=null&&c.fee<=50],['≤ $100',c=>c.fee!=null&&c.fee<=100],['≤ $150',c=>c.fee!=null&&c.fee<=150],['≤ $250',c=>c.fee!=null&&c.fee<=250],['> $250',c=>c.fee>250],['Paid (> $0)',c=>c.fee>0]],
  OFFO=[['Yes',c=>!!c.offer],['No',c=>!c.offer]];
 /* every field that has a column and a filter, by id: [filter id, label, options]. Overview is an explicit ordered list; Full Detail is every field not on Overview, so a new field is never lost. */
-const ALLF={fee:['fee','Cost',()=>FEEO],other:['other','Base %',()=>ge('other',[0.5,1,1.25,1.5,2])],best:['best','Best category',()=>ge('best',RATES)],nins:['nins','Covers',()=>[2,4,6,8,10,12,13].map(v=>['Covers ≥ '+v,c=>c.nins>=v])],
+const ALLF={fee:['fee','Cost',()=>FEEO],other:['other','Base %',()=>ge('other',[0.5,1,1.25,1.5,2])],pcn:['npc','Premium Categories',()=>ge('npc',[1,2,3,4,5],'')],best:['best','Best category',()=>ge('best',RATES)],nins:['nins','Covers',()=>[2,4,6,8,10,12,13].map(v=>['Covers ≥ '+v,c=>c.nins>=v])],
  kind:['rt','Reward type',()=>eq('rt',RTO)],offer:['offer','Welcome offer',()=>OFFO],
  i:['issuer','Issuer',()=>eq('i',uniq(c=>c.i))],cur:['cur','Currency',()=>eq('cur',['CAD','USD'])],acct:['acct','Account type',()=>eq('acct',['Personal','Business'])],nw:['net','Network',()=>eq('nw',uniq(c=>c.nw))],
  pt:['pt','Fee',()=>eq('pt',['Fee','No fee','Prepaid','Secured'])],tier:['tier','Tier',()=>eq('tier',uniq(c=>c.tier))],it:['itype','Issuer type',()=>eq('it',uniq(c=>c.it))],st:['status','Status',()=>eq('st',uniq(c=>c.st))]};
-const OV_LIST=['fee','other','best','nins','kind','offer'];/* Andrew's Overview list, in order */
+const OV_LIST=['fee','other','pcn','best','nins','kind'];/* Andrew's Overview list, in order */
 const FIELDS={ov:OV_LIST,dtl:Object.keys(ALLF).filter(k=>!OV_LIST.includes(k))},FDEF={ov:ALLF,dtl:ALLF};
 const fcols=id=>FIELDS[id],ffilt=id=>FIELDS[id].map(k=>{const[i,l,o]=FDEF[id][k];return[i,l,o()]});
 /* Rewards fits one window: the six most-carried categories and the base rate get their own column; every other category is merged into one 'More categories' cell (its filters stay) */
@@ -74,7 +74,7 @@ const S=[
 ];
 const COL={i:['Issuer','l',c=>c.i,c=>esc(c.i)],nw:['Network','ic',c=>c.nw,c=>icoCell('nw',c.nw)],kind:['Type','l',c=>c.rt,c=>esc(c.rt)+VE(c,'reward_type')],
  prog:['Program','l',c=>c.prog,c=>esc(c.prog)],fee:['Cost','',c=>c.fee,c=>{if(c.fee==null)return money(null);const r=cmods(c).find(r=>(r.when||[]).some(w=>w.f=='tier'));return r?'$'+effFee0(c).toLocaleString()+'/yr → <b>$'+Math.max(0,c.fee+(r.value||0))+'/yr</b>'+rateMark({...r,when:[{v:provTier(c.i)}]}):'$'+c.fee.toLocaleString()+'/yr'}],best:['Best %','',c=>c.best,c=>pct(c.best,3)],
- other:['Base %','',c=>c.other,c=>pct(c.other,1.5)],nins:['Ins.','',c=>c.nins,c=>c.nins+'<span class=mute>/'+INS.length+'</span>'],
+ other:['Base %','',c=>c.other,c=>pct(c.other,1.5)],pcn:['Premium Categories','',c=>c.npc,c=>c.npc==null?'<span class=u title="No base earn rate on record, so no count">—</span>':`<span title="Count of reward categories that earn strictly more than the base rate. Derived at build time from this card's sourced category rates (CITED data); a count, not a rate.">${c.npc}</span>`],nins:['Ins.','',c=>c.nins,c=>c.nins+'<span class=mute>/'+INS.length+'</span>'],
  offer:['Welcome offer','l',c=>c.offer?0:1,c=>c.offer?`<span class=ofr tabindex=0 role=button aria-haspopup=dialog data-ofr="${C.indexOf(c)}">${esc(c.offer.slice(0,46))}${c.offer.length>46?'…':''}</span>`:'<span class=u>—</span>'],
  fyf:['1st yr','',c=>c.fyf?0:1,c=>c.fyf?'<span class=y>Waived</span>':'<span class=u>—</span>'],add:['Extra card','',c=>c.add,c=>money(c.add)],
  fx:['FX','',c=>c.fx,c=>c.fx==null?'<span class=u>—</span>':c.fx==0?'<span class=y>0%</span>':c.fx+'%'],apr:['APR','',c=>c.apr,c=>c.apr==null?'<span class=u>—</span>':c.apr.toFixed(2)+'%'],
@@ -108,7 +108,7 @@ Object.entries(FIELD_LABEL).forEach(([k,l])=>{if(COL[k])COL[k][0]=l});
 const FLD=k=>FIELD_LABEL[k]||(COL[k]?String(COL[k][0]).replace(/<[^>]+>/g,'').replace('ⓘ','').trim():null);
 /* 2026-10-20 filters and headers (Docs/naming.md): FBY maps a filter id to the column it filters (when the ids differ) and an optional condition suffix.
    A filter backed by a column of its view takes that column's label (+ suffix) and the column's position; filter-only fields keep their order, after them. */
-const FBY={issuer:['i'],itype:['it'],status:['st'],net:['nw'],rt:['kind'],rt2:['kind'],tag:['cpp',' tag'],nins:['cov'],nt:['covT'],np:['covP'],soon:['odl']};
+const FBY={issuer:['i'],itype:['it'],status:['st'],net:['nw'],rt:['kind'],rt2:['kind'],tag:['cpp',' tag'],nins:['cov'],npc:['pcn'],nt:['covT'],np:['covP'],soon:['odl']};
 const syncLabels=()=>{Object.entries(FIELD_LABEL).forEach(([k,l])=>{if(COL[k])COL[k][0]=l});S.forEach(s=>{const ek=f=>s.cols.includes(f[0])?[f[0]]:(FBY[f[0]]||[f[0]]),pos=f=>{const i=s.cols.indexOf(ek(f)[0]);return i<0?1e3:i};
  s.f.forEach(f=>{const[k,suf='']=ek(f),l=s.cols.includes(k)?FLD(k):FIELD_LABEL[f[0]];if(l)f[1]=l+(s.cols.includes(k)?suf:'')});
  s.f=s.f.map((f,i)=>[f,i]).sort((a,b)=>pos(a[0])-pos(b[0])||a[1]-b[1]).map(x=>x[0])})};syncLabels();
