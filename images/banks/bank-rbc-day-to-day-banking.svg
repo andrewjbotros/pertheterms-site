@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 428 270" role="img" aria-label="PerTheTerms mock account art for RBC Day to Day Banking (placeholder, not the issuer design)">
+<title>PerTheTerms mock account art for RBC Day to Day Banking (placeholder, not the issuer design)</title><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1f4fa0"/><stop offset="1" stop-color="#0d2a5c"/></linearGradient></defs>
+<rect width="428" height="270" rx="18" fill="url(#g)"/>
+<circle cx="411" cy="31" r="166" fill="#fff" fill-opacity=".08"/>
+<circle cx="79" cy="300" r="136" fill="none" stroke="#fff" stroke-opacity=".07" stroke-width="22"/>
+<rect x="-60" y="150" width="600" height="34" fill="#fff" fill-opacity=".05" transform="rotate(18 214 167)"/>
+</svg>
