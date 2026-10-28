@@ -21,10 +21,13 @@ const CN=D.meta.catn,CC=D.meta.catcount,RC=Object.keys(CN).filter(k=>k=='other'|
 const RTO=['Points','Cash back','Travel/airline miles','Store dollars','No rewards','Unconfirmed'],
  FEEO=[['$0/yr',c=>c.fee===0],['≤ $50',c=>c.fee!=null&&c.fee<=50],['≤ $100',c=>c.fee!=null&&c.fee<=100],['≤ $150',c=>c.fee!=null&&c.fee<=150],['≤ $250',c=>c.fee!=null&&c.fee<=250],['> $250',c=>c.fee>250],['Paid (> $0)',c=>c.fee>0]],
  OFFO=[['Yes',c=>!!c.offer],['No',c=>!c.offer]];
-const OVF={i:['issuer','Issuer',()=>eq('i',uniq(c=>c.i))],other:['other','Base %',()=>ge('other',[0.5,1,1.25,1.5,2])],best:['best','Best category',()=>ge('best',RATES)],nins:['nins','Covers',()=>[2,4,6,8,10,12,13].map(v=>['Covers ≥ '+v,c=>c.nins>=v])],
- cur:['cur','Currency',()=>eq('cur',['CAD','USD'])],acct:['acct','Account type',()=>eq('acct',['Personal','Business'])],nw:['net','Network',()=>eq('nw',uniq(c=>c.nw))],kind:['rt','Reward type',()=>eq('rt',RTO)],fee:['fee','Cost',()=>FEEO],offer:['offer','Welcome offer',()=>OFFO]};
-const DTF={pt:['pt','Fee',()=>eq('pt',['Fee','No fee','Prepaid','Secured'])],tier:['tier','Tier',()=>eq('tier',uniq(c=>c.tier))],it:['itype','Issuer type',()=>eq('it',uniq(c=>c.it))],st:['status','Status',()=>eq('st',uniq(c=>c.st))]};
-const FIELDS={ov:Object.keys(OVF),dtl:Object.keys(DTF)},FDEF={ov:OVF,dtl:DTF};
+/* every field that has a column and a filter, by id: [filter id, label, options]. Overview is an explicit ordered list; Full Detail is every field not on Overview, so a new field is never lost. */
+const ALLF={fee:['fee','Cost',()=>FEEO],other:['other','Base %',()=>ge('other',[0.5,1,1.25,1.5,2])],best:['best','Best category',()=>ge('best',RATES)],nins:['nins','Covers',()=>[2,4,6,8,10,12,13].map(v=>['Covers ≥ '+v,c=>c.nins>=v])],
+ kind:['rt','Reward type',()=>eq('rt',RTO)],offer:['offer','Welcome offer',()=>OFFO],
+ i:['issuer','Issuer',()=>eq('i',uniq(c=>c.i))],cur:['cur','Currency',()=>eq('cur',['CAD','USD'])],acct:['acct','Account type',()=>eq('acct',['Personal','Business'])],nw:['net','Network',()=>eq('nw',uniq(c=>c.nw))],
+ pt:['pt','Fee',()=>eq('pt',['Fee','No fee','Prepaid','Secured'])],tier:['tier','Tier',()=>eq('tier',uniq(c=>c.tier))],it:['itype','Issuer type',()=>eq('it',uniq(c=>c.it))],st:['status','Status',()=>eq('st',uniq(c=>c.st))]};
+const OV_LIST=['fee','other','best','nins','kind','offer'];/* Andrew's Overview list, in order */
+const FIELDS={ov:OV_LIST,dtl:Object.keys(ALLF).filter(k=>!OV_LIST.includes(k))},FDEF={ov:ALLF,dtl:ALLF};
 const fcols=id=>FIELDS[id],ffilt=id=>FIELDS[id].map(k=>{const[i,l,o]=FDEF[id][k];return[i,l,o()]});
 const S=[
  {id:'ov',name:'Overview',cols:fcols('ov'),f:ffilt('ov')},
@@ -101,7 +104,7 @@ COL.x_uw=['Underwriter','wrapt',c=>c.ix.insurers?(c.ix.insurers[0].join('; ')||'
 COL.x_cc=['Carrier AD&D','',c=>X(c,'cc_add_max'),xm('cc_add_max')];COL.x_rad=['Rental AD&D','',c=>X(c,'rental_add_max'),xm('rental_add_max')];
 COL.x_ppd=['PP days','',c=>X(c,'pp_days'),c=>X(c,'pp_days')==null?'<span class=u>—</span>':X(c,'pp_days')+XT(c,'pp_days')+(X(c,'pp_tier')?`<span class=t title="Only on the ${esc(X(c,'pp_tier'))} tier">${esc(X(c,'pp_tier'))} only</span>`:'')];
 COL.x_ppi=['PP / item','',c=>X(c,'pp_item'),xm('pp_item')];COL.x_ppy=['PP / year','',c=>X(c,'pp_year'),xm('pp_year')];
-const RM=matchMedia('(prefers-reduced-motion: reduce)'),MOB=matchMedia('(max-width:640px)'),MCOL={ov:['other','best','nins','fee'],fees:['fee','fx'],rw:['kind','other','best'],ins:['cov','ptt','ins_'+INS[0][0]],perks:['fee','odl']};
+const RM=matchMedia('(prefers-reduced-motion: reduce)'),MOB=matchMedia('(max-width:640px)'),MCOL={ov:['fee','other','best','nins'],dtl:['i','acct','nw'],fees:['fee','fx'],rw:['kind','other','best'],ins:['cov','ptt','ins_'+INS[0][0]],perks:['fee','odl']};
 MOB.addEventListener('change',()=>render());
 // $0 = the record says the coverage is not included; ? = not stated / unverified. Unknown is never shown as $0.
 const AMC={med:['med','emergency_medical'],mob:['mob','mobile_device'],x_cc:['cc_add_max','travel_accident'],x_rad:['rental_add_max',null],x_ppd:['pp_days','price_protection'],x_ppi:['pp_item','price_protection'],x_ppy:['pp_year','price_protection']};
