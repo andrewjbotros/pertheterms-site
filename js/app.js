@@ -671,8 +671,8 @@ function render0(){if(!PL.has(st.pl))st.pl='cards';if(!USR.has(st.s)&&!(S.some(s
  if(pg){closeM();$('#tabs').innerHTML=CTABS().map(s=>`<button data-s="${s.id}">${s.name}</button>`).join('');return renderCard(C[BYID[st.card]])}
  $('#tabs').innerHTML=CTABS().map(s=>{const k=s.f.filter(f=>st.f[f[0]]!=null).length;return`<button data-s="${s.id}" class="${s.id==st.s?'on':''}">${s.name}${k?`<span class=dot>${k}</span>`:''}</button>`}).join('');
  $('#filters').innerHTML=scr.f.map(([id,l,o,m])=>m?`<label>${l}<details class="ms ${st.f[id]?.length?'set':''}"><summary>${st.f[id]?.length?st.f[id].length+' selected':'Any'}</summary><div>${o.map((x,i)=>`<label class=ck><input type=checkbox data-fm="${id}" value="${i}" ${st.f[id]?.includes(i)?'checked':''}> ${esc(x[0])}</label>`).join('')}</div></details></label>`:`<label>${l}<select data-f="${id}" class="${st.f[id]!=null?'set':''}"><option value="">Any</option>${o.map((x,i)=>`<option value="${i}" ${st.f[id]==i?'selected':''}>${esc(x[0])}</option>`).join('')}</select></label>`).join('');
- $('#filters').style.display=scr.f.length?'':'none';$('#filters').insertAdjacentHTML('beforeend','<button id=fdone type=button>Show results</button>');
- document.body.classList.toggle('full',!!st.full);const nf=Object.keys(st.f).filter(k=>FI[k]).length;$('#ftoggle').textContent='Filters'+(nf?` (${nf})`:'');$('#ftoggle').hidden=!scr.f.length;
+ $('#filters').style.display=scr.f.length?'':'none';{const na=Object.keys(st.f).filter(k=>FI[k]).length,fc=STO.ui?.fcol===true;$('#filters').insertAdjacentHTML('afterbegin',`<div id=fhead><button type=button id=fcol aria-expanded=${!fc} aria-controls=filters>Filters</button><span class=fcnt>${na?na+' active':'none active'}</span>${na?'<button type=button id=freset data-x=__f>Reset</button>':''}</div>`);$('#filters').classList.toggle('fcol',fc);$('#filters').insertAdjacentHTML('beforeend','<button id=fdone type=button>Show results</button>')}
+ document.body.classList.toggle('full',!!st.full);const nf=Object.keys(st.f).filter(k=>FI[k]).length;$('#ftoggle').textContent='Filters'+(nf?` (${nf})`:'');$('#ftoggle').hidden=!scr.f.length;$('#ftoggle').setAttribute('aria-controls','filters');$('#ftoggle').setAttribute('aria-expanded',String($('#filters').classList.contains('open')));
  const R=rows(),chips=Object.entries(st.f).filter(([id])=>FI[id]).map(([id,i])=>`<span class=chip><i>${FI[id].s.name} ·</i> ${FI[id].l} ${esc(Array.isArray(i)?i.map(j=>FI[id].o[j][0]).join(' or '):FI[id].o[i][0])}<button data-x="${id}" aria-label="Remove">×</button></span>`);
  if(st.q)chips.push(`<span class=chip><i>Search ·</i> “${esc(st.q)}”<button data-x="__q">×</button></span>`);
  const SL=k=>k=='n'?'Card':String(COL[k]?.[0]||k).replace(/<[^>]+>/g,'').trim();
@@ -760,8 +760,10 @@ function openM(c,full){$('#mc').innerHTML=cardHTML(c,0,full?null:st.s)+acts(c);
  $('#mbg').classList.add('on');$('#mbg').setAttribute('aria-hidden','false');$('#mx').focus()}
 const closeM=()=>{$('#mbg').classList.remove('on');$('#mbg').setAttribute('aria-hidden','true')};
 document.addEventListener('keydown',e=>{if(e.key=='Escape')closeM();if((e.key=='Enter'||e.key==' ')&&e.target.dataset?.mf){e.preventDefault();e.target.click()}if((e.key=='Enter'||e.key==' ')&&e.target.dataset?.wtile!=null){e.preventDefault();openM(C[+e.target.dataset.wtile])}if((e.key=='Enter'||e.key==' ')&&e.target.classList?.contains('prow')){e.preventDefault();e.target.click()}if(e.key=='Enter'&&e.target.id=='logo'){st.s='ov';st.card=null;render()}});
-const fclose=()=>{$('#filters').classList.remove('open');$('#fbg')?.remove()};
+const fclose=()=>{$('#filters').classList.remove('open');$('#fbg')?.remove();$('#ftoggle')?.setAttribute('aria-expanded','false')};
+document.addEventListener('keydown',e=>{if(e.key=='Escape'&&$('#filters')?.classList.contains('open')){fclose();$('#ftoggle')?.focus()}});
 document.addEventListener('click',e=>{if(e.target.id=='fdone'||e.target.id=='fbg'){fclose();return}
+ if(e.target.closest('#fcol')){STO.ui={...(STO.ui||{}),fcol:STO.ui?.fcol!==true};saveS();render();$('#fcol')?.focus();return}
  {const mx=e.target.closest('[data-subsx]');if(mx){e.stopPropagation();STO.wallet.services=(STO.wallet.services||[]).filter(k=>k!=mx.dataset.subsx);saveS();render();return}}
  {const ms=e.target.closest('[data-subscriptions]');if(ms){const k=ms.dataset.subscriptions,S2=new Set(STO.wallet.services||[]);ms.checked?S2.add(k):S2.delete(k);STO.wallet.services=[...S2];saveS();render();return}}
  if(e.target.closest('#rtog')){togRail();return}if(e.target.id=='urbg'){st.rdraw=false;rail(1);return}if(NARROW.matches&&e.target.closest('#urail [data-s]'))st.rdraw=false;
@@ -786,8 +788,8 @@ document.addEventListener('click',e=>{if(e.target.id=='fdone'||e.target.id=='fbg
  const m=e.target.closest('[data-m]');if(m){e.stopPropagation();openM(C[m.dataset.m]);return}
  if(e.target.closest('#logo')){st.s='ov';st.card=null;render();window.scrollTo(0,0);return}
  const t=e.target.closest('[data-s],[data-x],[data-k],tr[data-i],#ftoggle');if(!t)return;
- if(t.id=='ftoggle'){$('#filters').classList.add('open');document.body.insertAdjacentHTML('beforeend','<div id=fbg></div>');return}
- if(t.dataset.s){st.s=t.dataset.s;st.card=null}else if(t.dataset.x){const x=t.dataset.x;if(x=='__all'){st.f={};st.q='';$('#q').value=''}else if(x=='__sort'){st.sort=null;st.dir=-1}else if(x=='__q'){st.q='';$('#q').value=''}else delete st.f[x]}
+ if(t.id=='ftoggle'){$('#filters').classList.add('open');t.setAttribute('aria-expanded','true');document.body.insertAdjacentHTML('beforeend','<div id=fbg></div>');return}
+ if(t.dataset.s){st.s=t.dataset.s;st.card=null}else if(t.dataset.x){const x=t.dataset.x;if(x=='__all'){st.f={};st.q='';$('#q').value=''}else if(x=='__f'){st.f={}}else if(x=='__sort'){st.sort=null;st.dir=-1}else if(x=='__q'){st.q='';$('#q').value=''}else delete st.f[x]}
  else if(t.dataset.k){const k=t.dataset.k;if(st.sort==k)st.dir=-st.dir;else{st.sort=k;st.dir=(k=='n'||k=='fee'||k=='apr'||k=='fx'||COL[k]?.[1]=='l')?1:-1}}
  else if(t.dataset.i){if(st.s!='ins')return;let n=t.nextElementSibling;if(n&&n.classList.contains('det')){while(n&&n.classList.contains('det')){const x=n.nextElementSibling;n.remove();n=x}t.classList.remove('op');return}const c=C[t.dataset.i];t.classList.add('op');t.insertAdjacentHTML('afterend',insSub(c,[...$('#th tr').children].map(h=>h.dataset.k)));return;
   }
