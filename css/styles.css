@@ -230,7 +230,7 @@ body.rail{padding-left:212px}body.rail>header{margin-left:-212px}
 /* left column (user side): the logo button collapses/expands it on every view (desktop: persisted, open by default); at <=900px it opens it as a drawer */
 #urail .ri .ril{display:flex;flex-direction:column;gap:1px}#urail .ri small{font-size:11px;color:var(--mute);font-weight:400}#urail .ri.prem .premg{margin-left:4px}
 /* sub-tab row (folder tabs under the top tabs): equal width */
-#tabs button{flex:1 1 0;max-width:150px;min-width:0;padding-left:8px;padding-right:8px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#tabs button,#grp button{flex:1 1 0;max-width:150px;min-width:0;padding-left:8px;padding-right:8px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .vt tr.theld td{background:color-mix(in srgb,var(--acc) 6%,transparent)}.tmine{font-size:11px;color:var(--acc);font-weight:600}
 #urbg{position:fixed;inset:0;background:rgb(0 0 0/.35);z-index:24}
 @media(max-width:900px){#urail{top:0;width:min(82vw,280px);z-index:40;box-shadow:4px 0 24px rgb(0 0 0/.2)}#urbg{z-index:39}}
@@ -259,8 +259,8 @@ header .logo{padding-left:0!important;margin-left:-6px!important}header .rtog{ma
 :root{--content-max:1320px;--gutter:24px}
 @media(max-width:1100px){:root{--gutter:16px}}
 
-#view,#page,.wrap,#pre,#bar,#filters,#tabs,#pl,#vh,#view:has(.mx){max-width:none!important;margin-left:max(var(--gutter),calc((100% - var(--content-max))/2))!important;margin-right:max(var(--gutter),calc((100% - var(--content-max))/2))!important;box-sizing:border-box}
-#tabs,#pl{justify-content:center}
+#view,#page,.wrap,#pre,#bar,#filters,#tabs,#grp,#pl,#vh,#view:has(.mx){max-width:none!important;margin-left:max(var(--gutter),calc((100% - var(--content-max))/2))!important;margin-right:max(var(--gutter),calc((100% - var(--content-max))/2))!important;box-sizing:border-box}
+#tabs,#grp,#pl{justify-content:center}
 /* ===== v3.5.8 premium tabs (Services, Promotions): one shared accent, evolved from the Services violet ===== */
 :root{--prem:var(--subs);--prembg:var(--subsbg)}
 
@@ -338,13 +338,13 @@ header .logo{padding-left:0!important;margin-left:-6px!important}header .rtog{ma
 /* hierarchy: page title 24 > product tabs 15/700 > sub-tabs 15/600 > table header 11.5 caps > rows 14 */
 #view h2,#page h2{font-size:24px;letter-spacing:-.01em}
 #pl button{font:700 15px/1 inherit;padding:10px 18px}
-#tabs{display:flex;flex-wrap:nowrap;gap:2px;justify-content:safe center!important;padding:10px 12px 0;border-bottom:1px solid var(--line);margin-bottom:-1px;position:relative;z-index:2}
-#tabs button{font:600 15px/1 inherit;color:var(--mute);background:transparent;border:1px solid transparent;border-bottom:0;border-radius:8px 8px 0 0;padding:11px 8px 10px;margin-bottom:-1px;position:relative}
-#tabs button:hover{color:var(--ink);background:var(--bg);border-color:var(--line)}
-#tabs button.on{color:var(--ink);background:var(--card);border-color:var(--line);border-bottom:1px solid var(--card);box-shadow:inset 0 2px 0 var(--acc)}
+#tabs,#grp{display:flex;flex-wrap:nowrap;gap:2px;justify-content:safe center!important;padding:10px 12px 0;border-bottom:1px solid var(--line);margin-bottom:-1px;position:relative;z-index:2}
+#tabs button,#grp button{font:600 15px/1 inherit;color:var(--mute);background:transparent;border:1px solid transparent;border-bottom:0;border-radius:8px 8px 0 0;padding:11px 8px 10px;margin-bottom:-1px;position:relative}
+#tabs button:hover,#grp button:hover{color:var(--ink);background:var(--bg);border-color:var(--line)}
+#tabs button.on,#grp button.on{color:var(--ink);background:var(--card);border-color:var(--line);border-bottom:1px solid var(--card);box-shadow:inset 0 2px 0 var(--acc)}
 
-#tabs:empty{display:none}
-#tabs+#filters,#tabs~.wrap{border-top-left-radius:0}
+#tabs:empty,#grp[hidden],#grp:empty{display:none}
+#tabs+#filters,#grp+#filters,#tabs~.wrap{border-top-left-radius:0}
 tbody td{font-size:14px}
 
 /* v3.6.1 points wallet tiles: same grid as the Perks wallet (.stiles); missing values are a plain muted dash, never '?' */
@@ -436,7 +436,7 @@ nav button{min-height:44px;padding:14px 14px 12px}#ftoggle,.mfull,.clr{min-heigh
 .logo{order:1;margin-right:auto}#ftoggle{order:2;margin-left:0}#pm{order:2}#pbtn{width:44px;height:44px}#pml button{min-height:44px}#q{order:3}
 .bkv{grid-template-columns:minmax(0,1fr)}.bkv dt{margin-top:6px}
 :root{--gutter:0px}
-#tabs{flex-wrap:nowrap;overflow-x:auto;padding:8px 8px 0}#tabs button{font-size:14px;padding:12px 12px 10px;flex:0 0 auto}
+#tabs,#grp{flex-wrap:nowrap;overflow-x:auto;padding:8px 8px 0}#tabs button,#grp button{font-size:14px;padding:12px 12px 10px;flex:0 0 auto}
 /* nothing wider than the screen: side-by-side layouts stack at full width, wide tables scroll inside themselves */
 .wlay{align-items:stretch}.wlay>*{min-width:0}
 .vt:not(.ptab2){display:block;overflow-x:auto;max-width:100%}.vt:not(.ptab2)>tbody{display:table;width:100%}

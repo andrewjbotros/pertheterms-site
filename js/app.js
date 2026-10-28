@@ -1,12 +1,16 @@
 const D=window.__PTT_DATA, C=D.cards, IMGB=window.__PTT_IMG||null;
 const PLINES=PLINES_ALL.filter(p=>p[0]=='home'||(D.meta.lines||['cards','bank','broker','tel']).includes(p[0])),PRODUCT=PLINES.filter(p=>p[0]!='home');/* enabled product lines (build flag PTT_LINES, default cards) */
-const CARDS_ONLY=PRODUCT.length==1&&PRODUCT[0][0]=='cards',CT_ALL=CARDS_ONLY?['ov','dtl','rw','prom','ins','fees']:null,HIDE=new Set(['dtl','prom']),CTV=()=>CT_ALL&&CT_ALL.filter(i=>!HIDE.has(i));/* Credit Cards sub-tabs: Overview, Rewards, Insurance, Fees (this order). HIDE is the per-line config of hidden sub-tabs (Full Detail, Promotions): code and data stay, nav and routes skip them, a hidden id in a link or hash falls back to Overview. Cards-only release: the other Cards views and the user pages stay in the code, off the nav */
+const CARDS_ONLY=PRODUCT.length==1&&PRODUCT[0][0]=='cards',CT_ALL=CARDS_ONLY?['ov','dtl','rw','prom','ins','fees']:null,SUBONLY=new Set(['trv','prot']),HIDE=new Set(['dtl','prom']),CTV=()=>CT_ALL&&CT_ALL.filter(i=>!HIDE.has(i));/* Credit Cards sub-tabs: Overview, Rewards, Insurance, Fees (this order). HIDE is the per-line config of hidden sub-tabs (Full Detail, Promotions): code and data stay, nav and routes skip them, a hidden id in a link or hash falls back to Overview. Cards-only release: the other Cards views and the user pages stay in the code, off the nav */
 const $=s=>document.querySelector(s), esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const money=v=>v==null?'<span class=u>—</span>':v==0?'<span class=y>Free</span>':'$'+v.toLocaleString();
 const pct=(v,hi)=>v==null?'<span class=u>—</span>':`<span class="${hi&&v>=hi?'hi':''}">${v.toFixed(2)}%</span>`;
 const yn=v=>v===1?'<span class=y>✓</span>':v===0?'<span class=n>✗</span>':'<span class=u>—</span>';
 const uniq=f=>[...new Set(C.map(f).filter(x=>x!=null&&x!==''))].sort();
 const INS=[['emergency_medical','Medical'],['trip_cancellation','Trip cancel'],['trip_interruption','Trip interrupt'],['flight_delay','Flight delay'],['baggage','Baggage'],['hotel_burglary','Hotel burglary'],['rental_car_cdw','Rental CDW'],['purchase_protection','Purchase prot.'],['extended_warranty','Ext. warranty'],['mobile_device','Mobile device'],['price_protection','Price prot.'],['travel_accident','Travel accident'],['roadside','Roadside']];
+const INS_TK=['emergency_medical','trip_cancellation','trip_interruption','flight_delay','baggage','travel_accident'],INS_T=INS.filter(x=>INS_TK.includes(x[0])),INS_P=INS.filter(x=>!INS_TK.includes(x[0]));/* Travel = trip coverages; Protection = everyday coverages that are not about a trip (purchase, warranty, rental car, roadside, hotel burglary, mobile, price) */
+const insN=(c,L)=>L.filter(([k])=>c.ins[k]===1).length,insU=(c,L)=>L.filter(([k])=>c.ins[k]==null).length;
+/* third-level row (one reusable component, keyed per sub-tab): GROUPS[sub-tab id] = [[screen id, label], ...]; st.g[sub-tab id] is the chosen one. A group's screen is an entry of S with that id, off the nav (SUBONLY). */
+const GROUPS={ins:[['trv','Travel'],['prot','Protection']]},GKEY=()=>GROUPS[st.s]?((st.g||{})[st.s]&&GROUPS[st.s].some(x=>x[0]==st.g[st.s])?st.g[st.s]:GROUPS[st.s][0][0]):st.s;
 // filter option builders
 const ge=(f,vals,u='%')=>vals.map(v=>[`≥ ${u=='$'?'$'+v.toLocaleString():v+u}`,c=>c[f]!=null&&c[f]>=v]);
 const le=(f,vals,u='%')=>vals.map(v=>[`≤ ${u=='$'?'$'+v.toLocaleString():v+u}`,c=>c[f]!=null&&c[f]<=v]);
@@ -45,12 +49,18 @@ const S=[
   ...RC.map(k=>['r_'+k,CN[k],ge('r_'+k,k=='other'?[0.5,1,1.25,1.5,2]:RATES)]),['best','Best category',ge('best',RATES)],
   ['rt2','Reward type',eq('rt',['Points','Cash back','Travel/airline miles','Store dollars','No rewards','Unconfirmed'])],['prog','Program',eq('prog',uniq(c=>c.kind=='Points'?c.prog:null))],
   ['tag','¢/pt tag',eq('tag',['CITED','ESTIMATE','REPORTED'])]]},
- {id:'ins',name:'Insurance',cols:['cov','ptt','x_uw',...INS.map(x=>'ins_'+x[0])],f:[
-  ...INS.map(([k,l])=>['ins_'+k,l,[['Included',c=>c.ins[k]===1],['Not included',c=>c.ins[k]===0]]]),
-  ['nins','Covers',[2,4,6,8,10,12,13].map(v=>['Covers ≥ '+v,c=>c.nins>=v])],['med','Medical limit',ge('med',[1000000,2000000,5000000],'$')],['mob','Mobile cover',ge('mob',[500,1000,1500],'$')],
+ {id:'ins',name:'Insurance',cols:[],f:[]},/* nav entry: the views are the third-level rows trv (Travel) and prot (Protection), see GROUPS */
+ {id:'trv',name:'Travel',cols:['covT','ptt','x_uw',...INS_T.map(x=>'ins_'+x[0])],f:[
+  ...INS_T.map(([k,l])=>['ins_'+k,l,[['Included',c=>c.ins[k]===1],['Not included',c=>c.ins[k]===0]]]),
+  ['nt','Covers',[2,3,4,5,6].map(v=>['Covers ≥ '+v,c=>insN(c,INS_T)>=v])],['med','Medical limit',ge('med',[1000000,2000000,5000000],'$')],
   ['ptt','PTT Score',[['Good (≥ $200)',c=>c.ptt.v>=200],['Fair ($75–199)',c=>c.ptt.v>=75&&c.ptt.v<200],['Weak (< $75)',c=>c.ptt.v<75],['Fully verified (no *)',c=>!c.ptt.u]]],
   ['x_uw','Underwriter',[...new Set(C.flatMap(c=>c.ix.insurers?c.ix.insurers[0]:[]))].sort().map(n=>[n,c=>!!c.ix.insurers&&c.ix.insurers[0].includes(n)]).concat([['No included insurance',c=>!!c.ix.insurers&&!c.ix.insurers[0].length],['Not stated (?)',c=>!c.ix.insurers]]),1],
-  ['x_cc','Common carrier AD&D',[['Stated',c=>X(c,'cc_add_max')!=null],...[250000,500000,1000000].map(v=>['≥ $'+v.toLocaleString(),c=>X(c,'cc_add_max')>=v])]],
+  ['x_cc','Common carrier AD&D',[['Stated',c=>X(c,'cc_add_max')!=null],...[250000,500000,1000000].map(v=>['≥ $'+v.toLocaleString(),c=>X(c,'cc_add_max')>=v])]]]},
+ {id:'prot',name:'Protection',cols:['covP','ptt','x_uw',...INS_P.map(x=>'ins_'+x[0])],f:[
+  ...INS_P.map(([k,l])=>['ins_'+k,l,[['Included',c=>c.ins[k]===1],['Not included',c=>c.ins[k]===0]]]),
+  ['np','Covers',[2,3,4,5,6,7].map(v=>['Covers ≥ '+v,c=>insN(c,INS_P)>=v])],['mob','Mobile cover',ge('mob',[500,1000,1500],'$')],
+  ['ptt','PTT Score',[['Good (≥ $200)',c=>c.ptt.v>=200],['Fair ($75–199)',c=>c.ptt.v>=75&&c.ptt.v<200],['Weak (< $75)',c=>c.ptt.v<75],['Fully verified (no *)',c=>!c.ptt.u]]],
+  ['x_uw','Underwriter',[...new Set(C.flatMap(c=>c.ix.insurers?c.ix.insurers[0]:[]))].sort().map(n=>[n,c=>!!c.ix.insurers&&c.ix.insurers[0].includes(n)]).concat([['No included insurance',c=>!!c.ix.insurers&&!c.ix.insurers[0].length],['Not stated (?)',c=>!c.ix.insurers]]),1],
   ['x_rad','Rental AD&D',[['Stated',c=>X(c,'rental_add_max')!=null]]],
   ['x_ppd','Price prot. window',[['Stated',c=>X(c,'pp_days')!=null],['≥ 60 days',c=>X(c,'pp_days')>=60]]],
   ['x_ppi','Price prot. per item',[['Stated',c=>X(c,'pp_item')!=null],['≥ $500',c=>X(c,'pp_item')>=500]]],
@@ -93,12 +103,12 @@ const insV=(c,k)=>c.ins[k]!=null?c.ins[k]:NOINS(c)?0:(k=='roadside'&&c.nins>0)?'
 const ynI=(c,k)=>{const v=insV(c,k);return v=='nl'?'<span class=mute title="Not listed in this card’s insurance terms">—</span>':yn(v)};
 INS.forEach(([k,l])=>COL['ins_'+k]=[l,'ctr',c=>{const v=insV(c,k);return -(v===1?1:v===0||v=='nl'?0:-.5)},c=>ynI(c,k)]);
 /* v3.5.2 single source of label truth: FIELD_LABEL names a field once; table headers and filters both read it, so they cannot drift. */
-const FIELD_LABEL={kind:'Reward type',acct:'Account type',fyf:'First-year fee',add:'Extra card fee',fx:'FX fee',apr:'Purchase APR',inc:'Income required',best:'Best category',nins:'Covers',med:'Medical limit',mob:'Mobile cover',x_cc:'Carrier AD&D',x_ppd:'Price protection window',x_ppi:'Price protection per item',x_ppy:'Price protection per year',exp:'Points expiry'};
+const FIELD_LABEL={kind:'Reward type',acct:'Account type',fyf:'First-year fee',add:'Extra card fee',fx:'FX fee',apr:'Purchase APR',inc:'Income required',best:'Best category',nins:'Covers',nt:'Covers',np:'Covers',med:'Medical limit',mob:'Mobile cover',x_cc:'Carrier AD&D',x_ppd:'Price protection window',x_ppi:'Price protection per item',x_ppy:'Price protection per year',exp:'Points expiry'};
 Object.entries(FIELD_LABEL).forEach(([k,l])=>{if(COL[k])COL[k][0]=l});
 const FLD=k=>FIELD_LABEL[k]||(COL[k]?String(COL[k][0]).replace(/<[^>]+>/g,'').replace('ⓘ','').trim():null);
 /* 2026-10-20 filters and headers (Docs/naming.md): FBY maps a filter id to the column it filters (when the ids differ) and an optional condition suffix.
    A filter backed by a column of its view takes that column's label (+ suffix) and the column's position; filter-only fields keep their order, after them. */
-const FBY={issuer:['i'],itype:['it'],status:['st'],net:['nw'],rt:['kind'],rt2:['kind'],tag:['cpp',' tag'],nins:['cov'],soon:['odl']};
+const FBY={issuer:['i'],itype:['it'],status:['st'],net:['nw'],rt:['kind'],rt2:['kind'],tag:['cpp',' tag'],nins:['cov'],nt:['covT'],np:['covP'],soon:['odl']};
 const syncLabels=()=>{Object.entries(FIELD_LABEL).forEach(([k,l])=>{if(COL[k])COL[k][0]=l});S.forEach(s=>{const ek=f=>s.cols.includes(f[0])?[f[0]]:(FBY[f[0]]||[f[0]]),pos=f=>{const i=s.cols.indexOf(ek(f)[0]);return i<0?1e3:i};
  s.f.forEach(f=>{const[k,suf='']=ek(f),l=s.cols.includes(k)?FLD(k):FIELD_LABEL[f[0]];if(l)f[1]=l+(s.cols.includes(k)?suf:'')});
  s.f=s.f.map((f,i)=>[f,i]).sort((a,b)=>pos(a[0])-pos(b[0])||a[1]-b[1]).map(x=>x[0])})};syncLabels();
@@ -108,14 +118,14 @@ COL.x_uw=['Underwriter','wrapt',c=>c.ix.insurers?(c.ix.insurers[0].join('; ')||'
 COL.x_cc=['Carrier AD&D','',c=>X(c,'cc_add_max'),xm('cc_add_max')];COL.x_rad=['Rental AD&D','',c=>X(c,'rental_add_max'),xm('rental_add_max')];
 COL.x_ppd=['PP days','',c=>X(c,'pp_days'),c=>X(c,'pp_days')==null?'<span class=u>—</span>':X(c,'pp_days')+XT(c,'pp_days')+(X(c,'pp_tier')?`<span class=t title="Only on the ${esc(X(c,'pp_tier'))} tier">${esc(X(c,'pp_tier'))} only</span>`:'')];
 COL.x_ppi=['PP / item','',c=>X(c,'pp_item'),xm('pp_item')];COL.x_ppy=['PP / year','',c=>X(c,'pp_year'),xm('pp_year')];
-const RM=matchMedia('(prefers-reduced-motion: reduce)'),MOB=matchMedia('(max-width:640px)'),MCOL={ov:['fee','other','best','nins'],dtl:['i','acct','nw'],fees:['fee','fx'],rw:['kind','other','best'],ins:['cov','ptt','ins_'+INS[0][0]],perks:['fee','odl']};
+const RM=matchMedia('(prefers-reduced-motion: reduce)'),MOB=matchMedia('(max-width:640px)'),MCOL={ov:['fee','other','best','nins'],trv:['covT','ptt','ins_emergency_medical'],prot:['covP','ptt','ins_roadside'],dtl:['i','acct','nw'],fees:['fee','fx'],rw:['kind','other','best'],ins:['cov','ptt','ins_'+INS[0][0]],perks:['fee','odl']};
 MOB.addEventListener('change',()=>render());
 // $0 = the record says the coverage is not included; ? = not stated / unverified. Unknown is never shown as $0.
 const AMC={med:['med','emergency_medical'],mob:['mob','mobile_device'],x_cc:['cc_add_max','travel_accident'],x_rad:['rental_add_max',null],x_ppd:['pp_days','price_protection'],x_ppi:['pp_item','price_protection'],x_ppy:['pp_year','price_protection']};
 const AMV=(c,k)=>{const[f,cov]=AMC[k],v=k=='med'||k=='mob'?c[f]:X(c,f);if(v!=null&&v!==0)return v;if(cov&&c.ins[cov]===0)return 0;return null};
 const AMT=(c,k)=>{const v=AMV(c,k),f=AMC[k][0];if(v===0)return '<span class=z title="Not included per the record">$0</span>';if(v==null)return '<span class=q title="Not stated or unverified">—</span>';
  const tag=k=='med'||k=='mob'?'':XT(c,f);if(k=='x_ppd')return v+tag+(X(c,'pp_tier')?`<span class=t title="Only on the ${esc(X(c,'pp_tier'))} tier">${esc(X(c,'pp_tier'))} only</span>`:'');return '$'+(v>=1e6?v/1e6+'M':v.toLocaleString())+tag};
-Object.keys(AMC).forEach(k=>{COL[k]=[COL[k][0],'',c=>AMV(c,k),c=>AMT(c,k)];const fl=S.find(x=>x.id=='ins').f.find(x=>x[0]==k);if(fl)fl[2].push(['$0 (not included)',c=>AMV(c,k)===0],['? (not stated)',c=>AMV(c,k)==null])});
+Object.keys(AMC).forEach(k=>{COL[k]=[COL[k][0],'',c=>AMV(c,k),c=>AMT(c,k)];const fl=S.filter(x=>SUBONLY.has(x.id)).flatMap(x=>x.f).find(x=>x[0]==k);if(fl)fl[2].push(['$0 (not included)',c=>AMV(c,k)===0],['? (not stated)',c=>AMV(c,k)==null])});
 // ---- Wallet ----
 const LS=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},LSW=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
 const SK='ptt.state',SV=2,NOW=()=>new Date().toISOString(),OLDK=['ptt.st','ptt.wallet','ptt.match'];let PERSIST=true;
@@ -350,7 +360,7 @@ function renderBrokerOverview(){const v=$('#view'),B=D.bacct||[],H=B.filter(b=>B
 function skel(t,sub,tiles,main,aside){return `${t?`<div class=vhead><h2>${t}</h2></div>`:''}<div class=wlay><div class=wmain><div class="hero sk">${tiles.map(([a,b])=>`<div><span>${a}</span><b>${b}</b></div>`).join('')}</div>${main}${sub?`<details class=vnote><summary>About this view</summary><div>${sub}</div></details>`:''}</div>${aside?`<aside class=wside>${aside}</aside>`:''}</div>`}
 const soon=(what)=>`<div class=soon><p>${what}</p></div>`;
 /* product-tab sub-tabs (#tabs, folder row under the top tabs): Cards = S, Banking = BS (bank.js), Brokers = BRS, Telecom = TS */
-const CTABS=()=>CTV()?CTV().map(id=>S.find(s=>s.id==id)):S.filter(s=>s.id!='wfolder'&&!HIDE.has(s.id));
+const CTABS=()=>CTV()?CTV().map(id=>S.find(s=>s.id==id)):S.filter(s=>s.id!='wfolder'&&!HIDE.has(s.id)&&!SUBONLY.has(s.id));
 const BRS=[{id:'brov',name:'Overview',r:()=>renderBrokerOverview()},{id:'brfees',name:'Fees',r:()=>renderBrokerFees()},{id:'braccts',name:'Accounts',r:()=>renderBrokerAccts()},{id:'brfeat',name:'Features',r:()=>renderBrokerFeat()},{id:'brcry',name:'Crypto',r:()=>renderCrypto()},{id:'brprom',name:'Promotions',r:()=>renderPromos('broker')}];
 /* Brokers sub-tabs from the record: Fees / Features = D.bsnap (latest brokerage_snapshots row per broker, tag = its verification_status),
    Accounts = D.bacct (broker-accounts.csv, per account type: offered yes/no/unknown + tag), Promotions = D.promo broker rows. Empty = dash, nulls sort last. */
@@ -635,6 +645,8 @@ document.addEventListener('pointerover',e=>{if(e.pointerType!='mouse')return;con
 document.addEventListener('focusin',e=>{const o=e.target.closest(OSEL);if(o&&(o.dataset.trc==null||e.target==o))ofrShow(o)});document.addEventListener('focusout',e=>{if(e.target.closest(OSEL))ofrHide()});
 document.addEventListener('keydown',e=>{if(e.key=='Escape')ofrHide()});addEventListener('scroll',()=>{if(ofrI&&Date.now()-ofrT>300)ofrHide()},true);
 const NUNK=c=>INS.filter(([k])=>c.ins[k]==null).length;
+COL.covT=['Covers','',c=>insN(c,INS_T)*100-insU(c,INS_T),c=>`<b>${insN(c,INS_T)}</b><span class=mute>/${INS_T.length}</span>${insU(c,INS_T)?` <span class=mute title="${insU(c,INS_T)} coverage(s) not verified">(+${insU(c,INS_T)} ?)</span>`:''}`];
+COL.covP=['Covers','',c=>insN(c,INS_P)*100-insU(c,INS_P),c=>`<b>${insN(c,INS_P)}</b><span class=mute>/${INS_P.length}</span>${insU(c,INS_P)?` <span class=mute title="${insU(c,INS_P)} coverage(s) not verified">(+${insU(c,INS_P)} ?)</span>`:''}`];
 COL.cov=['Covers','',c=>c.nins*100-NUNK(c),c=>`<b>${c.nins}</b>${NUNK(c)?` <span class=mute title="${NUNK(c)} coverage(s) not verified">(+${NUNK(c)} ?)</span>`:''}`];
 const FI={};S.forEach(s=>s.f.forEach(([id,l,o])=>FI[id]={s,l,o}));
 let st={pl:'home',s:'ov',f:{},q:'',sort:null,dir:-1};
@@ -672,7 +684,7 @@ function render(){render0();rail();hero()}
 /*HERO-START*/
 const HTAG={CITED:'Checked against a primary source we archived.',ESTIMATE:'Derived by us from cited inputs; method shown.',REPORTED:'From a third party or an account record; not confirmed in a primary source.'};
 function heroHTML(){const h=D.meta.hero.v,n=x=>x.toLocaleString('en-CA'),cv=D.meta.hero.cov,T=[['CITED',h.cited],['ESTIMATE',h.estimate],['REPORTED',h.reported]];
- return `${HART}<div class=hin><div class=hbody><h1 class=htit>Financial terms, <em>with the receipts.</em></h1><p class=hsub>We read the fine print.</p><div class=hcta><button type=button class="btn hfill" data-hgo=table>Compare cards</button><button type=button class="btn hline" data-hgo=wallet>Build your wallet</button></div></div>
+ return `${HART}<div class=hin><div class=hbody><h1 class=htit>Financial terms, <em>with the sources.</em></h1><p class=hsub>We read the fine print.</p><div class=hcta><button type=button class="btn hfill" data-hgo=table>Compare cards</button><button type=button class="btn hline" data-hgo=wallet>Build your wallet</button></div></div>
  <div class=hside><dl class=hstats><div><dt>Cards</dt><dd>${n(h.cards)}</dd></div><div><dt>Issuers</dt><dd>${n(h.issuers)}</dd></div><div><dt>Updated</dt><dd>${esc(D.meta.hero.as_of)}</dd></div></dl>
  <div class=htags role=group aria-label="Evidence tags">${T.map(([k,v])=>`<span class=htag tabindex=0 data-htag=${k} title="${esc(HTAG[k])}" aria-label="${k} ${n(v)}: ${esc(HTAG[k])}">${k} <b>${n(v)}</b></span>`).join('')}</div>
  <div class=hcov><p class=hkick id=hcovl>Insurance</p><div class=htags role=group aria-labelledby=hcovl>${COVK().map(k=>`<button type=button class=htag data-hcov=${k} title="${esc(covText(k))}">${COVL(k)} <b>${n(cv[k].included)}</b></button>`).join('')}<button type=button class=htag data-hcov=none title="${esc(covText('none'))}">None <b>${n(D.meta.hero.none.included)}</b></button></div></div></div></div>`}
@@ -689,9 +701,9 @@ const SVGS={cmp:`<svg viewBox="0 0 96 64" aria-hidden=true focusable=false><rect
  wal:`<svg viewBox="0 0 96 64" aria-hidden=true focusable=false><rect x=12 y=14 width=54 height=34 rx=5 fill="none" stroke="currentColor" stroke-width="2" transform="rotate(-8 39 31)"/><rect x=20 y=12 width=54 height=34 rx=5 fill="var(--card)" stroke="var(--acc)" stroke-width="2.5"/><rect x=10 y=26 width=76 height=32 rx=7 fill="none" stroke="currentColor" stroke-width="2"/><circle cx=72 cy=42 r=4 fill="var(--acc)"/></svg>`,
  cov:`<svg viewBox="0 0 96 64" aria-hidden=true focusable=false><path d="M48 6l22 8v16c0 14-9 24-22 28C35 54 26 44 26 30V14z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M38 31l7 7 13-14" fill="none" stroke="var(--acc)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 24h10M8 34h8M78 24h10M80 34h8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="1 5"/></svg>`,
  rec:`<svg viewBox="0 0 96 64" aria-hidden=true focusable=false><path d="M26 6h44v52l-5.5-4-5.5 4-5.5-4-5.5 4-5.5-4-5.5 4-5.5-4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M34 18h28M34 28h20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x=33 y=36 width=30 height=7 rx=3 fill="var(--acc)" opacity=.9 /><circle cx=70 cy=44 r=11 fill="var(--card)" stroke="var(--acc)" stroke-width="2.5"/><path d="M65 44l4 4 7-8" fill="none" stroke="var(--acc)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`};
-const BEATS=[['Less friction','Terms in one place.'],['Money on the table','Bonuses, rewards, waivers: easy to miss.'],['Incentives everywhere','Too many to read them all.'],['We read them','You get the receipts.']];
+const BEATS=[['Less friction','Terms in one place.'],['Money on the table','Bonuses, rewards, waivers: easy to miss.'],['Incentives everywhere','Too many to read them all.'],['We read them','You get the sources.']];
 function homeHTML(){const h=D.meta.hero.v,n=x=>x.toLocaleString('en-CA'),nw=D.meta.hero.new||[],fd=FMTD;
- const STEPS=[['cmp','Compare',`${n(h.cards)} cards, one table.`,'table'],['wal','Wallet','Add the cards you hold.','wallet'],['cov','Coverage',`${n(COVK().length)} insurance types, side by side.`,'ins'],['rec','Receipts','Every figure shows its source.','table']];
+ const STEPS=[['cmp','Compare',`${n(h.cards)} cards, one table.`,'table'],['wal','Wallet','Add the cards you hold.','wallet'],['cov','Coverage',`${n(COVK().length)} insurance types, side by side.`,'ins'],['rec','Sources','Every figure is dated and sourced.','table']];
  return `<div class=hm><ol class=beats>${BEATS.map(([a,b])=>`<li><b>${a}</b><span>${b}</span></li>`).join('')}</ol>
  <div class=hmcols><section class=hnews aria-labelledby=hnewl><h2 id=hnewl>What’s new</h2><ul>${nw.map(r=>`<li><time datetime="${esc(r.d)}">${r.k=='Ends'?'Ends ':''}${fd(r.d)}</time><span class="tg tg${r.tag}">${r.tag}</span><span class=hnt title="${esc(r.n+' '+r.x)}"><b>${esc(r.n)}</b> ${esc(r.x)}${r.e?' · ends '+fd(r.e):''}</span></li>`).join('')}</ul></section>
  <section class=hsteps aria-labelledby=hstepl><h2 id=hstepl>How it works</h2><ol>${STEPS.map(([k,a,b,g],i)=>`<li><button type=button class=hstep data-hgo=${g}><span class=hsv>${SVGS[k]}</span><b>${a}</b><span>${b}</span></button></li>`).join('')}</ol></section></div>
@@ -699,18 +711,19 @@ function homeHTML(){const h=D.meta.hero.v,n=x=>x.toLocaleString('en-CA'),nw=D.me
 /*HOME-END*/
 
 function hero(){const el=$('#hero');if(!el)return;const on=st.pl=='home'&&!st.card&&!USR.has(st.s);el.hidden=!on;if(on&&!el.dataset.r){el.innerHTML=heroHTML();el.dataset.r='1';$('#homebody').innerHTML=homeHTML()}const hb=$('#homebody');if(hb)hb.hidden=!on}
-document.addEventListener('click',e=>{const g=e.target.closest('[data-hgo]');if(g){if(g.dataset.hgo=='wallet'){st.s='wallet';st.card=null}else{st.pl='cards';st.s=g.dataset.hgo=='ins'?'ins':'ov';st.card=null}render();scrollTo(0,0);return}
- const t=e.target.closest('[data-hcov]');if(t){st.pl='cards';st.s='ins';st.card=null;render();scrollTo(0,0)}});
-function render0(){if(!PL.has(st.pl))st.pl='cards';if(!USR.has(st.s)&&!(S.some(s=>s.id==st.s)&&!HIDE.has(st.s)&&(!CTV()||CTV().includes(st.s)||st.s=='wfolder')))st.s='ov';syncLabels();save();BANK.bar();
+document.addEventListener('click',e=>{const g=e.target.closest('[data-hgo]');if(g){if(g.dataset.hgo=='wallet'){st.s='wallet';st.card=null}else{st.pl='cards';st.s=g.dataset.hgo=='ins'?'ins':'ov';if(st.s=='ins')st.g={...(st.g||{}),ins:'trv'};st.card=null}render();scrollTo(0,0);return}
+ const t=e.target.closest('[data-hcov]');if(t){st.pl='cards';st.s='ins';st.g={...(st.g||{}),ins:INS_P.some(x=>x[0]==t.dataset.hcov)?'prot':'trv'};st.card=null;render();scrollTo(0,0)}});
+function render0(){$('#grp').hidden=true;$('#grp').innerHTML='';if(st.s=='trv'||st.s=='prot'){st.g={...(st.g||{}),ins:st.s};st.s='ins'}if(!PL.has(st.pl))st.pl='cards';if(!USR.has(st.s)&&!(S.some(s=>s.id==st.s)&&!HIDE.has(st.s)&&!SUBONLY.has(st.s)&&(!CTV()||CTV().includes(st.s)||st.s=='wfolder')))st.s='ov';syncLabels();save();BANK.bar();
  if(st.card&&st.pl=='home')st.pl='cards';
  if(st.pl=='home'&&!st.card&&!USR.has(st.s)){['#pre','#page','.wrap','#bar','#filters','#view'].forEach(q=>{const e=$(q);if(e)e.hidden=true});$('#tabs').innerHTML='';$('#ftoggle').hidden=true;return}
  if(!st.card&&!USR.has(st.s)&&(st.pl=='broker'||st.pl=='tel')){['#pre','#page','.wrap','#bar','#filters'].forEach(q=>{const e=$(q);if(e)e.hidden=true});$('#view').hidden=false;$('#ftoggle').hidden=true;$('#tabs').innerHTML=LTABS(st.pl);return renderLine(st.pl)}
  if(st.pl=='cards'&&st.s=='prom'&&!st.card){['#pre','#page','.wrap','#bar','#filters'].forEach(q=>{const e=$(q);if(e)e.hidden=true});$('#view').hidden=false;$('#ftoggle').hidden=true;$('#tabs').innerHTML=LINECFG.cards.tabs().map(s=>`<button data-s="${s.id}" class="${s.id==st.s?'on':''}">${s.name}</button>`).join('');return renderPromos('cards')}
- if(st.pl=='bank'&&!st.card&&!USR.has(st.s))return BANK.render();const scr=S.find(s=>s.id==st.s);
+ if(st.pl=='bank'&&!st.card&&!USR.has(st.s))return BANK.render();const scr=S.find(s=>s.id==GKEY());
  const pg=!!st.card,vw=!pg&&VIEWS[st.s];$('#pre').hidden=pg||!!vw;$('#page').hidden=!pg;$('#view').hidden=!vw;$('.wrap').hidden=pg||!!vw;$('#bar').hidden=pg||!!vw;$('#filters').hidden=pg||!!vw;
  if(vw){$('#tabs').innerHTML='';$('#ftoggle').hidden=true;return vw()}
  if(pg){closeM();$('#tabs').innerHTML=LINECFG.cards.tabs().map(s=>`<button data-s="${s.id}">${s.name}</button>`).join('');return renderCard(C[BYID[st.card]])}
  $('#tabs').innerHTML=LINECFG.cards.tabs().map(s=>{const k=s.f.filter(f=>st.f[f[0]]!=null).length;return`<button data-s="${s.id}" class="${s.id==st.s?'on':''}">${s.name}${k?`<span class=dot>${k}</span>`:''}</button>`}).join('');
+ if(GROUPS[st.s]){const gk=GKEY();$('#grp').hidden=false;$('#grp').setAttribute('aria-label',(S.find(x=>x.id==st.s)||{}).name+' view');$('#grp').innerHTML=GROUPS[st.s].map(([id,n])=>`<button type=button data-g="${id}" class="${id==gk?'on':''}"${id==gk?' aria-current=true':''}>${n}${(()=>{const k=S.find(x=>x.id==id).f.filter(f=>st.f[f[0]]!=null).length;return k?`<span class=dot>${k}</span>`:''})()}</button>`).join('')}
  $('#filters').innerHTML=scr.f.map(([id,l,o,m])=>m?`<label>${l}<details class="ms ${st.f[id]?.length?'set':''}"><summary>${st.f[id]?.length?st.f[id].length+' selected':'Any'}</summary><div>${o.map((x,i)=>`<label class=ck><input type=checkbox data-fm="${id}" value="${i}" ${st.f[id]?.includes(i)?'checked':''}> ${esc(x[0])}</label>`).join('')}</div></details></label>`:`<label>${l}<select data-f="${id}" class="${st.f[id]!=null?'set':''}"><option value="">Any</option>${o.map((x,i)=>`<option value="${i}" ${st.f[id]==i?'selected':''}>${esc(x[0])}</option>`).join('')}</select></label>`).join('');
  $('#filters').style.display=scr.f.length?'':'none';{const na=Object.keys(st.f).filter(k=>FI[k]).length,fc=STO.ui?.fcol===true;$('#filters').insertAdjacentHTML('afterbegin',`<div id=fhead><button type=button id=fcol aria-expanded=${!fc} aria-controls=filters aria-label="Filters${na?', '+na+' active':''}">Filters</button><button type=button id=freset data-x=__f aria-label="Reset filters${na?', '+na+' active':''}"${na?'':' disabled'}>Reset</button></div>`);$('#filters').classList.toggle('fcol',fc);$('#filters').insertAdjacentHTML('beforeend','<button id=fdone type=button>Show results</button>')}
  document.body.classList.toggle('full',!!st.full);const nf=Object.keys(st.f).filter(k=>FI[k]).length;$('#ftoggle').textContent='Filters';$('#ftoggle').setAttribute('aria-label','Filters'+(nf?', '+nf+' active':''));$('#ftoggle').hidden=!scr.f.length;$('#ftoggle').setAttribute('aria-controls','filters');$('#ftoggle').setAttribute('aria-expanded',String($('#filters').classList.contains('open')));
@@ -721,8 +734,8 @@ function render0(){if(!PL.has(st.pl))st.pl='cards';if(!USR.has(st.s)&&!(S.some(s
  $('#pre').innerHTML=PRESETS().map(p=>`<a href="#preset/${p.id}" class="pchip ${curPre()==p.id?'on':''}" data-pre="${p.id}">${esc(p.n)}</a>`).join('');
  $('#bar').innerHTML=`<span class=count>${R.length} <span>of ${C.filter(LIVE).length} cards</span></span>${chips.join('')}${chips.length?'<button class=clr data-x="__all">Clear all</button>':''}${st.s=='ins'?'<button class=how data-pttwhy>How the PTT Score is estimated</button>':''}${st.s!='val'?`<button class="mfull ${st.full?'on':''}" data-full>${st.full?'Compact':'Full table'}</button>`:''}`;
  if(st.s=='val')return renderVal();
- const mob=MOB.matches&&!st.full&&MCOL[st.s],cols=['n',...(mob?MCOL[st.s]:scr.cols)];
- let sk=st.sort&&(st.sort=='n'||COL[st.sort])?st.sort:(st.s=='rw'?'best':st.s=='fees'?'fee':st.s=='ins'?'nins':'best');
+ const mob=MOB.matches&&!st.full&&MCOL[GKEY()],cols=['n',...(mob?MCOL[GKEY()]:scr.cols)];
+ let sk=st.sort&&(st.sort=='n'||COL[st.sort])?st.sort:(st.s=='rw'?'best':st.s=='fees'?'fee':st.s=='ins'?(GKEY()=='prot'?'covP':'covT'):'best');
  const dir=st.sort==sk?st.dir:(sk=='fee'||sk=='apr'||sk=='fx'?1:-1);
  const key=sk=='n'?c=>c.n:COL[sk][2];
  R.sort((a,b)=>nlast(key(a),key(b),dir)||a.n.localeCompare(b.n));
@@ -800,6 +813,7 @@ function openWhy(){$('#mc').innerHTML=`<h2>How the PTT Score is estimated</h2>
 function openM(c,full){$('#mc').innerHTML=cardHTML(c,0,full?null:st.s)+acts(c);
  $('#mbg').classList.add('on');$('#mbg').setAttribute('aria-hidden','false');$('#mx').focus()}
 const closeM=()=>{$('#mbg').classList.remove('on');$('#mbg').setAttribute('aria-hidden','true')};
+document.addEventListener('click',e=>{const b=e.target.closest('#grp [data-g]');if(!b)return;e.stopImmediatePropagation();st.g={...(st.g||{}),[st.s]:b.dataset.g};st.sort=null;render();const n=$('#grp [data-g].on');if(n)n.focus()},true);
 document.addEventListener('keydown',e=>{if(e.key=='Escape')closeM();if((e.key=='Enter'||e.key==' ')&&e.target.dataset?.mf){e.preventDefault();e.target.click()}if((e.key=='Enter'||e.key==' ')&&e.target.dataset?.wtile!=null){e.preventDefault();openM(C[+e.target.dataset.wtile])}if((e.key=='Enter'||e.key==' ')&&e.target.classList?.contains('prow')){e.preventDefault();e.target.click()}if(e.key=='Enter'&&e.target.id=='logo'){st.s='ov';st.card=null;render()}});
 const fclose=()=>{$('#filters').classList.remove('open');$('#fbg')?.remove();$('#ftoggle')?.setAttribute('aria-expanded','false')};
 document.addEventListener('keydown',e=>{if(e.key=='Escape'&&$('#filters')?.classList.contains('open')){fclose();$('#ftoggle')?.focus()}});
