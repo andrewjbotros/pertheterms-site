@@ -532,3 +532,10 @@ th.ic,td.ic{text-align:center;width:1%;padding-left:4px;padding-right:4px}th.ic{
 .hclose{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:22px;padding:18px 20px;border-radius:14px;background:linear-gradient(135deg,#0a1020,#12306b);color:#fff}.hclose p{margin:0 auto 0 0;font-size:20px;font-weight:800;letter-spacing:-.02em}
 .hclose .btn{padding:11px 20px;border-radius:999px;font-size:14px;font-weight:700;line-height:1;cursor:pointer}.hfill2{background:#fff;color:#0a1020;border:1px solid #fff}.hline2{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.5)}
 @media(max-width:640px){.beats{grid-template-columns:repeat(2,minmax(0,1fr))}.hmcols{grid-template-columns:minmax(0,1fr)}.hero2 .hart{right:-30px;opacity:.16;max-height:200px}.hnews li{grid-template-columns:56px 66px minmax(0,1fr)}.hclose p{flex-basis:100%}}
+/* tables fit one window (about 1280px): tighter padding, header and text cells wrap, long text columns are capped */
+.wrap th{white-space:normal;line-height:1.15;vertical-align:bottom}.wrap th,.wrap td{padding:6px 7px}
+.wrap td.nm,.wrap th.nm{white-space:normal;min-width:150px;max-width:220px}
+.wrap td.l,.wrap td.wrapt{white-space:normal;max-width:150px;min-width:0}.wrap th.wrapt{min-width:0;max-width:150px}
+.wrap td.ctr,.wrap th.ctr{padding-left:4px;padding-right:4px}
+.wrap th.ctr{font-size:10px;letter-spacing:0}.wrap th.wrapt,.wrap td.wrapt{max-width:120px}
+.wrap th.ic,.wrap td.ic{max-width:56px;padding-left:3px;padding-right:3px;overflow-wrap:anywhere}

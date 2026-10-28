@@ -29,6 +29,8 @@ const ALLF={fee:['fee','Cost',()=>FEEO],other:['other','Base %',()=>ge('other',[
 const OV_LIST=['fee','other','best','nins','kind','offer'];/* Andrew's Overview list, in order */
 const FIELDS={ov:OV_LIST,dtl:Object.keys(ALLF).filter(k=>!OV_LIST.includes(k))},FDEF={ov:ALLF,dtl:ALLF};
 const fcols=id=>FIELDS[id],ffilt=id=>FIELDS[id].map(k=>{const[i,l,o]=FDEF[id][k];return[i,l,o()]});
+/* Rewards fits one window: the six most-carried categories and the base rate get their own column; every other category is merged into one 'More categories' cell (its filters stay) */
+const RWTOP=RC.filter(k=>k!='other').slice(0,6),RWMORE=RC.filter(k=>k!='other'&&!RWTOP.includes(k));
 const S=[
  {id:'ov',name:'Overview',cols:fcols('ov'),f:ffilt('ov')},
  {id:'dtl',name:'Full Detail',cols:fcols('dtl'),f:ffilt('dtl')},
@@ -39,7 +41,7 @@ const S=[
   ['fx','FX fee',[['None (0%)',c=>c.fx===0],['< 2.5%',c=>c.fx!=null&&c.fx<2.5],['≥ 2.5%',c=>c.fx>=2.5]]],
   ['apr','Purchase APR',le('apr',[12.99,15,19.99,20.99])],
   ['inc','Income required',[['None stated',c=>!c.inc],...le('inc',[15000,40000,60000,80000],'$')]]]},
- {id:'rw',name:'Rewards',cols:['kind','prog','cpp',...RC.map(k=>'r_'+k),'best'],f:[
+ {id:'rw',name:'Rewards',cols:['kind','prog','cpp',...RWTOP.map(k=>'r_'+k),'r_other','best','rmore'],f:[
   ...RC.map(k=>['r_'+k,CN[k],ge('r_'+k,k=='other'?[0.5,1,1.25,1.5,2]:RATES)]),['best','Best category',ge('best',RATES)],
   ['rt2','Reward type',eq('rt',['Points','Cash back','Travel/airline miles','Store dollars','No rewards','Unconfirmed'])],['prog','Program',eq('prog',uniq(c=>c.kind=='Points'?c.prog:null))],
   ['tag','¢/pt tag',eq('tag',['CITED','ESTIMATE','REPORTED'])]]},
@@ -74,6 +76,8 @@ const COL={i:['Issuer','l',c=>c.i,c=>esc(c.i)],nw:['Network','ic',c=>c.nw,c=>ico
  credits:['Credits & bonuses','wrapt',c=>-c.credits.length,c=>c.credits.length?esc(c.credits.join(' · ')):'<span class=u>—</span>'],
  perks:['Partner perks','wrapt',c=>-c.perks.length,c=>c.perks.length?esc(c.perks.join(' · ')):'<span class=u>—</span>'],
  exp:['Expiry','l',c=>c.exp||'z',c=>c.exp?esc(c.exp):'<span class=u>—</span>']};
+const rmoreOf=c=>RWMORE.filter(k=>c['r_'+k]!=null&&c['r_'+k]>(c.other??0)).sort((a,b)=>c['r_'+b]-c['r_'+a]);
+COL.rmore=['More categories','l',c=>Math.max(0,...rmoreOf(c).map(k=>c['r_'+k])),c=>{const L=rmoreOf(c);return L.length?L.map(k=>`<span title="${esc(CN[k])}">${esc(CN[k].replace(/ \(.*/,''))} <b>${c['r_'+k].toFixed(1)}%</b></span>`).join(', '):'<span class=u>—</span>'}];
 RC.forEach(k=>COL['r_'+k]=[CN[k]+(k=='other'?'':` <span class=mute>(${CC[k]})</span>`),'',c=>c['r_'+k],c=>pct(c['r_'+k],3)]);
 COL.pt=['Fee','l',c=>c.pt,c=>esc(c.pt||'—')+VE(c,'card_product_type')];COL.tier=['Tier','l',c=>c.tier,c=>esc(c.tier||'—')];COL.it=['Issuer type','l',c=>c.it,c=>esc(c.it||'—')];COL.st=['Status','l',c=>c.st,c=>esc(c.st||'—')];COL.cur=['Currency','l',c=>c.cur,c=>esc(c.cur||'—')];COL.acct=['Account','ic',c=>c.acct,c=>icoCell('acct',c.acct)];
 /* skinny icon columns (Account type; Network follows): original inline SVG marks, one vocabulary shared by the table cell and the active-filter chip; the full word is the title and aria-label, sorting and the filter still use the word */
