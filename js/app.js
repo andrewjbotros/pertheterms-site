@@ -660,7 +660,7 @@ function rail(){const el=$('#urail');if(!el)return;document.documentElement.styl
  const tb=$('#tabs'),cur=tb.querySelector('button.on'),vh=$('#vh'),TN=Object.fromEntries(PLINES);if(vh){vh.hidden=!cur||!!st.card||USR.has(st.s);vh.textContent=cur?TN[st.pl||'cards']+' · '+cur.textContent.replace(/\d+$/,''):''}
  el.innerHTML=`<div class=rh>You</div>`+UNAV.map(([k,n,sub])=>{const on=st.s==k&&!st.card,pm=PREM.has(k);return `<button type=button data-s=${k} class="ri${on?' on':''}${pm?' prem':''}"${on?' aria-current=page':''}><span class=ril>${n}${pm?'<span class=premg role=img aria-label=Premium title=Premium>◆</span>':''}${sub?`<small>${sub}</small>`:''}</span></button>`}).join('');
  el.classList.toggle('open',o);document.body.classList.toggle('rail',o&&!NARROW.matches&&!CARDS_ONLY);$('#urbg').hidden=CARDS_ONLY||!(o&&NARROW.matches);const t=$('#rtog');if(t)t.setAttribute('aria-expanded',String(o));el.inert=!o}
-if(CARDS_ONLY){document.body.classList.add('co');const h=document.querySelector('header'),u=$('#urail');if(h&&u)h.insertBefore(u,$('#q')||null)}/* cards-only: no side column; the one user item, Wallet, sits in the header */
+if(CARDS_ONLY)document.body.classList.add('co');/* cards-only: no side column and no header Wallet button; Wallet is the first item of the Profile menu */
 function togRail(){if(CARDS_ONLY){$('#logo')?.click();return}if(NARROW.matches)st.rdraw=!st.rdraw;else{STO.ui={...(STO.ui||{}),rail:!railOpen()};saveS()}rail()}
 NARROW.addEventListener('change',()=>{st.rdraw=false;rail()});
 function render(){render0();rail();hero()}
@@ -849,6 +849,15 @@ $('#q').value=st.q;$('#q').addEventListener('input',e=>{st.q=e.target.value;if(s
  w.addEventListener('pointerup',up);w.addEventListener('pointercancel',up)})();
 // ---- Theme toggle (v3.3.1): default = OS setting; an explicit choice is saved in ptt.state.ui.theme ----
 const curTheme=()=>document.documentElement.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+/* Profile menu (header): Wallet always first, Dark/Light always last; new profile items are added to PMENU and land between them */
+const PMENU=[['wallet','Wallet']];
+$('#pml').innerHTML=PMENU.map(([k,n])=>`<button type=button role=menuitem data-s=${k} tabindex=-1>${n}</button>`).join('')+'<button type=button role=menuitem id=theme tabindex=-1><span class=ti aria-hidden=true></span><span class=tl></span></button>';
+{const b=$('#pbtn'),l=$('#pml'),it=()=>[...l.querySelectorAll('[role=menuitem]')],shut=f=>{if(l.hidden)return;l.hidden=true;b.setAttribute('aria-expanded','false');if(f)b.focus()},open=()=>{l.hidden=false;b.setAttribute('aria-expanded','true');it()[0].focus()};
+ b.addEventListener('click',()=>l.hidden?open():shut(true));
+ l.addEventListener('click',e=>{if(e.target.closest('[role=menuitem]'))shut(false)});
+ $('#pm').addEventListener('keydown',e=>{if(l.hidden)return;const a=it(),i=a.indexOf(document.activeElement);
+  if(e.key=='Escape'){e.preventDefault();e.stopPropagation();shut(true)}else if(e.key=='ArrowDown'){e.preventDefault();a[(i+1)%a.length].focus()}else if(e.key=='ArrowUp'){e.preventDefault();a[(i-1+a.length)%a.length].focus()}else if(e.key=='Home'){e.preventDefault();a[0].focus()}else if(e.key=='End'){e.preventDefault();a[a.length-1].focus()}else if(e.key=='Tab')shut(false)},true);
+ document.addEventListener('click',e=>{if(!e.target.closest('#pm'))shut(false)},true)}
 function paintTheme(){const t=curTheme(),b=$('#theme');if(!b)return;const nx=t=='dark'?'light':'dark';b.querySelector('.ti').textContent=t=='dark'?'☀':'☾';b.querySelector('.tl').textContent=nx=='dark'?'Dark':'Light';b.setAttribute('aria-label','Switch to '+nx+' theme');b.title='Switch to '+nx+' theme'}
 $('#theme')?.addEventListener('click',()=>{const nx=curTheme()=='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',nx);STO.ui={...(STO.ui||{}),theme:nx};saveS();paintTheme()});
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change',e=>{if(!(STO.ui&&STO.ui.theme)){document.documentElement.setAttribute('data-theme',e.matches?'dark':'light');paintTheme()}});
