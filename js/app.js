@@ -1,6 +1,6 @@
 const D=window.__PTT_DATA, C=D.cards, IMGB=window.__PTT_IMG||null;
 const PLINES=PLINES_ALL.filter(p=>(D.meta.lines||['cards','bank','broker','tel']).includes(p[0]));/* enabled product lines (build flag PTT_LINES, default cards) */
-const CARDS_ONLY=PLINES.length==1&&PLINES[0][0]=='cards',CT_IDS=CARDS_ONLY?['ov','rw','prom','fees']:null;/* cards-only release: Overview, Rewards, Promotions, Fees (this order); the other Cards views and the user pages stay in the code, off the nav */
+const CARDS_ONLY=PLINES.length==1&&PLINES[0][0]=='cards',CT_IDS=CARDS_ONLY?['ov','rw','prom','ins','fees']:null;/* cards-only release: Overview, Rewards, Promotions, Insurance, Fees (this order); the other Cards views and the user pages stay in the code, off the nav */
 const $=s=>document.querySelector(s), esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const money=v=>v==null?'<span class=u>—</span>':v==0?'<span class=y>Free</span>':'$'+v.toLocaleString();
 const pct=(v,hi)=>v==null?'<span class=u>—</span>':`<span class="${hi&&v>=hi?'hi':''}">${v.toFixed(2)}%</span>`;
@@ -582,13 +582,15 @@ document.addEventListener('click',e=>{const r=e.target.closest('[data-wrm][data-
 document.addEventListener('change',e=>{if(!e.target.matches('[data-imp]'))return;const f=e.target.files[0];if(!f)return;f.text().then(t=>{try{const o=JSON.parse(t);if(!o||!o.wallet)throw 0;STO=migS(o);W.cards=STO.wallet.cards.map(x=>x.id);W.spend={...STO.wallet.spend};saveS();render();alert('Imported')}catch(_){alert('Not a PerTheTerms export')}})});
 VIEWS.profile=renderProfile;VIEWS.wallet=renderWallet;VIEWS.subscriptions=renderSubscriptions;VIEWS.points=renderPoints;VIEWS.pyt=renderPyt;
 // ---- Presets: ready-made screens, shareable as #preset/<id> ----
+/* per-line config read by the shared shell (super banner #pl, sub banner #tabs, filter panel, table). Super label: PLINES_ALL (bank.js). Sub-tabs, their columns and their filters: the line's tab defs (cards: S, via tabs()). Presets: pre(). A new line adds its entry here and its own tab defs; the shell code does not change. */
+const LINECFG={cards:{tabs:()=>CTABS(),pre:()=>PRE}},PRESETS=(pl=st.pl||'cards')=>(LINECFG[pl]?.pre||(()=>[]))();
 const PRE=[{id:'no-fee-cash-back',n:'Best no-fee cash back',s:'ov',f:{pt:'No fee',rt:'Cash back'},sort:'other'},
  {id:'top-grocery',n:'Top grocery',s:'rw',f:{},sort:'r_groc'},
  {id:'no-fx-travel',n:'No FX fee travel',s:'rw',f:{fx:'None (0%)'},sort:'r_trav'},
  {id:'business',n:'Business cards',s:'ov',f:{acct:'Business'},sort:'best'},
  {id:'apply-by-soon',n:'Apply by soon',s:'perks',f:{soon:'Within 30 days'},sort:'odl',dir:1}];
 function presetState(p){const f={};for(const[id,l]of Object.entries(p.f)){const i=FI[id]?.o.findIndex(x=>x[0]==l);if(i>=0)f[id]=i}return{s:p.s,f,q:'',sort:p.sort,dir:p.dir||-1,card:null}}
-const curPre=()=>PRE.find(p=>{const x=presetState(p);return x.s==st.s&&x.sort==st.sort&&x.dir==st.dir&&!st.q&&JSON.stringify(x.f)==JSON.stringify(Object.fromEntries(Object.entries(st.f).sort()))&&Object.keys(x.f).length==Object.keys(st.f).length})?.id;
+const curPre=()=>PRESETS().find(p=>{const x=presetState(p);return x.s==st.s&&x.sort==st.sort&&x.dir==st.dir&&!st.q&&JSON.stringify(x.f)==JSON.stringify(Object.fromEntries(Object.entries(st.f).sort()))&&Object.keys(x.f).length==Object.keys(st.f).length})?.id;
 COL.ptt=['PTT Score','',c=>c.ptt.v,c=>`<span class="band b${c.ptt.band[0]}">${c.ptt.band}</span> <b>$${c.ptt.v}</b>${c.ptt.u?`<span class=mute title="At least this much: ${c.ptt.u} coverage(s) unverified">*</span>`:''}<span class=mute>/yr</span>`];
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],dfmt=d=>d?MON[+d.slice(5,7)-1]+' '+(+d.slice(8,10)):'';
 COL.tpo=['Sign-up bonus','',c=>c.tpo[0]?.a,c=>c.tpo.length?`<span class=ofr tabindex=0 role=button aria-haspopup=dialog data-tpo="${C.indexOf(c)}">$${c.tpo[0].a.toLocaleString()} · ${esc(c.tpo[0].s)}${new Set(c.tpo.map(x=>x.s)).size>1?` <span class=mute>+${new Set(c.tpo.map(x=>x.s)).size-1}</span>`:''}</span>`:''];
@@ -618,7 +620,7 @@ let st={s:'ov',f:{},q:'',sort:null,dir:-1};
 const BYID={};C.forEach((c,i)=>BYID[c.id]=i);const BYID0=BYID;
 function route(){const h=decodeURIComponent(location.hash.slice(1));st.card=null;
  if(h=='premium'){st.s='premium';return}
- if(h.startsWith('preset/')){const p=PRE.find(p=>p.id==h.slice(7));if(p)Object.assign(st,presetState(p),{pl:'cards'});return}
+ if(h.startsWith('preset/')){const p=PRESETS('cards').find(p=>p.id==h.slice(7));if(p)Object.assign(st,presetState(p),{pl:'cards'});return}
  if(h.startsWith('card/')){const i=BYID[h.slice(5)];if(i!=null)st.card=C[i].id;return}
  try{Object.assign(st,JSON.parse(h))}catch(e){}}
 if(!location.hash&&STO.screen)Object.assign(st,STO.screen);
@@ -664,12 +666,12 @@ document.addEventListener('click',e=>{const g=e.target.closest('[data-hgo]');if(
  const t=e.target.closest('[data-htag],[data-hcov]');if(t){const g=t.closest('.htags');g.querySelectorAll('.htag').forEach(b=>{const on=b===t;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)});g.nextElementSibling.textContent=t.dataset.htag?HTAG[t.dataset.htag]:covText(t.dataset.hcov)}});
 function render0(){if(!PL.has(st.pl))st.pl='cards';if(!USR.has(st.s)&&!(S.some(s=>s.id==st.s)&&(!CT_IDS||CT_IDS.includes(st.s)||st.s=='wfolder')))st.s='ov';syncLabels();save();BANK.bar();
  if(!st.card&&!USR.has(st.s)&&(st.pl=='broker'||st.pl=='tel')){['#pre','#page','.wrap','#bar','#filters'].forEach(q=>{const e=$(q);if(e)e.hidden=true});$('#view').hidden=false;$('#ftoggle').hidden=true;$('#tabs').innerHTML=LTABS(st.pl);return renderLine(st.pl)}
- if(st.pl=='cards'&&st.s=='prom'&&!st.card){['#pre','#page','.wrap','#bar','#filters'].forEach(q=>{const e=$(q);if(e)e.hidden=true});$('#view').hidden=false;$('#ftoggle').hidden=true;$('#tabs').innerHTML=CTABS().map(s=>`<button data-s="${s.id}" class="${s.id==st.s?'on':''}">${s.name}</button>`).join('');return renderPromos('cards')}
+ if(st.pl=='cards'&&st.s=='prom'&&!st.card){['#pre','#page','.wrap','#bar','#filters'].forEach(q=>{const e=$(q);if(e)e.hidden=true});$('#view').hidden=false;$('#ftoggle').hidden=true;$('#tabs').innerHTML=LINECFG.cards.tabs().map(s=>`<button data-s="${s.id}" class="${s.id==st.s?'on':''}">${s.name}</button>`).join('');return renderPromos('cards')}
  if(st.pl=='bank'&&!st.card&&!USR.has(st.s))return BANK.render();const scr=S.find(s=>s.id==st.s);
  const pg=!!st.card,vw=!pg&&VIEWS[st.s];$('#pre').hidden=pg||!!vw;$('#page').hidden=!pg;$('#view').hidden=!vw;$('.wrap').hidden=pg||!!vw;$('#bar').hidden=pg||!!vw;$('#filters').hidden=pg||!!vw;
  if(vw){$('#tabs').innerHTML='';$('#ftoggle').hidden=true;return vw()}
- if(pg){closeM();$('#tabs').innerHTML=CTABS().map(s=>`<button data-s="${s.id}">${s.name}</button>`).join('');return renderCard(C[BYID[st.card]])}
- $('#tabs').innerHTML=CTABS().map(s=>{const k=s.f.filter(f=>st.f[f[0]]!=null).length;return`<button data-s="${s.id}" class="${s.id==st.s?'on':''}">${s.name}${k?`<span class=dot>${k}</span>`:''}</button>`}).join('');
+ if(pg){closeM();$('#tabs').innerHTML=LINECFG.cards.tabs().map(s=>`<button data-s="${s.id}">${s.name}</button>`).join('');return renderCard(C[BYID[st.card]])}
+ $('#tabs').innerHTML=LINECFG.cards.tabs().map(s=>{const k=s.f.filter(f=>st.f[f[0]]!=null).length;return`<button data-s="${s.id}" class="${s.id==st.s?'on':''}">${s.name}${k?`<span class=dot>${k}</span>`:''}</button>`}).join('');
  $('#filters').innerHTML=scr.f.map(([id,l,o,m])=>m?`<label>${l}<details class="ms ${st.f[id]?.length?'set':''}"><summary>${st.f[id]?.length?st.f[id].length+' selected':'Any'}</summary><div>${o.map((x,i)=>`<label class=ck><input type=checkbox data-fm="${id}" value="${i}" ${st.f[id]?.includes(i)?'checked':''}> ${esc(x[0])}</label>`).join('')}</div></details></label>`:`<label>${l}<select data-f="${id}" class="${st.f[id]!=null?'set':''}"><option value="">Any</option>${o.map((x,i)=>`<option value="${i}" ${st.f[id]==i?'selected':''}>${esc(x[0])}</option>`).join('')}</select></label>`).join('');
  $('#filters').style.display=scr.f.length?'':'none';{const na=Object.keys(st.f).filter(k=>FI[k]).length,fc=STO.ui?.fcol===true;$('#filters').insertAdjacentHTML('afterbegin',`<div id=fhead><button type=button id=fcol aria-expanded=${!fc} aria-controls=filters>Filters</button><span class=fcnt>${na?na+' active':'none active'}</span>${na?'<button type=button id=freset data-x=__f>Reset</button>':''}</div>`);$('#filters').classList.toggle('fcol',fc);$('#filters').insertAdjacentHTML('beforeend','<button id=fdone type=button>Show results</button>')}
  document.body.classList.toggle('full',!!st.full);const nf=Object.keys(st.f).filter(k=>FI[k]).length;$('#ftoggle').textContent='Filters'+(nf?` (${nf})`:'');$('#ftoggle').hidden=!scr.f.length;$('#ftoggle').setAttribute('aria-controls','filters');$('#ftoggle').setAttribute('aria-expanded',String($('#filters').classList.contains('open')));
@@ -677,7 +679,7 @@ function render0(){if(!PL.has(st.pl))st.pl='cards';if(!USR.has(st.s)&&!(S.some(s
  if(st.q)chips.push(`<span class=chip><i>Search ·</i> “${esc(st.q)}”<button data-x="__q">×</button></span>`);
  const SL=k=>k=='n'?'Card':String(COL[k]?.[0]||k).replace(/<[^>]+>/g,'').trim();
  if(st.sort&&(st.sort=='n'||COL[st.sort])&&!['val'].includes(st.s))chips.push(`<span class=chip><i>Sort ·</i> ${esc(SL(st.sort))} ${st.dir>0?'▴':'▾'}<button data-x="__sort" aria-label="Reset sort">×</button></span>`);
- $('#pre').innerHTML=PRE.map(p=>`<a href="#preset/${p.id}" class="pchip ${curPre()==p.id?'on':''}" data-pre="${p.id}">${esc(p.n)}</a>`).join('');
+ $('#pre').innerHTML=PRESETS().map(p=>`<a href="#preset/${p.id}" class="pchip ${curPre()==p.id?'on':''}" data-pre="${p.id}">${esc(p.n)}</a>`).join('');
  $('#bar').innerHTML=`<span class=count>${R.length} <span>of ${C.filter(LIVE).length} cards</span></span>${chips.join('')}${chips.length?'<button class=clr data-x="__all">Clear all</button>':''}${st.s=='ins'?'<button class=how data-pttwhy>How the PTT Score is estimated</button>':''}${st.s!='val'?`<button class="mfull ${st.full?'on':''}" data-full>${st.full?'Compact':'Full table'}</button>`:''}`;
  if(st.s=='val')return renderVal();
  const mob=MOB.matches&&!st.full&&MCOL[st.s],cols=['n',...(mob?MCOL[st.s]:scr.cols)];
@@ -779,7 +781,7 @@ document.addEventListener('click',e=>{if(e.target.id=='fdone'||e.target.id=='fbg
  const of=e.target.closest(OSEL);if(of&&!(of.dataset.trc!=null&&e.target.closest('button,a,input,select,label'))){e.stopPropagation();ofrShow(of);return}if(!e.target.closest('#ofp'))ofrHide();
  const vm=e.target.closest('[data-vm]');if(vm){openVM(D.val.programs[vm.dataset.vm]);return}
  const vk=e.target.closest('[data-vk]');if(vk){const k=vk.dataset.vk;if(st.vsort==k)st.vdir=-(st.vdir||-1);else{st.vsort=k;st.vdir=-1}render();return}
- const pr=e.target.closest('[data-pre]');if(pr){e.preventDefault();const p=PRE.find(x=>x.id==pr.dataset.pre);if(curPre()==p.id){st.f={};st.sort=null}else Object.assign(st,presetState(p));$('#q').value='';go(hashOf());return}
+ const pr=e.target.closest('[data-pre]');if(pr){e.preventDefault();const p=PRESETS().find(x=>x.id==pr.dataset.pre);if(curPre()==p.id){st.f={};st.sort=null}else Object.assign(st,presetState(p));$('#q').value='';go(hashOf());return}
  const fc=e.target.closest('[data-full-card]');if(fc){openM(C[fc.dataset.fullCard],1);$('#modal').scrollTop=0;return}
  if(e.target.closest('[data-pttwhy]')){openWhy();return}
  {const wt=e.target.closest('[data-wtile]');if(wt&&!e.target.closest('[data-wrm]')){openM(C[+wt.dataset.wtile]);return}}const g=e.target.closest('[data-go]');if(g){e.preventDefault();closeM();go(g.getAttribute('href'));return}

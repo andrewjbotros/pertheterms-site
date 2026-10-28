@@ -27,6 +27,8 @@ nav button.on{color:var(--ink);border-color:var(--acc)}nav button[data-s=wallet]
 #fcol::after{content:'';width:5px;height:5px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg) translateY(-2px)}#fcol[aria-expanded=false]::after{transform:rotate(-45deg)}
 .fcnt{color:var(--mute)}#filters:has(.set) .fcnt{color:var(--ink);font-weight:600}
 #freset{margin-left:auto;border:0;background:none;color:var(--acc);font-size:12px;text-decoration:underline;cursor:pointer;padding:0}
+/* super banner with one enabled line: one compact current item above the sub banner */
+#pl.one{padding:4px 12px 0;border-bottom:1px solid var(--line)}#pl.one button{flex:0 0 auto;min-width:0;padding:6px 16px;font:700 12px/1 inherit}
 #fcol:focus-visible,#freset:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
 @media(min-width:641px){#filters.fcol>:not(#fhead){display:none}#filters.fcol{padding-bottom:6px}#filters.fcol #fhead{border-bottom:0;padding-bottom:0}}
 /* every filter row: one box width (118px); flex:none so long labels wrap instead of shrinking the box */
