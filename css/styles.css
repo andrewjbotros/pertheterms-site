@@ -508,3 +508,6 @@ body.co .ctile{border-radius:16px}
 .hero2 .hin>*{min-width:0}
 @media(max-width:360px){.hero2 .hstats{grid-template-columns:1fr 1fr}.hero2 .hstats div:last-child{grid-column:1/-1}.hero2 .hin{padding-left:14px;padding-right:14px}}
 .hero2 .hcov{margin-top:18px;padding-top:16px;border-top:1px solid rgba(255,255,255,.14)}.hero2 .hcov .hkick{margin:0 0 10px}.hero2 .hcov .htagd{min-height:6.4em}
+/* skinny icon columns (Account type, Network): header wraps small, cell is one centred mark */
+th.ic,td.ic{text-align:center;width:1%;padding-left:4px;padding-right:4px}th.ic{font-size:10px;line-height:1.15;white-space:normal}
+.ico{display:inline-flex;align-items:center;justify-content:center;color:var(--ink);vertical-align:middle}.chip .ico{margin:0 2px;color:var(--mute)}
