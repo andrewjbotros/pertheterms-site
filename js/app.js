@@ -636,14 +636,26 @@ const UNAV=CARDS_ONLY?UNAV_ALL.filter(u=>u[0]=='wallet'):UNAV_ALL;/* cards-only:
 const USR=new Set([...UNAV.map(u=>u[0]),...(CARDS_ONLY?[]:['premium'])]);
 const PL=new Set(PLINES.map(p=>p[0]));
 const NARROW=matchMedia('(max-width:900px)');
-const railOpen=()=>NARROW.matches?!!st.rdraw:(STO.ui?.rail??true);/* the logo button toggles the left column: desktop collapses/expands it (persisted in STO.ui.rail, open by default); phones/tablets: a drawer */
+const railOpen=()=>CARDS_ONLY?true:NARROW.matches?!!st.rdraw:(STO.ui?.rail??true);/* the logo button toggles the left column: desktop collapses/expands it (persisted in STO.ui.rail, open by default); phones/tablets: a drawer */
 function rail(){const el=$('#urail');if(!el)return;document.documentElement.style.setProperty('--hh',($('header')?.offsetHeight||56)+'px');const o=railOpen();
  const tb=$('#tabs'),cur=tb.querySelector('button.on'),vh=$('#vh'),TN=Object.fromEntries(PLINES);if(vh){vh.hidden=!cur||!!st.card||USR.has(st.s);vh.textContent=cur?TN[st.pl||'cards']+' · '+cur.textContent.replace(/\d+$/,''):''}
  el.innerHTML=`<div class=rh>You</div>`+UNAV.map(([k,n,sub])=>{const on=st.s==k&&!st.card,pm=PREM.has(k);return `<button type=button data-s=${k} class="ri${on?' on':''}${pm?' prem':''}"${on?' aria-current=page':''}><span class=ril>${n}${pm?'<span class=premg role=img aria-label=Premium title=Premium>◆</span>':''}${sub?`<small>${sub}</small>`:''}</span></button>`}).join('');
- el.classList.toggle('open',o);document.body.classList.toggle('rail',o&&!NARROW.matches);$('#urbg').hidden=!(o&&NARROW.matches);const t=$('#rtog');if(t)t.setAttribute('aria-expanded',String(o));el.inert=!o}
-function togRail(){if(NARROW.matches)st.rdraw=!st.rdraw;else{STO.ui={...(STO.ui||{}),rail:!railOpen()};saveS()}rail()}
+ el.classList.toggle('open',o);document.body.classList.toggle('rail',o&&!NARROW.matches&&!CARDS_ONLY);$('#urbg').hidden=CARDS_ONLY||!(o&&NARROW.matches);const t=$('#rtog');if(t)t.setAttribute('aria-expanded',String(o));el.inert=!o}
+if(CARDS_ONLY){document.body.classList.add('co');const h=document.querySelector('header'),u=$('#urail');if(h&&u)h.insertBefore(u,$('#q')||null)}/* cards-only: no side column; the one user item, Wallet, sits in the header */
+function togRail(){if(CARDS_ONLY){$('#logo')?.click();return}if(NARROW.matches)st.rdraw=!st.rdraw;else{STO.ui={...(STO.ui||{}),rail:!railOpen()};saveS()}rail()}
 NARROW.addEventListener('change',()=>{st.rdraw=false;rail()});
-function render(){render0();rail()}
+function render(){render0();rail();hero()}
+/* cards-only landing hero: story + numbers that come from the database at build time (build_screener.py HERO_SQL → D.meta.hero). No number is typed here; the build fails if this block carries a digit. */
+/*HERO-START*/
+const HTAG={CITED:'Checked against a primary source we archived, usually the issuer’s own terms. The source is on every card page.',ESTIMATE:'Derived by us: a parsed rate, or a figure computed from cited inputs and the numbers you enter. The method is shown.',REPORTED:'Reported by a third party or taken from an account record, not confirmed in a primary source. Shown, tagged, never blended into a cited figure.'};
+function heroHTML(){const h=D.meta.hero.v,n=x=>x.toLocaleString('en-CA'),T=[['CITED',h.cited],['ESTIMATE',h.estimate],['REPORTED',h.reported]];
+ return `<div class=hin><div class=hbody><p class=hkick>Canadian credit cards, read from the fine print</p><h1 class=htit>Every Canadian credit card, <em>with the receipts.</em></h1><p class=hsub>PerTheTerms reads each issuer’s published terms and tags every figure by where it came from. Where we cannot source a number, the cell says so instead of guessing.</p><div class=hcta><button type=button class="btn hfill" data-hgo=table>Compare cards</button><button type=button class="btn hline" data-hgo=wallet>Build your wallet</button></div></div>
+ <div class=hside><dl class=hstats><div><dt>Cards compared</dt><dd>${n(h.cards)}</dd></div><div><dt>Issuers</dt><dd>${n(h.issuers)}</dd></div><div><dt>Data as of</dt><dd>${esc(D.meta.hero.as_of)}</dd></div></dl>
+ <div class=htags role=tablist aria-label="How every figure is tagged">${T.map(([k,v],i)=>`<button type=button role=tab class="htag${i?'':' on'}" aria-selected=${!i} data-htag=${k}>${k} <b>${n(v)}</b></button>`).join('')}</div><p class=htagd role=tabpanel aria-live=polite>${HTAG.CITED}</p></div></div>`}
+/*HERO-END*/
+function hero(){const el=$('#hero');if(!el)return;const on=CARDS_ONLY&&!st.card&&st.pl=='cards'&&st.s=='ov'&&!st.q&&!st.sort&&!Object.keys(st.f||{}).filter(k=>FI[k]).length&&!curPre();el.hidden=!on;if(on&&!el.dataset.r){el.innerHTML=heroHTML();el.dataset.r='1'}}
+document.addEventListener('click',e=>{const g=e.target.closest('[data-hgo]');if(g){if(g.dataset.hgo=='wallet'){st.s='wallet';st.card=null;render();scrollTo(0,0)}else($('#pre')||$('#tabs')).scrollIntoView({block:'start',behavior:'smooth'});return}
+ const t=e.target.closest('[data-htag]');if(t){const r=t.closest('#hero');r.querySelectorAll('.htag').forEach(b=>{const on=b===t;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)});r.querySelector('.htagd').textContent=HTAG[t.dataset.htag]}});
 function render0(){if(!PL.has(st.pl))st.pl='cards';if(!USR.has(st.s)&&!(S.some(s=>s.id==st.s)&&(!CT_IDS||CT_IDS.includes(st.s)||st.s=='wfolder')))st.s='ov';syncLabels();save();BANK.bar();
  if(!st.card&&!USR.has(st.s)&&(st.pl=='broker'||st.pl=='tel')){['#pre','#page','.wrap','#bar','#filters'].forEach(q=>{const e=$(q);if(e)e.hidden=true});$('#view').hidden=false;$('#ftoggle').hidden=true;$('#tabs').innerHTML=LTABS(st.pl);return renderLine(st.pl)}
  if(st.pl=='cards'&&st.s=='prom'&&!st.card){['#pre','#page','.wrap','#bar','#filters'].forEach(q=>{const e=$(q);if(e)e.hidden=true});$('#view').hidden=false;$('#ftoggle').hidden=true;$('#tabs').innerHTML=CTABS().map(s=>`<button data-s="${s.id}" class="${s.id==st.s?'on':''}">${s.name}</button>`).join('');return renderPromos('cards')}
