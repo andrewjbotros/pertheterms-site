@@ -490,8 +490,9 @@ th,.t,.disc,.band,.soon,.fam,.held,.otag,.oty,.plab,.plest,.premg,.ptag,.sar,.pc
 .hero2 .hstats div{padding:14px;border-radius:14px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14)}
 .hero2 .hstats dt{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#a9b8d6}.hero2 .hstats dd{margin:7px 0 0;font-size:24px;font-weight:800;line-height:1;white-space:nowrap}
 .hero2 .htags{display:flex;gap:6px;flex-wrap:wrap}
-.hero2 .htag{padding:7px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.28);background:transparent;color:#d6def0;font-size:12px;font-weight:700;letter-spacing:.04em;cursor:pointer}.hero2 .htag b{margin-left:4px;font-weight:600;color:#9fb0d0}
+.hero2 .htag{padding:4px 9px;border-radius:999px;border:1px solid rgba(255,255,255,.28);background:transparent;color:#d6def0;font-size:11px;font-weight:700;letter-spacing:.04em;cursor:pointer}.hero2 .htag b{margin-left:4px;font-weight:600;color:#9fb0d0}
 .hero2 .htag.on{background:#fff;border-color:#fff;color:#0a1020}.hero2 .htag.on b{color:#44506b}
+.hero2 span.htag{cursor:help}
 .hero2 .htagd{margin:10px 0 0;min-height:3.2em;font-size:13px;line-height:1.5;color:#c7d0e4}
 body.co header{padding:12px var(--gutter);gap:14px}
 body.co header #urail{position:static;transform:none;width:auto;height:auto;padding:0;border:0;box-shadow:none;background:none;z-index:auto;overflow:visible;display:flex;flex-direction:row;margin-left:auto;gap:6px}

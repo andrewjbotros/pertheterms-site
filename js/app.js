@@ -1,6 +1,6 @@
 const D=window.__PTT_DATA, C=D.cards, IMGB=window.__PTT_IMG||null;
-const PLINES=PLINES_ALL.filter(p=>(D.meta.lines||['cards','bank','broker','tel']).includes(p[0]));/* enabled product lines (build flag PTT_LINES, default cards) */
-const CARDS_ONLY=PLINES.length==1&&PLINES[0][0]=='cards',CT_IDS=CARDS_ONLY?['ov','dtl','rw','prom','ins','fees']:null;/* cards-only release: Overview, Rewards, Promotions, Insurance, Fees (this order); the other Cards views and the user pages stay in the code, off the nav */
+const PLINES=PLINES_ALL.filter(p=>p[0]=='home'||(D.meta.lines||['cards','bank','broker','tel']).includes(p[0])),PRODUCT=PLINES.filter(p=>p[0]!='home');/* enabled product lines (build flag PTT_LINES, default cards) */
+const CARDS_ONLY=PRODUCT.length==1&&PRODUCT[0][0]=='cards',CT_IDS=CARDS_ONLY?['ov','dtl','rw','prom','ins','fees']:null;/* cards-only release: Overview, Rewards, Promotions, Insurance, Fees (this order); the other Cards views and the user pages stay in the code, off the nav */
 const $=s=>document.querySelector(s), esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const money=v=>v==null?'<span class=u>—</span>':v==0?'<span class=y>Free</span>':'$'+v.toLocaleString();
 const pct=(v,hi)=>v==null?'<span class=u>—</span>':`<span class="${hi&&v>=hi?'hi':''}">${v.toFixed(2)}%</span>`;
@@ -632,14 +632,14 @@ document.addEventListener('keydown',e=>{if(e.key=='Escape')ofrHide()});addEventL
 const NUNK=c=>INS.filter(([k])=>c.ins[k]==null).length;
 COL.cov=['Covers','',c=>c.nins*100-NUNK(c),c=>`<b>${c.nins}</b>${NUNK(c)?` <span class=mute title="${NUNK(c)} coverage(s) not verified">(+${NUNK(c)} ?)</span>`:''}`];
 const FI={};S.forEach(s=>s.f.forEach(([id,l,o])=>FI[id]={s,l,o}));
-let st={s:'ov',f:{},q:'',sort:null,dir:-1};
+let st={pl:'home',s:'ov',f:{},q:'',sort:null,dir:-1};
 const BYID={};C.forEach((c,i)=>BYID[c.id]=i);const BYID0=BYID;
 function route(){const h=decodeURIComponent(location.hash.slice(1));st.card=null;
  if(h=='premium'){st.s='premium';return}
  if(h.startsWith('preset/')){const p=PRESETS('cards').find(p=>p.id==h.slice(7));if(p)Object.assign(st,presetState(p),{pl:'cards'});return}
  if(h.startsWith('card/')){const i=BYID[h.slice(5)];if(i!=null)st.card=C[i].id;return}
  try{Object.assign(st,JSON.parse(h))}catch(e){}}
-if(!location.hash&&STO.screen)Object.assign(st,STO.screen);
+if(!location.hash&&STO.screen)Object.assign(st,STO.screen,{pl:'home',s:'ov',card:null});/* a plain visit always lands on Home; the saved filters wait in Credit Cards */
 route();
 const hashOf=()=>{if(st.card)return '#card/'+st.card;if(st.s=='premium')return '#premium';if(st.pl&&st.pl!='cards'){const{card,...r}=st;return '#'+encodeURIComponent(JSON.stringify(r))}const cp=curPre();if(cp)return '#preset/'+cp;const{card,...r}=st;return '#'+encodeURIComponent(JSON.stringify(r))};
 // Safari throws after 100 history calls per 10 s; debounce and never let URL saving break rendering.
@@ -665,22 +665,24 @@ NARROW.addEventListener('change',()=>{st.rdraw=false;rail()});
 function render(){render0();rail();hero()}
 /* cards-only landing hero: story + numbers that come from the database at build time (build_screener.py HERO_SQL → D.meta.hero). No number is typed here; the build fails if this block carries a digit. */
 /*HERO-START*/
-const HTAG={CITED:'Checked against a primary source we archived, usually the issuer’s own terms. The source is on every card page.',ESTIMATE:'Derived by us: a parsed rate, or a figure computed from cited inputs and the numbers you enter. The method is shown.',REPORTED:'Reported by a third party or taken from an account record, not confirmed in a primary source. Shown, tagged, never blended into a cited figure.'};
+const HTAG={CITED:'Checked against a primary source we archived.',ESTIMATE:'Derived by us from cited inputs; method shown.',REPORTED:'From a third party or an account record; not confirmed in a primary source.'};
 function heroHTML(){const h=D.meta.hero.v,n=x=>x.toLocaleString('en-CA'),cv=D.meta.hero.cov,T=[['CITED',h.cited],['ESTIMATE',h.estimate],['REPORTED',h.reported]];
- return `<div class=hin><div class=hbody><p class=hkick>Canadian credit cards, read from the fine print</p><h1 class=htit>Every Canadian credit card, <em>with the receipts.</em></h1><p class=hsub>PerTheTerms reads each issuer’s published terms and tags every figure by where it came from. Where we cannot source a number, the cell says so instead of guessing.</p><div class=hcta><button type=button class="btn hfill" data-hgo=table>Compare cards</button><button type=button class="btn hline" data-hgo=wallet>Build your wallet</button></div></div>
- <div class=hside><dl class=hstats><div><dt>Cards compared</dt><dd>${n(h.cards)}</dd></div><div><dt>Issuers</dt><dd>${n(h.issuers)}</dd></div><div><dt>Data as of</dt><dd>${esc(D.meta.hero.as_of)}</dd></div></dl>
- <div class=htags role=tablist aria-label="How every figure is tagged">${T.map(([k,v],i)=>`<button type=button role=tab class="htag${i?'':' on'}" aria-selected=${!i} data-htag=${k}>${k} <b>${n(v)}</b></button>`).join('')}</div><p class=htagd role=tabpanel aria-live=polite>${HTAG.CITED}</p>
- <div class=hcov><p class=hkick id=hcovl>Card insurance coverage</p><div class=htags role=tablist aria-labelledby=hcovl>${COVK().map((k,i)=>`<button type=button role=tab class="htag${i?'':' on'}" aria-selected=${!i} data-hcov=${k}>${COVL(k)} <b>${n(cv[k].included)}</b></button>`).join('')}<button type=button role=tab class=htag aria-selected=false data-hcov=none>No coverage <b>${n(D.meta.hero.none.included)}</b></button></div><p class=htagd role=tabpanel aria-live=polite>${covText(COVK().find(Boolean))}</p></div></div></div>`}
+ return `<div class=hin><div class=hbody><h1 class=htit>Financial terms, <em>with the receipts.</em></h1><p class=hsub>We read the fine print.</p><div class=hcta><button type=button class="btn hfill" data-hgo=table>Compare cards</button><button type=button class="btn hline" data-hgo=wallet>Build your wallet</button></div></div>
+ <div class=hside><dl class=hstats><div><dt>Cards</dt><dd>${n(h.cards)}</dd></div><div><dt>Issuers</dt><dd>${n(h.issuers)}</dd></div><div><dt>Updated</dt><dd>${esc(D.meta.hero.as_of)}</dd></div></dl>
+ <div class=htags role=group aria-label="Evidence tags">${T.map(([k,v])=>`<span class=htag tabindex=0 data-htag=${k} title="${esc(HTAG[k])}" aria-label="${k} ${n(v)}: ${esc(HTAG[k])}">${k} <b>${n(v)}</b></span>`).join('')}</div>
+ <div class=hcov><p class=hkick id=hcovl>Insurance</p><div class=htags role=group aria-labelledby=hcovl>${COVK().map(k=>`<button type=button class=htag data-hcov=${k} title="${esc(covText(k))}">${COVL(k)} <b>${n(cv[k].included)}</b></button>`).join('')}<button type=button class=htag data-hcov=none title="${esc(covText('none'))}">None <b>${n(D.meta.hero.none.included)}</b></button></div></div></div></div>`}
 // coverage keys and labels are the Insurance view's own (INS); the figures are D.meta.hero.cov / .none (build_screener.py HERO_COV_SQL)
 const COVK=()=>INS.map(([k])=>k).filter(k=>D.meta.hero.cov[k]),COVL=k=>{const[,l]=INS.find(([a])=>a==k);return l};
-function covText(k){const h=D.meta.hero.v,n=x=>x.toLocaleString('en-CA');if(k=='none'){const z=D.meta.hero.none;return `No coverage: ${n(z.included)} of ${n(h.cards)} current cards carry none of the ${COVK().length} coverages. On ${n(z.all_not_included)} every coverage is Not included in the record; on ${n(z.not_yet_verified)} at least one is Not yet verified.`}
- const c=D.meta.hero.cov[k];return `${COVL(k)}: carried by ${n(c.included)} of ${n(h.cards)} current cards. Not included on ${n(c.not_included)}; not yet verified on ${n(c.not_yet_verified)}. Evidence tag on the ${n(c.included)} carrying cards: CITED ${n(c.CITED)}, ESTIMATE ${n(c.ESTIMATE)}, REPORTED ${n(c.REPORTED)}, no tag on record ${n(c.untagged)}.`}
+function covText(k){const h=D.meta.hero.v,n=x=>x.toLocaleString('en-CA');if(k=='none'){const z=D.meta.hero.none;return `No coverage: ${n(z.included)} of ${n(h.cards)} cards carry none of the ${COVK().length} coverages. All Not included on ${n(z.all_not_included)}; at least one Not yet verified on ${n(z.not_yet_verified)}.`}
+ const c=D.meta.hero.cov[k];return `${COVL(k)}: ${n(c.included)} of ${n(h.cards)} cards. Not included ${n(c.not_included)}, not yet verified ${n(c.not_yet_verified)}. Evidence on the ${n(c.included)}: CITED ${n(c.CITED)}, ESTIMATE ${n(c.ESTIMATE)}, REPORTED ${n(c.REPORTED)}, no tag ${n(c.untagged)}. Opens the Insurance tab.`}
 
 /*HERO-END*/
-function hero(){const el=$('#hero');if(!el)return;const on=CARDS_ONLY&&!st.card&&st.pl=='cards'&&st.s=='ov'&&!st.q&&!st.sort&&!Object.keys(st.f||{}).filter(k=>FI[k]).length&&!curPre();el.hidden=!on;if(on&&!el.dataset.r){el.innerHTML=heroHTML();el.dataset.r='1'}}
-document.addEventListener('click',e=>{const g=e.target.closest('[data-hgo]');if(g){if(g.dataset.hgo=='wallet'){st.s='wallet';st.card=null;render();scrollTo(0,0)}else($('#pre')||$('#tabs')).scrollIntoView({block:'start',behavior:'smooth'});return}
- const t=e.target.closest('[data-htag],[data-hcov]');if(t){const g=t.closest('.htags');g.querySelectorAll('.htag').forEach(b=>{const on=b===t;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)});g.nextElementSibling.textContent=t.dataset.htag?HTAG[t.dataset.htag]:covText(t.dataset.hcov)}});
+function hero(){const el=$('#hero');if(!el)return;const on=st.pl=='home'&&!st.card&&!USR.has(st.s);el.hidden=!on;if(on&&!el.dataset.r){el.innerHTML=heroHTML();el.dataset.r='1'}}
+document.addEventListener('click',e=>{const g=e.target.closest('[data-hgo]');if(g){if(g.dataset.hgo=='wallet'){st.s='wallet';st.card=null}else{st.pl='cards';st.s='ov';st.card=null}render();scrollTo(0,0);return}
+ const t=e.target.closest('[data-hcov]');if(t){st.pl='cards';st.s='ins';st.card=null;render();scrollTo(0,0)}});
 function render0(){if(!PL.has(st.pl))st.pl='cards';if(!USR.has(st.s)&&!(S.some(s=>s.id==st.s)&&(!CT_IDS||CT_IDS.includes(st.s)||st.s=='wfolder')))st.s='ov';syncLabels();save();BANK.bar();
+ if(st.card&&st.pl=='home')st.pl='cards';
+ if(st.pl=='home'&&!st.card&&!USR.has(st.s)){['#pre','#page','.wrap','#bar','#filters','#view'].forEach(q=>{const e=$(q);if(e)e.hidden=true});$('#tabs').innerHTML='';$('#ftoggle').hidden=true;return}
  if(!st.card&&!USR.has(st.s)&&(st.pl=='broker'||st.pl=='tel')){['#pre','#page','.wrap','#bar','#filters'].forEach(q=>{const e=$(q);if(e)e.hidden=true});$('#view').hidden=false;$('#ftoggle').hidden=true;$('#tabs').innerHTML=LTABS(st.pl);return renderLine(st.pl)}
  if(st.pl=='cards'&&st.s=='prom'&&!st.card){['#pre','#page','.wrap','#bar','#filters'].forEach(q=>{const e=$(q);if(e)e.hidden=true});$('#view').hidden=false;$('#ftoggle').hidden=true;$('#tabs').innerHTML=LINECFG.cards.tabs().map(s=>`<button data-s="${s.id}" class="${s.id==st.s?'on':''}">${s.name}</button>`).join('');return renderPromos('cards')}
  if(st.pl=='bank'&&!st.card&&!USR.has(st.s))return BANK.render();const scr=S.find(s=>s.id==st.s);
@@ -804,7 +806,7 @@ document.addEventListener('click',e=>{if(e.target.id=='fdone'||e.target.id=='fbg
  if(e.target.closest('[data-back]')){st.card=null;go(hashOf());return}
  if(e.target.closest('#modal'))return;
  const m=e.target.closest('[data-m]');if(m){e.stopPropagation();openM(C[m.dataset.m]);return}
- if(e.target.closest('#logo')){st.s='ov';st.card=null;render();window.scrollTo(0,0);return}
+ if(e.target.closest('#logo')){st.pl='home';st.s='ov';st.card=null;render();window.scrollTo(0,0);return}
  const t=e.target.closest('[data-s],[data-x],[data-k],tr[data-i],#ftoggle');if(!t)return;
  if(t.id=='ftoggle'){$('#filters').classList.add('open');t.setAttribute('aria-expanded','true');document.body.insertAdjacentHTML('beforeend','<div id=fbg></div>');return}
  if(t.dataset.s){st.s=t.dataset.s;st.card=null}else if(t.dataset.x){const x=t.dataset.x;if(x=='__all'){st.f={};st.q='';$('#q').value=''}else if(x=='__f'){st.f={}}else if(x=='__sort'){st.sort=null;st.dir=-1}else if(x=='__q'){st.q='';$('#q').value=''}else delete st.f[x]}
@@ -820,7 +822,7 @@ document.addEventListener('input',e=>{const k=e.target.dataset.sp;if(k){W.spend[
 function pickCard(p,id){if(p=='wl'){if(!W.cards.includes(id))W.cards.push(id);saveS()}render();document.querySelector(`[data-pick="${p}"]`)?.focus()}
 document.addEventListener('change',e=>{{const bt=e.target.dataset.btier;if(bt!=null){const L=STO.wallet.brokerage=(STO.wallet.brokerage||[]).filter(x=>x&&x.i!=bt);if(e.target.value)L.push({i:bt,tier:e.target.value});saveS();render();return}}const vfk=e.target.dataset.vf;if(vfk){st.vf={...(st.vf||{}),[vfk]:e.target.checked};render();return}const fm=e.target.dataset.fm;if(fm){const v=+e.target.value,a=new Set(st.f[fm]||[]);e.target.checked?a.add(v):a.delete(v);if(a.size)st.f[fm]=[...a].sort((x,y)=>x-y);else delete st.f[fm];const open=document.querySelector('details.ms[open]')?.querySelector('[data-fm]')?.dataset.fm;render();if(open)document.querySelector(`[data-fm="${open}"]`)?.closest('details').setAttribute('open','');return}
  const f=e.target.dataset.f;if(!f)return;if(e.target.value==='')delete st.f[f];else st.f[f]=+e.target.value;render()});
-$('#q').value=st.q;$('#q').addEventListener('input',e=>{st.q=e.target.value;render()});
+$('#q').value=st.q;$('#q').addEventListener('input',e=>{st.q=e.target.value;if(st.q&&st.pl=='home'){st.pl='cards';st.s='ov'}render()});
 (()=>{const w=$('.wrap');let d=null,moved=false;
  w.addEventListener('pointerdown',e=>{if(e.button!==0||e.pointerType=='touch'||e.target.closest('a,button,input,select,label,textarea,thead'))return;d={x:e.clientX,y:e.clientY,l:w.scrollLeft,id:e.pointerId};moved=false});
  w.addEventListener('pointermove',e=>{if(!d)return;const dx=e.clientX-d.x;
