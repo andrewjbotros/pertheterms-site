@@ -1,6 +1,6 @@
 const D=window.__PTT_DATA, C=D.cards, IMGB=window.__PTT_IMG||null;
 const PLINES=PLINES_ALL.filter(p=>(D.meta.lines||['cards','bank','broker','tel']).includes(p[0]));/* enabled product lines (build flag PTT_LINES, default cards) */
-const CARDS_ONLY=PLINES.length==1&&PLINES[0][0]=='cards',CT_IDS=CARDS_ONLY?['ov','rw','prom','ins','fees']:null;/* cards-only release: Overview, Rewards, Promotions, Insurance, Fees (this order); the other Cards views and the user pages stay in the code, off the nav */
+const CARDS_ONLY=PLINES.length==1&&PLINES[0][0]=='cards',CT_IDS=CARDS_ONLY?['ov','dtl','rw','prom','ins','fees']:null;/* cards-only release: Overview, Rewards, Promotions, Insurance, Fees (this order); the other Cards views and the user pages stay in the code, off the nav */
 const $=s=>document.querySelector(s), esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const money=v=>v==null?'<span class=u>—</span>':v==0?'<span class=y>Free</span>':'$'+v.toLocaleString();
 const pct=(v,hi)=>v==null?'<span class=u>—</span>':`<span class="${hi&&v>=hi?'hi':''}">${v.toFixed(2)}%</span>`;
@@ -17,13 +17,20 @@ const ODAYS=c=>{if(!c.offer||!/^\d{4}-\d\d-\d\d$/.test(c.odl||''))return null;co
 const SOON=c=>{const d=ODAYS(c);return d!=null&&d>=0&&d<=30};
 const soonB=c=>SOON(c)?`<span class=soon title="Offer deadline ${esc(c.odl)}">${ODAYS(c)==0?'Ends today':'Ends in '+ODAYS(c)+'d'}</span>`:'';
 const CN=D.meta.catn,CC=D.meta.catcount,RC=Object.keys(CN).filter(k=>k=='other'||CC[k]>=2).sort((a,b)=>a=='other'?1:b=='other'?-1:CC[b]-CC[a]);
+/* One ordered field config per sub-tab: FIELDS[tab] lists the fields; the table columns and the filter panel are both read from it, so they match one to one (test_nav asserts it). */
+const RTO=['Points','Cash back','Travel/airline miles','Store dollars','No rewards','Unconfirmed'],
+ FEEO=[['$0/yr',c=>c.fee===0],['≤ $50',c=>c.fee!=null&&c.fee<=50],['≤ $100',c=>c.fee!=null&&c.fee<=100],['≤ $150',c=>c.fee!=null&&c.fee<=150],['≤ $250',c=>c.fee!=null&&c.fee<=250],['> $250',c=>c.fee>250],['Paid (> $0)',c=>c.fee>0]],
+ OFFO=[['Yes',c=>!!c.offer],['No',c=>!c.offer]];
+const OVF={i:['issuer','Issuer',()=>eq('i',uniq(c=>c.i))],other:['other','Base %',()=>ge('other',[0.5,1,1.25,1.5,2])],best:['best','Best category',()=>ge('best',RATES)],nins:['nins','Covers',()=>[2,4,6,8,10,12,13].map(v=>['Covers ≥ '+v,c=>c.nins>=v])],
+ cur:['cur','Currency',()=>eq('cur',['CAD','USD'])],acct:['acct','Account type',()=>eq('acct',['Personal','Business'])],nw:['net','Network',()=>eq('nw',uniq(c=>c.nw))],kind:['rt','Reward type',()=>eq('rt',RTO)],fee:['fee','Cost',()=>FEEO],offer:['offer','Welcome offer',()=>OFFO]};
+const DTF={pt:['pt','Fee',()=>eq('pt',['Fee','No fee','Prepaid','Secured'])],tier:['tier','Tier',()=>eq('tier',uniq(c=>c.tier))],it:['itype','Issuer type',()=>eq('it',uniq(c=>c.it))],st:['status','Status',()=>eq('st',uniq(c=>c.st))]};
+const FIELDS={ov:Object.keys(OVF),dtl:Object.keys(DTF)},FDEF={ov:OVF,dtl:DTF};
+const fcols=id=>FIELDS[id],ffilt=id=>FIELDS[id].map(k=>{const[i,l,o]=FDEF[id][k];return[i,l,o()]});
 const S=[
- {id:'ov',name:'Overview',cols:['i','other','best','nins','cur','acct','nw','kind','fee','offer'],f:[
-  ['pt','Fee',eq('pt',['Fee','No fee','Prepaid','Secured'])],['cur','Currency',eq('cur',['CAD','USD'])],['acct','Account type',eq('acct',['Personal','Business'])],
-  ['issuer','Issuer',eq('i',uniq(c=>c.i))],['net','Network',eq('nw',uniq(c=>c.nw))],['tier','Tier',eq('tier',uniq(c=>c.tier))],
-  ['itype','Issuer type',eq('it',uniq(c=>c.it))],['rt','Reward type',eq('rt',['Points','Cash back','Travel/airline miles','Store dollars','No rewards','Unconfirmed'])],['status','Status',eq('st',uniq(c=>c.st))]]},
+ {id:'ov',name:'Overview',cols:fcols('ov'),f:ffilt('ov')},
+ {id:'dtl',name:'Full Detail',cols:fcols('dtl'),f:ffilt('dtl')},
  {id:'fees',name:'Fees',cols:['fee','fyf','add','fx','apr','inc','hinc'],f:[
-  ['fee','Cost',[['$0/yr',c=>c.fee===0],['≤ $50',c=>c.fee!=null&&c.fee<=50],['≤ $100',c=>c.fee!=null&&c.fee<=100],['≤ $150',c=>c.fee!=null&&c.fee<=150],['≤ $250',c=>c.fee!=null&&c.fee<=250],['> $250',c=>c.fee>250],['Paid (> $0)',c=>c.fee>0]]],
+  ['fee','Cost',FEEO],
   ['fyf','First-year fee',[['Waived',c=>c.fyf]]],
   ['add','Extra card fee',[['Free',c=>c.add===0],['≤ $50',c=>c.add!=null&&c.add<=50]]],
   ['fx','FX fee',[['None (0%)',c=>c.fx===0],['< 2.5%',c=>c.fx!=null&&c.fx<2.5],['≥ 2.5%',c=>c.fx>=2.5]]],
@@ -44,13 +51,13 @@ const S=[
   ['x_ppi','Price prot. per item',[['Stated',c=>X(c,'pp_item')!=null],['≥ $500',c=>X(c,'pp_item')>=500]]],
   ['x_ppy','Price prot. per year',[['Stated',c=>X(c,'pp_year')!=null],['≥ $1,000',c=>X(c,'pp_year')>=1000]]]]},
  {id:'perks',name:'Perks',cols:['fee','offer','tpo','odl','credits','perks','exp'],f:[
-  ['offer','Welcome offer',[['Yes',c=>!!c.offer],['No',c=>!c.offer]]],['tpo','Sign-up bonus',[['Has third-party offer',c=>c.tpo.length>0],...[25,50,100,150,200].map(v=>['≥ $'+v,c=>(c.tpo[0]?.a||0)>=v])]],['soon','Apply by',[['Within 30 days',SOON],['Within 60 days',c=>{const d=ODAYS(c);return d!=null&&d>=0&&d<=60}]]],['credits','Credits & bonuses',[['Any',c=>c.credits.length>0]]],
+  ['offer','Welcome offer',OFFO],['tpo','Sign-up bonus',[['Has third-party offer',c=>c.tpo.length>0],...[25,50,100,150,200].map(v=>['≥ $'+v,c=>(c.tpo[0]?.a||0)>=v])]],['soon','Apply by',[['Within 30 days',SOON],['Within 60 days',c=>{const d=ODAYS(c);return d!=null&&d>=0&&d<=60}]]],['credits','Credits & bonuses',[['Any',c=>c.credits.length>0]]],
   ['perks','Partner perks',[['Any',c=>c.perks.length>0]]],['exp','Points expiry',[['None',c=>c.exp=='none']]]]},
  {id:'val',name:'Point Conversion',cols:[],f:[]},
  {id:'prom',name:'Promotions',cols:[],f:[]},
  {id:'wfolder',name:'Wallet folder',cols:[],f:[]}
 ];
-const COL={i:['Issuer','l',c=>c.i,c=>esc(c.i)],nw:['Network','l',c=>c.nw,c=>esc(c.nw)],kind:['Type','l',c=>c.rt,c=>esc(c.rt)+VE(c,'reward_type')],
+const COL={i:['Issuer','l',c=>c.i,c=>esc(c.i)],nw:['Network','ic',c=>c.nw,c=>icoCell('nw',c.nw)],kind:['Type','l',c=>c.rt,c=>esc(c.rt)+VE(c,'reward_type')],
  prog:['Program','l',c=>c.prog,c=>esc(c.prog)],fee:['Cost','',c=>c.fee,c=>{if(c.fee==null)return money(null);const r=cmods(c).find(r=>(r.when||[]).some(w=>w.f=='tier'));return r?'$'+effFee0(c).toLocaleString()+'/yr → <b>$'+Math.max(0,c.fee+(r.value||0))+'/yr</b>'+rateMark({...r,when:[{v:provTier(c.i)}]}):'$'+c.fee.toLocaleString()+'/yr'}],best:['Best %','',c=>c.best,c=>pct(c.best,3)],
  other:['Base %','',c=>c.other,c=>pct(c.other,1.5)],nins:['Ins.','',c=>c.nins,c=>c.nins+'<span class=mute>/'+INS.length+'</span>'],
  offer:['Welcome offer','l',c=>c.offer?0:1,c=>c.offer?`<span class=ofr tabindex=0 role=button aria-haspopup=dialog data-ofr="${C.indexOf(c)}">${esc(c.offer.slice(0,46))}${c.offer.length>46?'…':''}</span>`:'<span class=u>—</span>'],
@@ -65,12 +72,13 @@ const COL={i:['Issuer','l',c=>c.i,c=>esc(c.i)],nw:['Network','l',c=>c.nw,c=>esc(
  perks:['Partner perks','wrapt',c=>-c.perks.length,c=>c.perks.length?esc(c.perks.join(' · ')):'<span class=u>—</span>'],
  exp:['Expiry','l',c=>c.exp||'z',c=>c.exp?esc(c.exp):'<span class=u>—</span>']};
 RC.forEach(k=>COL['r_'+k]=[CN[k]+(k=='other'?'':` <span class=mute>(${CC[k]})</span>`),'',c=>c['r_'+k],c=>pct(c['r_'+k],3)]);
-COL.pt=['Fee','l',c=>c.pt,c=>esc(c.pt||'—')+VE(c,'card_product_type')];COL.cur=['Currency','l',c=>c.cur,c=>esc(c.cur||'—')];COL.acct=['Account','ic',c=>c.acct,c=>icoCell('acct',c.acct)];
+COL.pt=['Fee','l',c=>c.pt,c=>esc(c.pt||'—')+VE(c,'card_product_type')];COL.tier=['Tier','l',c=>c.tier,c=>esc(c.tier||'—')];COL.it=['Issuer type','l',c=>c.it,c=>esc(c.it||'—')];COL.st=['Status','l',c=>c.st,c=>esc(c.st||'—')];COL.cur=['Currency','l',c=>c.cur,c=>esc(c.cur||'—')];COL.acct=['Account','ic',c=>c.acct,c=>icoCell('acct',c.acct)];
 /* skinny icon columns (Account type; Network follows): original inline SVG marks, one vocabulary shared by the table cell and the active-filter chip; the full word is the title and aria-label, sorting and the filter still use the word */
 const svgI=p=>`<svg viewBox="0 0 16 16" width=14 height=14 aria-hidden=true focusable=false fill=none stroke=currentColor stroke-width=1.4 stroke-linecap=round stroke-linejoin=round>${p}</svg>`;
 const ICOS={acct:{Personal:svgI('<circle cx=8 cy=5.2 r=2.6 /><path d="M3 13.5c.6-2.6 2.6-3.8 5-3.8s4.4 1.2 5 3.8"/>'),Business:svgI('<rect x=2 y=5 width=12 height=8.5 rx=1.2 /><path d="M5.8 5V3.6c0-.6.4-1 1-1h2.4c.6 0 1 .4 1 1V5M2 9h12"/>')}};
-const icoCell=(k,v)=>v?`<span class="ico" role=img aria-label="${esc(v)}" title="${esc(v)}">${ICOS[k]?.[v]||esc(v)}</span>`:'<span class=u title="Not recorded">—</span>';
-const CHIPI={acct:'acct'};
+const NWB={Visa:'V',Mastercard:'MC','American Express':'AX'};/* network marks are compact text badges (original, not official logos) */
+const icoCell=(k,v)=>v?`<span class="ico" role=img aria-label="${esc(v)}" title="${esc(v)}">${ICOS[k]?.[v]||(k=='nw'?`<b class=nb>${esc(NWB[v]||v.slice(0,2))}</b>`:esc(v))}</span>`:'<span class=u title="Not recorded">—</span>';
+const CHIPI={acct:'acct',net:'nw'};
 /* v3.5.2: '?' only when genuinely unknown. A card whose record says it carries no included insurance shows ✗ for every type;
    roadside (rarely a card benefit) not listed in an otherwise-captured coverage list shows '—' (not listed), not '?'. */
 const NOINS=c=>c.ix.insurers&&c.ix.insurers[0]&&c.ix.insurers[0].length==0;
@@ -83,9 +91,9 @@ Object.entries(FIELD_LABEL).forEach(([k,l])=>{if(COL[k])COL[k][0]=l});
 const FLD=k=>FIELD_LABEL[k]||(COL[k]?String(COL[k][0]).replace(/<[^>]+>/g,'').replace('ⓘ','').trim():null);
 /* 2026-10-20 filters and headers (Docs/naming.md): FBY maps a filter id to the column it filters (when the ids differ) and an optional condition suffix.
    A filter backed by a column of its view takes that column's label (+ suffix) and the column's position; filter-only fields keep their order, after them. */
-const FBY={issuer:['i'],net:['nw'],rt:['kind'],rt2:['kind'],tag:['cpp',' tag'],nins:['cov'],soon:['odl']};
-const syncLabels=()=>{Object.entries(FIELD_LABEL).forEach(([k,l])=>{if(COL[k])COL[k][0]=l});S.forEach(s=>{const ck=f=>(FBY[f[0]]||[f[0]])[0],pos=f=>{const i=s.cols.indexOf(ck(f));return i<0?1e3:i};
- s.f.forEach(f=>{const[k,suf='']=FBY[f[0]]||[f[0]],l=s.cols.includes(k)?FLD(k):FIELD_LABEL[f[0]];if(l)f[1]=l+(s.cols.includes(k)?suf:'')});
+const FBY={issuer:['i'],itype:['it'],status:['st'],net:['nw'],rt:['kind'],rt2:['kind'],tag:['cpp',' tag'],nins:['cov'],soon:['odl']};
+const syncLabels=()=>{Object.entries(FIELD_LABEL).forEach(([k,l])=>{if(COL[k])COL[k][0]=l});S.forEach(s=>{const ek=f=>s.cols.includes(f[0])?[f[0]]:(FBY[f[0]]||[f[0]]),pos=f=>{const i=s.cols.indexOf(ek(f)[0]);return i<0?1e3:i};
+ s.f.forEach(f=>{const[k,suf='']=ek(f),l=s.cols.includes(k)?FLD(k):FIELD_LABEL[f[0]];if(l)f[1]=l+(s.cols.includes(k)?suf:'')});
  s.f=s.f.map((f,i)=>[f,i]).sort((a,b)=>pos(a[0])-pos(b[0])||a[1]-b[1]).map(x=>x[0])})};syncLabels();
 const X=(c,k)=>c.ix[k]?c.ix[k][0]:null,XT=(c,k)=>c.ix[k]?`<span class=t>${c.ix[k][1][0]}</span>`:'';
 const xm=k=>c=>X(c,k)==null?'<span class=u>—</span>':'$'+(X(c,k)>=1e6?X(c,k)/1e6+'M':X(c,k).toLocaleString())+XT(c,k);
@@ -589,7 +597,7 @@ VIEWS.profile=renderProfile;VIEWS.wallet=renderWallet;VIEWS.subscriptions=render
 // ---- Presets: ready-made screens, shareable as #preset/<id> ----
 /* per-line config read by the shared shell (super banner #pl, sub banner #tabs, filter panel, table). Super label: PLINES_ALL (bank.js). Sub-tabs, their columns and their filters: the line's tab defs (cards: S, via tabs()). Presets: pre(). A new line adds its entry here and its own tab defs; the shell code does not change. */
 const LINECFG={cards:{tabs:()=>CTABS(),pre:()=>PRE}},PRESETS=(pl=st.pl||'cards')=>(LINECFG[pl]?.pre||(()=>[]))();
-const PRE=[{id:'no-fee-cash-back',n:'Best no-fee cash back',s:'ov',f:{pt:'No fee',rt:'Cash back'},sort:'other'},
+const PRE=[{id:'no-fee-cash-back',n:'Best no-fee cash back',s:'ov',f:{fee:'$0/yr',rt:'Cash back'},sort:'other'},
  {id:'top-grocery',n:'Top grocery',s:'rw',f:{},sort:'r_groc'},
  {id:'no-fx-travel',n:'No FX fee travel',s:'rw',f:{fx:'None (0%)'},sort:'r_trav'},
  {id:'business',n:'Business cards',s:'ov',f:{acct:'Business'},sort:'best'},
