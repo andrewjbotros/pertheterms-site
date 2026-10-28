@@ -1,6 +1,6 @@
 const D=window.__PTT_DATA, C=D.cards, IMGB=window.__PTT_IMG||null;
 const PLINES=PLINES_ALL.filter(p=>p[0]=='home'||(D.meta.lines||['cards','bank','broker','tel']).includes(p[0])),PRODUCT=PLINES.filter(p=>p[0]!='home');/* enabled product lines (build flag PTT_LINES, default cards) */
-const CARDS_ONLY=PRODUCT.length==1&&PRODUCT[0][0]=='cards',CT_IDS=CARDS_ONLY?['ov','dtl','rw','prom','ins','fees']:null;/* cards-only release: Overview, Rewards, Promotions, Insurance, Fees (this order); the other Cards views and the user pages stay in the code, off the nav */
+const CARDS_ONLY=PRODUCT.length==1&&PRODUCT[0][0]=='cards',CT_ALL=CARDS_ONLY?['ov','dtl','rw','prom','ins','fees']:null,HIDE=new Set(['dtl','prom']),CTV=()=>CT_ALL&&CT_ALL.filter(i=>!HIDE.has(i));/* Credit Cards sub-tabs: Overview, Rewards, Insurance, Fees (this order). HIDE is the per-line config of hidden sub-tabs (Full Detail, Promotions): code and data stay, nav and routes skip them, a hidden id in a link or hash falls back to Overview. Cards-only release: the other Cards views and the user pages stay in the code, off the nav */
 const $=s=>document.querySelector(s), esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const money=v=>v==null?'<span class=u>—</span>':v==0?'<span class=y>Free</span>':'$'+v.toLocaleString();
 const pct=(v,hi)=>v==null?'<span class=u>—</span>':`<span class="${hi&&v>=hi?'hi':''}">${v.toFixed(2)}%</span>`;
@@ -350,7 +350,7 @@ function renderBrokerOverview(){const v=$('#view'),B=D.bacct||[],H=B.filter(b=>B
 function skel(t,sub,tiles,main,aside){return `${t?`<div class=vhead><h2>${t}</h2></div>`:''}<div class=wlay><div class=wmain><div class="hero sk">${tiles.map(([a,b])=>`<div><span>${a}</span><b>${b}</b></div>`).join('')}</div>${main}${sub?`<details class=vnote><summary>About this view</summary><div>${sub}</div></details>`:''}</div>${aside?`<aside class=wside>${aside}</aside>`:''}</div>`}
 const soon=(what)=>`<div class=soon><p>${what}</p></div>`;
 /* product-tab sub-tabs (#tabs, folder row under the top tabs): Cards = S, Banking = BS (bank.js), Brokers = BRS, Telecom = TS */
-const CTABS=()=>CT_IDS?CT_IDS.map(id=>S.find(s=>s.id==id)):S.filter(s=>s.id!='wfolder');
+const CTABS=()=>CTV()?CTV().map(id=>S.find(s=>s.id==id)):S.filter(s=>s.id!='wfolder'&&!HIDE.has(s.id));
 const BRS=[{id:'brov',name:'Overview',r:()=>renderBrokerOverview()},{id:'brfees',name:'Fees',r:()=>renderBrokerFees()},{id:'braccts',name:'Accounts',r:()=>renderBrokerAccts()},{id:'brfeat',name:'Features',r:()=>renderBrokerFeat()},{id:'brcry',name:'Crypto',r:()=>renderCrypto()},{id:'brprom',name:'Promotions',r:()=>renderPromos('broker')}];
 /* Brokers sub-tabs from the record: Fees / Features = D.bsnap (latest brokerage_snapshots row per broker, tag = its verification_status),
    Accounts = D.bacct (broker-accounts.csv, per account type: offered yes/no/unknown + tag), Promotions = D.promo broker rows. Empty = dash, nulls sort last. */
@@ -701,7 +701,7 @@ function homeHTML(){const h=D.meta.hero.v,n=x=>x.toLocaleString('en-CA'),nw=D.me
 function hero(){const el=$('#hero');if(!el)return;const on=st.pl=='home'&&!st.card&&!USR.has(st.s);el.hidden=!on;if(on&&!el.dataset.r){el.innerHTML=heroHTML();el.dataset.r='1';$('#homebody').innerHTML=homeHTML()}const hb=$('#homebody');if(hb)hb.hidden=!on}
 document.addEventListener('click',e=>{const g=e.target.closest('[data-hgo]');if(g){if(g.dataset.hgo=='wallet'){st.s='wallet';st.card=null}else{st.pl='cards';st.s=g.dataset.hgo=='ins'?'ins':'ov';st.card=null}render();scrollTo(0,0);return}
  const t=e.target.closest('[data-hcov]');if(t){st.pl='cards';st.s='ins';st.card=null;render();scrollTo(0,0)}});
-function render0(){if(!PL.has(st.pl))st.pl='cards';if(!USR.has(st.s)&&!(S.some(s=>s.id==st.s)&&(!CT_IDS||CT_IDS.includes(st.s)||st.s=='wfolder')))st.s='ov';syncLabels();save();BANK.bar();
+function render0(){if(!PL.has(st.pl))st.pl='cards';if(!USR.has(st.s)&&!(S.some(s=>s.id==st.s)&&!HIDE.has(st.s)&&(!CTV()||CTV().includes(st.s)||st.s=='wfolder')))st.s='ov';syncLabels();save();BANK.bar();
  if(st.card&&st.pl=='home')st.pl='cards';
  if(st.pl=='home'&&!st.card&&!USR.has(st.s)){['#pre','#page','.wrap','#bar','#filters','#view'].forEach(q=>{const e=$(q);if(e)e.hidden=true});$('#tabs').innerHTML='';$('#ftoggle').hidden=true;return}
  if(!st.card&&!USR.has(st.s)&&(st.pl=='broker'||st.pl=='tel')){['#pre','#page','.wrap','#bar','#filters'].forEach(q=>{const e=$(q);if(e)e.hidden=true});$('#view').hidden=false;$('#ftoggle').hidden=true;$('#tabs').innerHTML=LTABS(st.pl);return renderLine(st.pl)}
