@@ -1,6 +1,6 @@
 const D=window.__PTT_DATA, C=D.cards, IMGB=window.__PTT_IMG||null;
 const PLINES=PLINES_ALL.filter(p=>(D.meta.lines||['cards','bank','broker','tel']).includes(p[0]));/* enabled product lines (build flag PTT_LINES, default cards) */
-const CARDS_ONLY=PLINES.length==1&&PLINES[0][0]=='cards',CT_IDS=CARDS_ONLY?['ov','fees','rw','prom']:null;/* cards-only release: Overview, Fees, Rewards, Promotions; the other Cards views and the user pages stay in the code, off the nav */
+const CARDS_ONLY=PLINES.length==1&&PLINES[0][0]=='cards',CT_IDS=CARDS_ONLY?['ov','rw','prom','fees']:null;/* cards-only release: Overview, Rewards, Promotions, Fees (this order); the other Cards views and the user pages stay in the code, off the nav */
 const $=s=>document.querySelector(s), esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const money=v=>v==null?'<span class=u>—</span>':v==0?'<span class=y>Free</span>':'$'+v.toLocaleString();
 const pct=(v,hi)=>v==null?'<span class=u>—</span>':`<span class="${hi&&v>=hi?'hi':''}">${v.toFixed(2)}%</span>`;
@@ -18,7 +18,7 @@ const SOON=c=>{const d=ODAYS(c);return d!=null&&d>=0&&d<=30};
 const soonB=c=>SOON(c)?`<span class=soon title="Offer deadline ${esc(c.odl)}">${ODAYS(c)==0?'Ends today':'Ends in '+ODAYS(c)+'d'}</span>`:'';
 const CN=D.meta.catn,CC=D.meta.catcount,RC=Object.keys(CN).filter(k=>k=='other'||CC[k]>=2).sort((a,b)=>a=='other'?1:b=='other'?-1:CC[b]-CC[a]);
 const S=[
- {id:'ov',name:'Overview',cols:['i','pt','cur','acct','nw','kind','prog','fee','best','other','nins','offer'],f:[
+ {id:'ov',name:'Overview',cols:['i','other','best','nins','cur','acct','nw','kind','fee','offer'],f:[
   ['pt','Fee',eq('pt',['Fee','No fee','Prepaid','Secured'])],['cur','Currency',eq('cur',['CAD','USD'])],['acct','Account type',eq('acct',['Personal','Business'])],
   ['issuer','Issuer',eq('i',uniq(c=>c.i))],['net','Network',eq('nw',uniq(c=>c.nw))],['tier','Tier',eq('tier',uniq(c=>c.tier))],
   ['itype','Issuer type',eq('it',uniq(c=>c.it))],['rt','Reward type',eq('rt',['Points','Cash back','Travel/airline miles','Store dollars','No rewards','Unconfirmed'])],['status','Status',eq('st',uniq(c=>c.st))]]},
@@ -88,7 +88,7 @@ COL.x_uw=['Underwriter','wrapt',c=>c.ix.insurers?(c.ix.insurers[0].join('; ')||'
 COL.x_cc=['Carrier AD&D','',c=>X(c,'cc_add_max'),xm('cc_add_max')];COL.x_rad=['Rental AD&D','',c=>X(c,'rental_add_max'),xm('rental_add_max')];
 COL.x_ppd=['PP days','',c=>X(c,'pp_days'),c=>X(c,'pp_days')==null?'<span class=u>—</span>':X(c,'pp_days')+XT(c,'pp_days')+(X(c,'pp_tier')?`<span class=t title="Only on the ${esc(X(c,'pp_tier'))} tier">${esc(X(c,'pp_tier'))} only</span>`:'')];
 COL.x_ppi=['PP / item','',c=>X(c,'pp_item'),xm('pp_item')];COL.x_ppy=['PP / year','',c=>X(c,'pp_year'),xm('pp_year')];
-const RM=matchMedia('(prefers-reduced-motion: reduce)'),MOB=matchMedia('(max-width:640px)'),MCOL={ov:['fee','kind','best'],fees:['fee','fx'],rw:['kind','other','best'],ins:['cov','ptt','ins_'+INS[0][0]],perks:['fee','odl']};
+const RM=matchMedia('(prefers-reduced-motion: reduce)'),MOB=matchMedia('(max-width:640px)'),MCOL={ov:['other','best','nins','fee'],fees:['fee','fx'],rw:['kind','other','best'],ins:['cov','ptt','ins_'+INS[0][0]],perks:['fee','odl']};
 MOB.addEventListener('change',()=>render());
 // $0 = the record says the coverage is not included; ? = not stated / unverified. Unknown is never shown as $0.
 const AMC={med:['med','emergency_medical'],mob:['mob','mobile_device'],x_cc:['cc_add_max','travel_accident'],x_rad:['rental_add_max',null],x_ppd:['pp_days','price_protection'],x_ppi:['pp_item','price_protection'],x_ppy:['pp_year','price_protection']};
@@ -330,7 +330,7 @@ function renderBrokerOverview(){const v=$('#view'),B=D.bacct||[],H=B.filter(b=>B
 function skel(t,sub,tiles,main,aside){return `${t?`<div class=vhead><h2>${t}</h2></div>`:''}<div class=wlay><div class=wmain><div class="hero sk">${tiles.map(([a,b])=>`<div><span>${a}</span><b>${b}</b></div>`).join('')}</div>${main}${sub?`<details class=vnote><summary>About this view</summary><div>${sub}</div></details>`:''}</div>${aside?`<aside class=wside>${aside}</aside>`:''}</div>`}
 const soon=(what)=>`<div class=soon><p>${what}</p></div>`;
 /* product-tab sub-tabs (#tabs, folder row under the top tabs): Cards = S, Banking = BS (bank.js), Brokers = BRS, Telecom = TS */
-const CTABS=()=>S.filter(s=>s.id!='wfolder'&&(!CT_IDS||CT_IDS.includes(s.id)));
+const CTABS=()=>CT_IDS?CT_IDS.map(id=>S.find(s=>s.id==id)):S.filter(s=>s.id!='wfolder');
 const BRS=[{id:'brov',name:'Overview',r:()=>renderBrokerOverview()},{id:'brfees',name:'Fees',r:()=>renderBrokerFees()},{id:'braccts',name:'Accounts',r:()=>renderBrokerAccts()},{id:'brfeat',name:'Features',r:()=>renderBrokerFeat()},{id:'brcry',name:'Crypto',r:()=>renderCrypto()},{id:'brprom',name:'Promotions',r:()=>renderPromos('broker')}];
 /* Brokers sub-tabs from the record: Fees / Features = D.bsnap (latest brokerage_snapshots row per broker, tag = its verification_status),
    Accounts = D.bacct (broker-accounts.csv, per account type: offered yes/no/unknown + tag), Promotions = D.promo broker rows. Empty = dash, nulls sort last. */
@@ -648,14 +648,20 @@ function render(){render0();rail();hero()}
 /* cards-only landing hero: story + numbers that come from the database at build time (build_screener.py HERO_SQL → D.meta.hero). No number is typed here; the build fails if this block carries a digit. */
 /*HERO-START*/
 const HTAG={CITED:'Checked against a primary source we archived, usually the issuer’s own terms. The source is on every card page.',ESTIMATE:'Derived by us: a parsed rate, or a figure computed from cited inputs and the numbers you enter. The method is shown.',REPORTED:'Reported by a third party or taken from an account record, not confirmed in a primary source. Shown, tagged, never blended into a cited figure.'};
-function heroHTML(){const h=D.meta.hero.v,n=x=>x.toLocaleString('en-CA'),T=[['CITED',h.cited],['ESTIMATE',h.estimate],['REPORTED',h.reported]];
+function heroHTML(){const h=D.meta.hero.v,n=x=>x.toLocaleString('en-CA'),cv=D.meta.hero.cov,T=[['CITED',h.cited],['ESTIMATE',h.estimate],['REPORTED',h.reported]];
  return `<div class=hin><div class=hbody><p class=hkick>Canadian credit cards, read from the fine print</p><h1 class=htit>Every Canadian credit card, <em>with the receipts.</em></h1><p class=hsub>PerTheTerms reads each issuer’s published terms and tags every figure by where it came from. Where we cannot source a number, the cell says so instead of guessing.</p><div class=hcta><button type=button class="btn hfill" data-hgo=table>Compare cards</button><button type=button class="btn hline" data-hgo=wallet>Build your wallet</button></div></div>
  <div class=hside><dl class=hstats><div><dt>Cards compared</dt><dd>${n(h.cards)}</dd></div><div><dt>Issuers</dt><dd>${n(h.issuers)}</dd></div><div><dt>Data as of</dt><dd>${esc(D.meta.hero.as_of)}</dd></div></dl>
- <div class=htags role=tablist aria-label="How every figure is tagged">${T.map(([k,v],i)=>`<button type=button role=tab class="htag${i?'':' on'}" aria-selected=${!i} data-htag=${k}>${k} <b>${n(v)}</b></button>`).join('')}</div><p class=htagd role=tabpanel aria-live=polite>${HTAG.CITED}</p></div></div>`}
+ <div class=htags role=tablist aria-label="How every figure is tagged">${T.map(([k,v],i)=>`<button type=button role=tab class="htag${i?'':' on'}" aria-selected=${!i} data-htag=${k}>${k} <b>${n(v)}</b></button>`).join('')}</div><p class=htagd role=tabpanel aria-live=polite>${HTAG.CITED}</p>
+ <div class=hcov><p class=hkick id=hcovl>Card insurance coverage</p><div class=htags role=tablist aria-labelledby=hcovl>${COVK().map((k,i)=>`<button type=button role=tab class="htag${i?'':' on'}" aria-selected=${!i} data-hcov=${k}>${COVL(k)} <b>${n(cv[k].included)}</b></button>`).join('')}<button type=button role=tab class=htag aria-selected=false data-hcov=none>No coverage <b>${n(D.meta.hero.none.included)}</b></button></div><p class=htagd role=tabpanel aria-live=polite>${covText(COVK().find(Boolean))}</p></div></div></div>`}
+// coverage keys and labels are the Insurance view's own (INS); the figures are D.meta.hero.cov / .none (build_screener.py HERO_COV_SQL)
+const COVK=()=>INS.map(([k])=>k).filter(k=>D.meta.hero.cov[k]),COVL=k=>{const[,l]=INS.find(([a])=>a==k);return l};
+function covText(k){const h=D.meta.hero.v,n=x=>x.toLocaleString('en-CA');if(k=='none'){const z=D.meta.hero.none;return `No coverage: ${n(z.included)} of ${n(h.cards)} current cards carry none of the ${COVK().length} coverages. On ${n(z.all_not_included)} every coverage is Not included in the record; on ${n(z.not_yet_verified)} at least one is Not yet verified.`}
+ const c=D.meta.hero.cov[k];return `${COVL(k)}: carried by ${n(c.included)} of ${n(h.cards)} current cards. Not included on ${n(c.not_included)}; not yet verified on ${n(c.not_yet_verified)}. Evidence tag on the ${n(c.included)} carrying cards: CITED ${n(c.CITED)}, ESTIMATE ${n(c.ESTIMATE)}, REPORTED ${n(c.REPORTED)}, no tag on record ${n(c.untagged)}.`}
+
 /*HERO-END*/
 function hero(){const el=$('#hero');if(!el)return;const on=CARDS_ONLY&&!st.card&&st.pl=='cards'&&st.s=='ov'&&!st.q&&!st.sort&&!Object.keys(st.f||{}).filter(k=>FI[k]).length&&!curPre();el.hidden=!on;if(on&&!el.dataset.r){el.innerHTML=heroHTML();el.dataset.r='1'}}
 document.addEventListener('click',e=>{const g=e.target.closest('[data-hgo]');if(g){if(g.dataset.hgo=='wallet'){st.s='wallet';st.card=null;render();scrollTo(0,0)}else($('#pre')||$('#tabs')).scrollIntoView({block:'start',behavior:'smooth'});return}
- const t=e.target.closest('[data-htag]');if(t){const r=t.closest('#hero');r.querySelectorAll('.htag').forEach(b=>{const on=b===t;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)});r.querySelector('.htagd').textContent=HTAG[t.dataset.htag]}});
+ const t=e.target.closest('[data-htag],[data-hcov]');if(t){const g=t.closest('.htags');g.querySelectorAll('.htag').forEach(b=>{const on=b===t;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)});g.nextElementSibling.textContent=t.dataset.htag?HTAG[t.dataset.htag]:covText(t.dataset.hcov)}});
 function render0(){if(!PL.has(st.pl))st.pl='cards';if(!USR.has(st.s)&&!(S.some(s=>s.id==st.s)&&(!CT_IDS||CT_IDS.includes(st.s)||st.s=='wfolder')))st.s='ov';syncLabels();save();BANK.bar();
  if(!st.card&&!USR.has(st.s)&&(st.pl=='broker'||st.pl=='tel')){['#pre','#page','.wrap','#bar','#filters'].forEach(q=>{const e=$(q);if(e)e.hidden=true});$('#view').hidden=false;$('#ftoggle').hidden=true;$('#tabs').innerHTML=LTABS(st.pl);return renderLine(st.pl)}
  if(st.pl=='cards'&&st.s=='prom'&&!st.card){['#pre','#page','.wrap','#bar','#filters'].forEach(q=>{const e=$(q);if(e)e.hidden=true});$('#view').hidden=false;$('#ftoggle').hidden=true;$('#tabs').innerHTML=CTABS().map(s=>`<button data-s="${s.id}" class="${s.id==st.s?'on':''}">${s.name}</button>`).join('');return renderPromos('cards')}

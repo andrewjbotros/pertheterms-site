@@ -496,3 +496,4 @@ body.co .ctile{border-radius:16px}
 @media(max-width:640px){.hero2 .hin{padding:26px 16px 24px}.hero2 .hsub{font-size:15px}.hero2 .hcta .btn{flex:1 1 100%}.hero2 .hstats dd{font-size:20px}.hero2 .hstats div{padding:11px}body.co header{flex-wrap:wrap}body.co header #urail{margin-left:0;order:2}.hero2 .hstats{grid-template-columns:1fr 1fr 1.5fr}.hero2 .hstats dd{font-size:18px}}
 .hero2 .hin>*{min-width:0}
 @media(max-width:360px){.hero2 .hstats{grid-template-columns:1fr 1fr}.hero2 .hstats div:last-child{grid-column:1/-1}.hero2 .hin{padding-left:14px;padding-right:14px}}
+.hero2 .hcov{margin-top:18px;padding-top:16px;border-top:1px solid rgba(255,255,255,.14)}.hero2 .hcov .hkick{margin:0 0 10px}.hero2 .hcov .htagd{min-height:6.4em}
