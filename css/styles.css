@@ -425,7 +425,6 @@ tbody td{font-size:14px}
 .hero2 .ssub{margin:0 0 26px;max-width:30ch;font-size:clamp(18px,1.8vw,24px);line-height:1.5;color:#c7d0e4}
 .hero2 .ssub .hn{color:#fff;font-weight:800;font-variant-numeric:tabular-nums}
 .hero2 .sart{position:relative;display:flex;justify-content:center}.hero2 .sart::before{content:'';position:absolute;inset:-10% -6%;background:radial-gradient(closest-side,rgba(78,140,255,.26),transparent 72%);z-index:0;pointer-events:none}.hero2 .sbeat:nth-of-type(odd) .sart::before{background:radial-gradient(closest-side,rgba(255,138,61,.16),transparent 72%)}.hero2 .sasvg{position:relative;z-index:1}.hero2 .sasvg{width:100%;max-width:520px;max-height:62vh;height:auto;overflow:visible}
-.hero2 .scue{position:absolute;left:50%;bottom:22px;margin-left:-22px;padding:0;background:rgba(255,255,255,.04);color:#fff;cursor:pointer;z-index:3;display:inline-flex;width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.3);align-items:center;justify-content:center;animation:sfl 2.4s ease-in-out infinite}.hero2 .scue svg{width:22px;height:22px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .hero2 .hcta{display:flex;gap:10px;flex-wrap:wrap}
 .hero2 .hcta .btn{padding:14px 26px;border-radius:999px;font-size:15px;font-weight:700;line-height:1;cursor:pointer}
 .hero2 .hfill{background:#fff;color:#0a1020;border:1px solid #fff}.hero2 .hfill:hover{background:#e8efff}
@@ -440,7 +439,7 @@ tbody td{font-size:14px}
 @keyframes sfa{0%{transform:translateY(-14px);opacity:0}18%{opacity:1}100%{transform:translateY(46px);opacity:0}}
 @keyframes sbo{0%,100%{transform:translate(0,0)}50%{transform:translate(4px,-6px)}}
 .hero2 .sfloat{animation:sfl 9s ease-in-out infinite}.hero2 .sfall{animation:sfa 4.8s ease-in infinite}.hero2 .sbob{animation:sbo 6s ease-in-out infinite}
-@media(prefers-reduced-motion:reduce){.hero2 .sanim,.hero2 .scue{animation:none}.hero2.sjs .sfade,.hero2.sjs .sart.sfade{opacity:1;transform:none;transition:none}.hero2 .stile{transition:none}}
+@media(prefers-reduced-motion:reduce){.hero2 .sanim{animation:none}.hero2.sjs .sfade,.hero2.sjs .sart.sfade{opacity:1;transform:none;transition:none}.hero2 .stile{transition:none}}
 .hero2 .hfill{background:#fff;color:#0a1020;border:1px solid #fff}.hero2 .hfill:hover{background:#e8efff}
 .hero2 .hline{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.5)}.hero2 .hline:hover{background:rgba(255,255,255,.1)}
 .hero2 .hfill:focus-visible,.hero2 .hline:focus-visible{outline:2px solid #9db8ff;outline-offset:2px}
@@ -498,7 +497,6 @@ header>#pl button:focus-visible,#nav3 nav button:focus-visible,#logo:focus-visib
 .infopg .htag{display:inline-block;padding:1px 7px;border:1px solid var(--line);border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.04em}.infopg h2{font-size:17px;margin:26px 0 6px}.infopg .infoup{color:var(--mute);font-size:13px;margin:-8px 0 18px}
 .sitefoot{clear:both;display:block}.sitefoot nav.sfcol{background:none;border:0;padding:0;overflow:visible;max-width:none;box-shadow:none}
 .infopg{color:var(--ink)}#view .infopg h2{font-size:17px;margin:26px 0 6px}
-.hero2 .scue:hover{background:rgba(255,255,255,.14)}.hero2 .scue:focus-visible{outline:2px solid #9db8ff;outline-offset:3px}
 .hero2 .sbeat{scroll-margin-top:0}
 /* controls row: Filters / Suggested / Reset left, search right, on the page background (data views only) */
 #ctl{display:flex;align-items:center;gap:12px;margin-top:8px;margin-bottom:8px}#ctl[hidden]{display:none}#ctl #fhead{margin:0!important;flex:0 1 auto}#ctl #q,body.co #ctl #q{margin-left:auto;flex:0 1 300px;max-width:300px;background:var(--card)}
@@ -522,9 +520,7 @@ header>#pl{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
 #nav3~#filters,#nav3~.wrap{border-top-left-radius:inherit}
 @media(prefers-reduced-motion:reduce){#nav3 nav button{transition:none}}
 /* Andrew 2026-10-29: story arrow sits under the panel text, left-aligned with it */
-.hero2 .stx>.scue{position:static;left:auto;bottom:auto;margin:28px 0 0;display:flex}
 /* 2026-10-29: the arrow sits on the outer edge of its text block: left on text-left panels, right on text-right panels (side by side, ≥900px); stacked panels keep it left */
-@media(min-width:900px){.hero2 .sbeat:nth-of-type(even) .stx>.scue{margin-left:auto}}
 /* Mobile: Home story, header, footer and footer pages (html.resp is set only on Home and footer pages) */
 @media(max-width:899px){
 html.resp,html.resp body{overflow-x:hidden}
@@ -537,7 +533,6 @@ html.resp #pbtn{width:44px;height:44px}
 .hero2 .sart{order:-1;max-width:260px;margin:0 auto}.hero2 .sart svg{width:100%;height:auto}
 .hero2 .stx h2,.hero2 h2{font-size:clamp(30px,8.5vw,46px)!important;line-height:1.1}
 .hero2 .ssub{font-size:17px;max-width:none}
-.hero2 .stx>.scue{width:48px;height:48px;margin-top:20px}
 .sitefoot .sfwrap{grid-template-columns:1fr 1fr;gap:24px 16px;padding:0 20px}
 .sitefoot .sfbrand{grid-column:1/-1}
 .sitefoot a{display:inline-block;padding:8px 0;min-height:28px}
