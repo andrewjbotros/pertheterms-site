@@ -578,3 +578,19 @@ th .thlogo{width:14px;height:14px;vertical-align:-2px;margin-right:4px}
 #imode button:hover{border-bottom-color:color-mix(in srgb,var(--acc) 40%,transparent)}
 #imode button.on{font-weight:600;border-bottom-color:color-mix(in srgb,var(--acc) 70%,#000)}
 td .cond{display:block;white-space:normal;min-width:120px;text-align:left;font-size:12.5px}
+/* ---- G2 (2026-10-29): light mode is a pure white page with cool-blue tables (no tan anywhere); Filters gets a dark blue outline when open; sub-sub-tabs are light blue, the active one dark blue with a dark blue underline; Insurance detail tabs are file-folder tabs on the table's top edge ---- */
+:root:not([data-theme=dark]){--bg:#fff;--line:#e2e8f2;--hd:#edf2fa;--tbl:#f7f9fd;--accl:#e6eefc;--notebg:#f1f5fd;--notebd:#b8c9e8;--sublt:#5b8def;--subdk:#1e3a8a}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--sublt:#7f9ccf;--subdk:#b9cfff;--tbl:var(--card)}}
+:root[data-theme=dark]{--sublt:#7f9ccf;--subdk:#b9cfff;--tbl:var(--card)}
+.wrap{background:var(--tbl)}
+#fcol[aria-expanded=true]{border-color:var(--subdk)!important;box-shadow:inset 0 0 0 1px var(--subdk)}
+#nav3>.nrow>#grp button{color:var(--sublt)!important}
+#nav3>.nrow>#grp button:hover{border-bottom-color:color-mix(in srgb,var(--sublt) 50%,transparent)!important}
+#nav3>.nrow>#grp button.on{color:var(--subdk)!important;border-bottom-color:var(--subdk)!important}
+#bar:has(#imode){padding-bottom:0;align-items:flex-end}
+#imode{gap:0;align-self:flex-end;position:relative;z-index:3;margin-bottom:-1px}
+#imode button{color:var(--sublt);background:var(--hd);border:1px solid var(--line);border-bottom:1px solid var(--line);border-radius:8px 8px 0 0;padding:8px 14px 7px;margin:0 0 0 -1px;font-size:13.5px}
+#imode button:first-child{margin-left:0}
+#imode button:hover{color:var(--subdk);border-bottom-color:var(--line)}
+#imode button.on{color:var(--subdk);font-weight:600;background:var(--tbl);border-bottom-color:var(--tbl);padding-top:10px;position:relative;z-index:1}
+.wrap td.nm{background:var(--tbl)}.wrap th.nm{background:var(--hd)}.wrap tr:hover td.nm{background:var(--accl)}
