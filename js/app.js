@@ -883,7 +883,11 @@ const acts=c=>{const on=W.cards.includes(c.id);return `<div class=acts><button c
 function openM(c,full){$('#mc').innerHTML=cardHTML(c,0,full?null:st.s)+acts(c);
  $('#mbg').classList.add('on');$('#mbg').setAttribute('aria-hidden','false');$('#mx').focus()}
 const closeM=()=>{$('#mbg').classList.remove('on');$('#mbg').setAttribute('aria-hidden','true')};
-document.addEventListener('click',e=>{const b=e.target.closest('#grp [data-g]');if(!b)return;e.stopImmediatePropagation();st.g={...(st.g||{}),[st.s]:b.dataset.g};st.sort=null;render();const n=$('#grp [data-g].on');if(n)n.focus()},true);
+/* Push C (2026-10-29): switching views keeps the table where it was: page scroll, horizontal scroll, and the same card row at the top of the view */
+const posTop=()=>Math.max($('#th')?.getBoundingClientRect().bottom||0,$('header')?.getBoundingClientRect().bottom||0);
+const posGet=()=>{const w=$('.wrap');if(!w||w.hidden||!w.offsetParent)return null;const y=posTop();let a=null,o=0;for(const r of w.querySelectorAll('#tb tr[data-i]')){const q=r.getBoundingClientRect();if(q.bottom>y+1){a=r.dataset.i;o=q.top-y;break}}return {y:scrollY,l:w.scrollLeft,t:w.scrollTop,a,o}};
+const posSet=p=>{const w=$('.wrap');if(!p||!w||w.hidden||!w.offsetParent)return;scrollTo(scrollX,p.y);w.scrollLeft=p.l;const r=p.a!=null&&w.querySelector(`#tb tr[data-i="${p.a}"]`);if(!r){w.scrollTop=p.t;return}const d=r.getBoundingClientRect().top-posTop()-p.o,b0=w.scrollTop;w.scrollTop=b0+d;const rem=d-(w.scrollTop-b0);if(Math.abs(rem)>1)scrollBy(0,rem)};
+document.addEventListener('click',e=>{const b=e.target.closest('#grp [data-g]');if(!b)return;e.stopImmediatePropagation();st.g={...(st.g||{}),[st.s]:b.dataset.g};st.sort=null;const KP=posGet();render();const n=$('#grp [data-g].on');if(n)n.focus({preventScroll:true});posSet(KP)},true);
 document.addEventListener('keydown',e=>{const b=e.target.closest?.('#nav3 nav button');if(b&&['ArrowRight','ArrowLeft','Home','End'].includes(e.key)){const L=[...b.closest('nav').querySelectorAll('button')],i=L.indexOf(b),n=e.key=='Home'?0:e.key=='End'?L.length-1:(i+(e.key=='ArrowRight'?1:-1)+L.length)%L.length;e.preventDefault();L[n].focus()}});
 document.addEventListener('keydown',e=>{if(e.key=='Escape')closeM();if((e.key=='Enter'||e.key==' ')&&e.target.dataset?.mf){e.preventDefault();e.target.click()}if((e.key=='Enter'||e.key==' ')&&e.target.dataset?.wtile!=null){e.preventDefault();openM(C[+e.target.dataset.wtile])}if((e.key=='Enter'||e.key==' ')&&e.target.classList?.contains('prow')){e.preventDefault();e.target.click()}if(e.key=='Enter'&&e.target.id=='logo'){e.target.click()}});
 document.addEventListener('click',e=>{
@@ -910,12 +914,12 @@ document.addEventListener('click',e=>{
  if(e.target.closest('#modal'))return;
  const m=e.target.closest('[data-m]');if(m){e.stopPropagation();openM(C[m.dataset.m]);return}
  if(e.target.closest('#logo')){st.pl='home';st.s='ov';st.card=null;st.q='';if($('#q'))$('#q').value='';render();window.scrollTo(0,0);return}
- const t=e.target.closest('[data-s],[data-x],[data-k],tr[data-i]');if(!t)return;
+ const t=e.target.closest('[data-s],[data-x],[data-k],tr[data-i]');if(!t)return;const KP=t.closest('#tabs')&&t.dataset.s?posGet():null;
  if(t.dataset.s){st.s=t.dataset.s;st.card=null}else if(t.dataset.x){const x=t.dataset.x;if(x=='__all'){st.f={};st.q='';$('#q').value=''}else if(x=='__f'){st.f={}}else if(x=='__sort'){st.sort=null;st.dir=-1}else if(x=='__q'){st.q='';$('#q').value=''}else delete st.f[x]}
  else if(t.dataset.k){const k=t.dataset.k;if(st.sort==k)st.dir=-st.dir;else{st.sort=k;st.dir=(k=='n'||k=='fee'||k=='apr'||k=='fx'||COL[k]?.[1]=='l')?1:-1}}
  else if(t.dataset.i){if(st.s!='ins')return;let n=t.nextElementSibling;if(n&&n.classList.contains('det')){while(n&&n.classList.contains('det')){const x=n.nextElementSibling;n.remove();n=x}t.classList.remove('op');return}const c=C[t.dataset.i];t.classList.add('op');t.insertAdjacentHTML('afterend',insSub(c,[...$('#th tr').children].map(h=>h.dataset.k)));return;
   }
- render()});
+ render();if(KP)posSet(KP)});
 const BYN={};C.forEach((c,i)=>{if(LIVE(c))BYN[c.n.toLowerCase()]=i});
 document.addEventListener('change',e=>{const t=e.target;if(t.dataset.pkid!=null||t.dataset.pcust!=null){const P=PRF(),f=t.dataset.pkid!=null?'kids':'cust',v=t.dataset.pkid??t.dataset.pcust,a=new Set(P[f]||[]);t.checked?a.add(v):a.delete(v);P[f]=[...a];saveS();render();return}const k=e.target.dataset.prf;if(!k)return;const P=PRF();P[k]=e.target.type=='checkbox'?e.target.checked:Math.max(0,+e.target.value||0);saveS();render();const n=document.querySelector(`[data-prf=${k}]`);n&&n.focus()});
 document.addEventListener('toggle',e=>{if(e.target.classList?.contains('mspend'))st.mspo=e.target.open},true);
