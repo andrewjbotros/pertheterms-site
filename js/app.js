@@ -794,17 +794,17 @@ function render0(){if(st.pl=='info'){if(!INFOK.includes(st.s))st.s='about';$('#g
  const key=sk=='n'?c=>c.n:COL[sk][2];
  R.sort((a,b)=>nlast(key(a),key(b),dir)||a.n.localeCompare(b.n));
  $('#th').innerHTML='<tr>'+cols.map(k=>{const [l,cl]=k=='n'?['Card','l nm']:COL[k];return`<th data-k="${k}" class="${cl=='wrapt'?'l':cl} ${k==sk?'s'+(dir>0?' asc':''):''}">${l}</th>`}).join('')+'</tr>';
- $('#tb').innerHTML=R.length?R.map((c,ix)=>`<tr data-i="${C.indexOf(c)}">`+cols.map(k=>k=='n'?`<td class="l nm"><button type=button class=nmb data-m="${C.indexOf(c)}" aria-haspopup=dialog title="All details"><b class=cl>${esc(c.n)}</b></button>${c.st=='discontinued'?'<span class=disc>Discontinued</span>':''}${soonB(c)}<small>${esc(c.i)} · ${esc(c.prog)}</small></td>`:`<td class="${COL[k][1]}">${COL[k][3](c)}</td>`).join('')+'</tr>').join(''):`<tr><td class=empty colspan=${cols.length}>No cards match. Remove a filter.</td></tr>`;
+ $('#tb').innerHTML=R.length?R.map((c,ix)=>`<tr data-i="${C.indexOf(c)}">`+cols.map(k=>k=='n'?`<td class="l nm"><button type=button class=nmb data-m="${C.indexOf(c)}" aria-haspopup=dialog title="All details"><b class=cl>${esc(c.n)}</b></button>${c.st=='discontinued'?'<span class=disc>Discontinued</span>':''}<small>${esc(c.i)} · ${esc(c.prog)}</small></td>`:`<td class="${COL[k][1]}">${COL[k][3](c)}</td>`).join('')+'</tr>').join(''):`<tr><td class=empty colspan=${cols.length}>No cards match. Remove a filter.</td></tr>`;
 }
 /* Perks sub-tab body: bar and the per-perk table (one row per card perk). The tab row, group row and filter panel are drawn by render0 like every other sub-tab. */
 const PKPRE=['lounge','nexus_global_entry','statement_credit','membership'],pkCatI=v=>FI.pk_cat?.o.findIndex(o=>o[0]==pkLab(PKCAT,v))??-1;
 const pkOn=v=>{const f=st.f.pk_cat;return Array.isArray(f)&&f.length==1&&f[0]===pkCatI(v)};
-const pkPre=()=>PKPRE.filter(v=>PKR.some(r=>r.cat===v)&&pkCatI(v)>=0).map(v=>`<a href="#" class="pchip ${pkOn(v)?'on':''}" data-pkpre="${v}">${esc(pkLab(PKCAT,v))}</a>`).join('');
+const pkPre=()=>PKPRE.filter(v=>PKR.some(r=>r.cat===v&&r.g==(PKG[GKEY()]||'Travel'))&&pkCatI(v)>=0).map(v=>`<a href="#" class="pchip ${pkOn(v)?'on':''}" data-pkpre="${v}">${esc(pkLab(PKCAT,v))}</a>`).join('');
 document.addEventListener('click',e=>{const a=e.target.closest('[data-pkpre]');if(!a)return;e.preventDefault();const i=pkCatI(a.dataset.pkpre);if(i<0)return;if(pkOn(a.dataset.pkpre))delete st.f.pk_cat;else st.f.pk_cat=[i];/* Category is a multi-select: its state is a list of option indexes */go(hashOf())});
 function renderPerks(scr){
- const grp=PKG[GKEY()]||'Travel',q=st.q.toLowerCase(),keep=r=>Object.entries(st.f).every(([id,i])=>{const F=FI[id];if(!F)return true;const x=F.s.id=='perk'?r:r.card;return Array.isArray(i)?(!i.length||i.some(j=>F.o[j]?.[1](x))):F.o[i]?.[1](x)});
+ const grp=PKG[GKEY()]||'Travel',q=st.q.toLowerCase(),keep=r=>Object.entries(st.f).every(([id,i])=>{const F=FI[id];if(!F||!id.startsWith('pk_'))return true;/* card-view filters (e.g. Reward type) do not apply to Perks */const x=F.s.id=='perk'?r:r.card;return Array.isArray(i)?(!i.length||i.some(j=>F.o[j]?.[1](x))):F.o[i]?.[1](x)});
  const all=PKR.filter(r=>LIVE(r.card)&&r.g==grp),R=all.filter(r=>keep(r)&&(!q||(r.card.n+' '+r.card.i+' '+r.n).toLowerCase().includes(q)));
- const chips=Object.entries(st.f).filter(([id])=>FI[id]).map(([id,i])=>`<span class=chip><i>${FI[id].s.name} ·</i> ${FI[id].l} ${esc(Array.isArray(i)?i.map(j=>FI[id].o[j]?.[0]).join(' or '):FI[id].o[i]?.[0])}<button data-x="${id}" aria-label="Remove">×</button></span>`);
+ const chips=Object.entries(st.f).filter(([id])=>FI[id]&&id.startsWith('pk_')).map(([id,i])=>`<span class=chip><i>${FI[id].s.name} ·</i> ${FI[id].l} ${esc(Array.isArray(i)?i.map(j=>FI[id].o[j]?.[0]).join(' or '):FI[id].o[i]?.[0])}<button data-x="${id}" aria-label="Remove">×</button></span>`);
  if(st.q)chips.push(`<span class=chip><i>Search ·</i> “${esc(st.q)}”<button data-x="__q">×</button></span>`);
  const so=st.sort=='n'?'pk_n':st.sort,sk=pkCols.includes(so)?so:'pk_n',dir=sk==so?st.dir:1;
  if(sk==so)chips.push(`<span class=chip><i>Sort ·</i> ${esc(COL[sk][0])} ${dir>0?'▴':'▾'}<button data-x="__sort" aria-label="Reset sort">×</button></span>`);
