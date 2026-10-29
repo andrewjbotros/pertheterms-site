@@ -504,3 +504,45 @@ header>#pl button:focus-visible,#nav3 nav button:focus-visible,#logo:focus-visib
 #ctl{display:flex;align-items:center;gap:12px;margin-top:8px;margin-bottom:8px}#ctl[hidden]{display:none}#ctl #fhead{margin:0!important;flex:0 1 auto}#ctl #q,body.co #ctl #q{margin-left:auto;flex:0 1 300px;max-width:300px;background:var(--card)}
 header #pm{margin-left:auto}
 #view:has(>.infopg){background:none!important;border:0!important;box-shadow:none!important;border-radius:0}
+/* Andrew 2026-10-29: header product nav centered (logo left, profile right); sub-tab rows left-aligned with the Filters bubbles */
+header>#pl{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
+#tabs,#grp,.nrow #tabs,.nrow #grp{justify-content:flex-start!important;padding-left:0!important;padding-right:0!important}
+#nav3>.nrow{text-align:left;padding-left:0}
+/* Andrew 2026-10-29: refined sub-tabs: text tabs on the page background, muted inactive, accent underline on the active tab, subtle hover; sub-sub-tabs a lighter, smaller variant. No filled pills. */
+#nav3>.nrow,#nav3>.nrow.g{background:transparent!important;padding:0!important;border-bottom:1px solid var(--line)}
+#nav3>.nrow.g{border-bottom:0;padding-top:10px!important}
+#nav3>.nrow>nav{gap:24px!important;grid-auto-columns:auto!important}
+#nav3 #tabs button,#nav3 #grp button{background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;padding:12px 0 11px!important;margin:0 0 -1px!important;color:var(--mute);font-weight:500;letter-spacing:.005em;border-bottom:2px solid transparent!important;transition:color .15s,border-color .15s}
+#nav3 #tabs button{font-size:14.5px}
+#nav3 #tabs button:hover,#nav3 #grp button:hover{color:var(--ink);border-bottom-color:var(--line)!important}
+#nav3 #tabs button.on{color:var(--ink);font-weight:650;border-bottom-color:var(--acc)!important}
+#nav3 #grp{gap:18px!important}
+#nav3 #grp button{font-size:13px;padding:6px 0 7px!important;border-bottom-width:1.5px!important}
+#nav3 #grp button.on{color:var(--acc);font-weight:600;border-bottom-color:var(--acc)!important}
+#nav3~#filters,#nav3~.wrap{border-top-left-radius:inherit}
+@media(prefers-reduced-motion:reduce){#nav3 nav button{transition:none}}
+/* Andrew 2026-10-29: story arrow sits under the panel text, left-aligned with it */
+.hero2 .stx>.scue{position:static;left:auto;bottom:auto;margin:28px 0 0}
+/* Mobile: Home story, header, footer and footer pages (html.resp is set only on Home and footer pages) */
+@media(max-width:899px){
+html.resp,html.resp body{overflow-x:hidden}
+html.resp header{padding:8px 12px;gap:8px}
+html.resp header>#pl{position:static;transform:none;margin-left:auto!important}
+html.resp header>#pl button{padding:10px 12px;font-size:14px;min-height:44px}
+html.resp #pbtn{width:44px;height:44px}
+.hero2 .sbeat{min-height:calc(100svh - 60px)}
+.hero2 .sin{grid-template-columns:1fr;gap:20px;padding:40px 20px 48px}
+.hero2 .sart{order:-1;max-width:260px;margin:0 auto}.hero2 .sart svg{width:100%;height:auto}
+.hero2 .stx h2,.hero2 h2{font-size:clamp(30px,8.5vw,46px)!important;line-height:1.1}
+.hero2 .ssub{font-size:17px;max-width:none}
+.hero2 .stx>.scue{width:48px;height:48px;margin-top:20px}
+.sitefoot .sfwrap{grid-template-columns:1fr 1fr;gap:24px 16px;padding:0 20px}
+.sitefoot .sfbrand{grid-column:1/-1}
+.sitefoot a{display:inline-block;padding:8px 0;min-height:28px}
+.infopg{padding:24px 20px!important;max-width:none!important;font-size:16px;overflow-wrap:anywhere}
+html.resp #view,html.resp #page{margin-left:0!important;margin-right:0!important}
+}
+/* Andrew 2026-10-29: header always pinned on every page, above tables and their sticky headers */
+header{position:sticky!important;top:0;z-index:60!important;background:var(--card)}
+.hero2 .sbeat,#sitefoot,#view,#page{scroll-margin-top:var(--hh,60px)}
+html.resp body{min-width:0}
