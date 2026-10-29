@@ -22,14 +22,14 @@ nav button.on{color:var(--ink);border-color:var(--acc)}nav button[data-s=wallet]
 #filters label{display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:11px;color:var(--mute)}
 #filters label:has(.set){color:var(--ink);font-weight:600}
 /* filter panel header (finviz-style, sober): collapse toggle, active count, one-click reset; the count stays visible when collapsed */
-#fhead{grid-column:1/-1;display:flex;align-items:center;justify-content:flex-end;gap:8px;min-height:24px;padding-bottom:4px;border-bottom:1px solid var(--line);font-size:12px}
+#fhead{display:flex;align-items:center;justify-content:flex-start;gap:8px;min-height:30px;margin-top:8px;margin-bottom:8px;padding:0;background:none;border:0;font-size:12px}#fhead[hidden]{display:none}
 /* pill buttons (Filters toggle, Reset): neutral when off, accent when the panel is on; no counts in the text (the aria-label carries them) */
-#fcol,#freset{display:inline-flex;align-items:center;justify-content:center;min-height:30px;box-sizing:border-box;padding:5px 16px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);font:600 12px/1 inherit;text-transform:none;letter-spacing:0;text-decoration:none;cursor:pointer}
-#fcol:hover,#freset:not(:disabled):hover{border-color:var(--acc)}
-#fcol[aria-expanded=true]{background:var(--acc);border-color:var(--acc);color:var(--onacc)}
+#fcol,#pcol,#freset{display:inline-flex;align-items:center;justify-content:center;min-height:30px;box-sizing:border-box;padding:5px 16px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);font:600 12px/1 inherit;text-transform:none;letter-spacing:0;text-decoration:none;cursor:pointer}
+#fcol:hover,#pcol:hover,#freset:not(:disabled):hover{border-color:var(--acc)}
+#fcol[aria-expanded=true],#pcol[aria-expanded=true]{background:var(--acc);border-color:var(--acc);color:var(--onacc)}
 #freset:disabled{opacity:.45;cursor:default}
-#fcol:focus-visible,#freset:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
-#filters.fcol>:not(#fhead){display:none}#filters.fcol{padding-bottom:6px}#filters.fcol #fhead{border-bottom:0;padding-bottom:0}
+#fcol:focus-visible,#pcol:focus-visible,#freset:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+#filters.fcol{display:none!important}#pre.pcol{display:none!important}
 /* every filter row: one box width (118px); flex:none so long labels wrap instead of shrinking the box */
 #filters select{width:118px;flex:none;height:24px;padding:2px 4px;border:1px solid var(--line);border-radius:3px;background:var(--bg);color:var(--ink);font:12px inherit}
 #filters select.set{border-color:var(--acc);background:var(--accl);color:var(--ink);font-weight:600}
@@ -130,7 +130,7 @@ table.kv{width:100%;border-collapse:collapse;font-size:13px}table.kv th{width:34
 #pm{position:relative;flex:0 0 auto}#pbtn{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;padding:0;border:1px solid var(--line);border-radius:50%;background:var(--bg);color:var(--ink);cursor:pointer}
 #pbtn:hover,#pbtn[aria-expanded=true]{border-color:var(--acc)}#pbtn:focus-visible,#pml button:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
 #pml{position:absolute;right:0;top:calc(100% + 6px);z-index:60;min-width:168px;padding:4px;border:1px solid var(--line);border-radius:10px;background:var(--card);box-shadow:0 8px 28px rgba(20,23,28,.18)}#pml[hidden]{display:none}
-#pml button{display:flex;align-items:center;gap:8px;width:100%;box-sizing:border-box;min-height:36px;padding:7px 10px;border:0;border-radius:7px;background:none;color:var(--ink);font:600 13px/1 inherit;text-align:left;cursor:pointer}#pml button:hover,#pml button:focus{background:var(--bg)}#pml #theme{border-top:1px solid var(--line);border-radius:0 0 7px 7px;margin-top:4px;padding-top:9px}#pml .ti{font-size:15px;width:18px;text-align:center}
+#pml button{display:flex;align-items:center;gap:8px;width:100%;box-sizing:border-box;min-height:36px;padding:7px 10px;border:0;border-radius:7px;background:none;color:var(--ink);font:600 13px/1 inherit;text-align:left;cursor:pointer}#pml button:hover,#pml button:focus{background:var(--bg)}#pml #theme{border-top:1px solid var(--line);border-radius:0 0 7px 7px;margin-top:4px;padding-top:9px}#pml .ti{width:18px;height:18px;flex:none;display:inline-flex;align-items:center;justify-content:center;color:var(--ink)}#pml .ti svg{display:block}
 
 /* v3.4.0 My Offers */
 .offers{margin-top:18px;border:1px solid var(--acc);border-left:4px solid var(--acc);border-radius:12px;padding:12px 14px;background:color-mix(in srgb,var(--acc) 8%,var(--card))}
@@ -251,7 +251,7 @@ header .logo{padding-left:0!important;margin-left:-6px!important}header .rtog{ma
 :root{--content-max:1320px;--gutter:24px}
 @media(max-width:1100px){:root{--gutter:16px}}
 
-#view,#page,.wrap,#pre,#bar,#filters,#tabs,#grp,#pl,#vh,#view:has(.mx){max-width:none!important;margin-left:max(var(--gutter),calc((100% - var(--content-max))/2))!important;margin-right:max(var(--gutter),calc((100% - var(--content-max))/2))!important;box-sizing:border-box}
+#view,#page,.wrap,#pre,#bar,#fhead,#filters,#tabs,#grp,#pl,#vh,#view:has(.mx){max-width:none!important;margin-left:max(var(--gutter),calc((100% - var(--content-max))/2))!important;margin-right:max(var(--gutter),calc((100% - var(--content-max))/2))!important;box-sizing:border-box}
 #tabs,#grp,#pl{justify-content:center}
 /* ===== v3.5.8 premium tabs (Services, Promotions): one shared accent, evolved from the Services violet ===== */
 :root{--prem:var(--subs);--prembg:var(--subsbg)}
@@ -494,6 +494,8 @@ th.ic,td.ic{text-align:center;width:1%;padding-left:4px;padding-right:4px}th.ic{
 .wrap td.ctr,.wrap th.ctr{padding-left:4px;padding-right:4px}
 .wrap th.ctr{font-size:10px;letter-spacing:0}.wrap th.wrapt,.wrap td.wrapt{max-width:120px}
 .wrap th.ic,.wrap td.ic{max-width:56px;padding-left:3px;padding-right:3px;overflow-wrap:anywhere}
+.wrap th.ic{max-width:none;width:min-content;overflow-wrap:normal;word-break:normal;hyphens:none}
+.wrap th{overflow-wrap:normal;word-break:normal;hyphens:none}
 /* three-level nav on ONE row (desktop): Home | Credit Cards, then the sub-tabs, then the sub-sub tabs open to the right of the selected one.
    Each level is an equal-width grid sized to its longest label; levels differ in weight and size; a thin divider separates them; the active path is highlighted. */
 /* nav (2026-10-29): the logo is Home; Credit Cards sits in the header beside the logo and search; the sub-tabs cascade BELOW on their own row, the third level (GROUPS) on a row below that. Each level is an equal-width grid sized to its longest label. */

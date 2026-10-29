@@ -710,12 +710,12 @@ const USR=new Set([...UNAV.map(u=>u[0]),...(CARDS_ONLY?[]:['premium'])]);
 const PL=new Set(PLINES.map(p=>p[0]));
 const railOpen=()=>CARDS_ONLY?true:(STO.ui?.rail??true);/* the logo button toggles the left column: collapses/expands it (persisted in STO.ui.rail, open by default) */
 function rail(){const el=$('#urail');if(!el)return;document.documentElement.style.setProperty('--hh',($('header')?.offsetHeight||56)+'px');const o=railOpen();
- const tb=$('#tabs'),cur=tb.querySelector('button.on'),vh=$('#vh'),TN=Object.fromEntries(PLINES);if(vh){vh.hidden=!cur||!!st.card||USR.has(st.s);vh.textContent=cur?TN[st.pl||'cards']+' · '+cur.textContent.replace(/\d+$/,''):''}
+ const tb=$('#tabs'),cur=tb.querySelector('button.on'),vh=$('#vh'),TN=Object.fromEntries(PLINES);if(vh){vh.hidden=true;vh.textContent=''}/* no page title above the tables: the tabs say where you are */
  el.innerHTML=`<div class=rh>You</div>`+UNAV.map(([k,n,sub])=>{const on=st.s==k&&!st.card,pm=PREM.has(k);return `<button type=button data-s=${k} class="ri${on?' on':''}${pm?' prem':''}"${on?' aria-current=page':''}><span class=ril>${n}${pm?'<span class=premg role=img aria-label=Premium title=Premium>◆</span>':''}${sub?`<small>${sub}</small>`:''}</span></button>`}).join('');
  el.classList.toggle('open',o);document.body.classList.toggle('rail',o&&!CARDS_ONLY);const t=$('#rtog');if(t)t.setAttribute('aria-expanded',String(o));el.inert=!o}
 if(CARDS_ONLY)document.body.classList.add('co');/* cards-only: no side column and no header Wallet button; Wallet is the first item of the Profile menu */
 function togRail(){if(CARDS_ONLY){$('#logo')?.click();return}STO.ui={...(STO.ui||{}),rail:!railOpen()};saveS();rail()}
-function render(){render0();rail();hero()}
+function render(){const fh0=$('#fhead');if(fh0)fh0.innerHTML='';/* a search always lives inside Credit Cards (Home never shows a results table without its tabs) */if(st.q&&st.pl=='home'){st.pl='cards';st.s=st.s||'ov'}render0();{/* Filters / Suggested / Reset sit above the panel and follow its visibility */const fh=$('#fhead'),f=$('#filters');if(fh)fh.hidden=!fh.innerHTML||f.hidden||f.style.display=='none'}rail();hero()}
 /* Home story hero: four beats, a close, insurance tiles and the numbers that come from the database at build time (build_screener.py HERO_SQL → D.meta.hero). No number is typed here; the build fails if this block carries a digit. */
 /*HERO-START*/
 const HTAG={CITED:'Checked against a primary source we archived.',ESTIMATE:'Derived by us from cited inputs; method shown.',REPORTED:'From a third party or an account record; not confirmed in a primary source.'};
@@ -791,7 +791,7 @@ function render0(){$('#grp').hidden=true;$('#grp').innerHTML='';if(st.s=='trv'||
  $('#tabs').innerHTML=LINECFG.cards.tabs().map(s=>{const k=s.f.filter(f=>st.f[f[0]]!=null).length;return`<button data-s="${s.id}" class="${s.id==st.s?'on':''}">${s.name}${k?`<span class=dot>${k}</span>`:''}</button>`}).join('');
  if(GROUPS[st.s]){const gk=GKEY();$('#grp').hidden=false;$('#grp').setAttribute('aria-label',(S.find(x=>x.id==st.s)||{}).name+' view');$('#grp').innerHTML=GROUPS[st.s].map(([id,n])=>`<button type=button data-g="${id}" class="${id==gk?'on':''}"${id==gk?' aria-current=true':''}>${n}${(()=>{const k=S.find(x=>x.id==id).f.filter(f=>st.f[f[0]]!=null).length;return k?`<span class=dot>${k}</span>`:''})()}</button>`).join('')}
  $('#filters').innerHTML=scr.f.map(([id,l,o,m])=>m?`<label>${l}<details class="ms ${st.f[id]?.length?'set':''}"><summary>${st.f[id]?.length?st.f[id].length+' selected':'Any'}</summary><div>${o.map((x,i)=>`<label class=ck><input type=checkbox data-fm="${id}" value="${i}" ${st.f[id]?.includes(i)?'checked':''}> ${esc(x[0])}</label>`).join('')}</div></details></label>`:`<label>${l}<select data-f="${id}" class="${st.f[id]!=null?'set':''}"><option value="">Any</option>${o.map((x,i)=>`<option value="${i}" ${st.f[id]==i?'selected':''}>${esc(x[0])}</option>`).join('')}</select></label>`).join('');
- $('#filters').style.display=scr.f.length?'':'none';{const na=Object.keys(st.f).filter(k=>FI[k]).length,fc=STO.ui?.fcol===true;$('#filters').insertAdjacentHTML('afterbegin',`<div id=fhead><button type=button id=fcol aria-expanded=${!fc} aria-controls=filters aria-label="Filters${na?', '+na+' active':''}">Filters</button><button type=button id=freset data-x=__f aria-label="Reset filters${na?', '+na+' active':''}"${na?'':' disabled'}>Reset</button></div>`);$('#filters').classList.toggle('fcol',fc)}
+ $('#filters').style.display=scr.f.length?'':'none';{const na=Object.keys(st.f).filter(k=>FI[k]).length,fc=STO.ui?.fcol===true,pc=STO.ui?.pcol===true;$('#fhead').innerHTML=`<button type=button id=fcol aria-expanded=${!fc} aria-controls=filters aria-label="Filters${na?', '+na+' active':''}">Filters</button><button type=button id=pcol aria-expanded=${!pc} aria-controls=pre aria-label="Suggested filters">Suggested</button><button type=button id=freset data-x=__f aria-label="Reset filters${na?', '+na+' active':''}"${na?'':' disabled'}>Reset</button>`;$('#filters').classList.toggle('fcol',fc);$('#pre').classList.toggle('pcol',pc)}
  
  const R=rows(),chips=Object.entries(st.f).filter(([id])=>FI[id]).map(([id,i])=>`<span class=chip><i>${FI[id].s.name} ·</i> ${FI[id].l} ${CHIPI[id]&&!Array.isArray(i)?icoCell(CHIPI[id],FI[id].o[i][0]):''} ${esc(Array.isArray(i)?i.map(j=>FI[id].o[j][0]).join(' or '):FI[id].o[i][0])}<button data-x="${id}" aria-label="Remove">×</button></span>`);
  if(st.q)chips.push(`<span class=chip><i>Search ·</i> “${esc(st.q)}”<button data-x="__q">×</button></span>`);
@@ -905,9 +905,10 @@ function openM(c,full){$('#mc').innerHTML=cardHTML(c,0,full?null:st.s)+acts(c);
 const closeM=()=>{$('#mbg').classList.remove('on');$('#mbg').setAttribute('aria-hidden','true')};
 document.addEventListener('click',e=>{const b=e.target.closest('#grp [data-g]');if(!b)return;e.stopImmediatePropagation();st.g={...(st.g||{}),[st.s]:b.dataset.g};st.sort=null;render();const n=$('#grp [data-g].on');if(n)n.focus()},true);
 document.addEventListener('keydown',e=>{const b=e.target.closest?.('#nav3 nav button');if(b&&['ArrowRight','ArrowLeft','Home','End'].includes(e.key)){const L=[...b.closest('nav').querySelectorAll('button')],i=L.indexOf(b),n=e.key=='Home'?0:e.key=='End'?L.length-1:(i+(e.key=='ArrowRight'?1:-1)+L.length)%L.length;e.preventDefault();L[n].focus()}});
-document.addEventListener('keydown',e=>{if(e.key=='Escape')closeM();if((e.key=='Enter'||e.key==' ')&&e.target.dataset?.mf){e.preventDefault();e.target.click()}if((e.key=='Enter'||e.key==' ')&&e.target.dataset?.wtile!=null){e.preventDefault();openM(C[+e.target.dataset.wtile])}if((e.key=='Enter'||e.key==' ')&&e.target.classList?.contains('prow')){e.preventDefault();e.target.click()}if(e.key=='Enter'&&e.target.id=='logo'){st.s='ov';st.card=null;render()}});
+document.addEventListener('keydown',e=>{if(e.key=='Escape')closeM();if((e.key=='Enter'||e.key==' ')&&e.target.dataset?.mf){e.preventDefault();e.target.click()}if((e.key=='Enter'||e.key==' ')&&e.target.dataset?.wtile!=null){e.preventDefault();openM(C[+e.target.dataset.wtile])}if((e.key=='Enter'||e.key==' ')&&e.target.classList?.contains('prow')){e.preventDefault();e.target.click()}if(e.key=='Enter'&&e.target.id=='logo'){e.target.click()}});
 document.addEventListener('click',e=>{
  if(e.target.closest('#fcol')){STO.ui={...(STO.ui||{}),fcol:STO.ui?.fcol!==true};saveS();render();$('#fcol')?.focus();return}
+ if(e.target.closest('#pcol')){STO.ui={...(STO.ui||{}),pcol:STO.ui?.pcol!==true};saveS();render();$('#pcol')?.focus();return}
  {const mx=e.target.closest('[data-subsx]');if(mx){e.stopPropagation();STO.wallet.services=(STO.wallet.services||[]).filter(k=>k!=mx.dataset.subsx);saveS();render();return}}
  {const ms=e.target.closest('[data-subscriptions]');if(ms){const k=ms.dataset.subscriptions,S2=new Set(STO.wallet.services||[]);ms.checked?S2.add(k):S2.delete(k);STO.wallet.services=[...S2];saveS();render();return}}
  if(e.target.closest('#rtog')){togRail();return}
@@ -928,7 +929,7 @@ document.addEventListener('click',e=>{
  if(e.target.closest('[data-back]')){st.card=null;go(hashOf());return}
  if(e.target.closest('#modal'))return;
  const m=e.target.closest('[data-m]');if(m){e.stopPropagation();openM(C[m.dataset.m]);return}
- if(e.target.closest('#logo')){st.pl='home';st.s='ov';st.card=null;render();window.scrollTo(0,0);return}
+ if(e.target.closest('#logo')){st.pl='home';st.s='ov';st.card=null;st.q='';if($('#q'))$('#q').value='';render();window.scrollTo(0,0);return}
  const t=e.target.closest('[data-s],[data-x],[data-k],tr[data-i]');if(!t)return;
  if(t.dataset.s){st.s=t.dataset.s;st.card=null}else if(t.dataset.x){const x=t.dataset.x;if(x=='__all'){st.f={};st.q='';$('#q').value=''}else if(x=='__f'){st.f={}}else if(x=='__sort'){st.sort=null;st.dir=-1}else if(x=='__q'){st.q='';$('#q').value=''}else delete st.f[x]}
  else if(t.dataset.k){const k=t.dataset.k;if(st.sort==k)st.dir=-st.dir;else{st.sort=k;st.dir=(k=='n'||k=='fee'||k=='apr'||k=='fx'||COL[k]?.[1]=='l')?1:-1}}
@@ -954,15 +955,17 @@ $('#q').value=st.q;$('#q').addEventListener('input',e=>{st.q=e.target.value;if(s
 // ---- Theme toggle (v3.3.1): default = OS setting; an explicit choice is saved in ptt.state.ui.theme ----
 const curTheme=()=>document.documentElement.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
 /* Profile menu (header): Wallet always first, Dark/Light always last; new profile items are added to PMENU and land between them */
+const MI=d=>`<svg viewBox="0 0 24 24" width=16 height=16 fill=none stroke=currentColor stroke-width=1.8 stroke-linecap=round stroke-linejoin=round focusable=false>${d}</svg>`;
+const MICO={wallet:MI('<path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H17v2.5"/><rect x="4" y="7.5" width="16" height="11.5" rx="2.5"/><path d="M15.5 13.25h2"/>'),sun:MI('<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/>'),moon:MI('<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>')};
 const PMENU=[['wallet','Wallet']];
-$('#pml').innerHTML=PMENU.map(([k,n])=>`<button type=button role=menuitem data-s=${k} tabindex=-1>${n}</button>`).join('')+'<button type=button role=menuitem id=theme tabindex=-1><span class=ti aria-hidden=true></span><span class=tl></span></button>';
+$('#pml').innerHTML=PMENU.map(([k,n])=>`<button type=button role=menuitem data-s=${k} tabindex=-1><span class=ti aria-hidden=true>${MICO[k]||''}</span><span class=tl>${n}</span></button>`).join('')+'<button type=button role=menuitem id=theme tabindex=-1><span class=ti aria-hidden=true></span><span class=tl></span></button>';
 {const b=$('#pbtn'),l=$('#pml'),it=()=>[...l.querySelectorAll('[role=menuitem]')],shut=f=>{if(l.hidden)return;l.hidden=true;b.setAttribute('aria-expanded','false');if(f)b.focus()},open=()=>{l.hidden=false;b.setAttribute('aria-expanded','true');it()[0].focus()};
  b.addEventListener('click',()=>l.hidden?open():shut(true));
  l.addEventListener('click',e=>{if(e.target.closest('[role=menuitem]'))shut(false)});
  $('#pm').addEventListener('keydown',e=>{if(l.hidden)return;const a=it(),i=a.indexOf(document.activeElement);
   if(e.key=='Escape'){e.preventDefault();e.stopPropagation();shut(true)}else if(e.key=='ArrowDown'){e.preventDefault();a[(i+1)%a.length].focus()}else if(e.key=='ArrowUp'){e.preventDefault();a[(i-1+a.length)%a.length].focus()}else if(e.key=='Home'){e.preventDefault();a[0].focus()}else if(e.key=='End'){e.preventDefault();a[a.length-1].focus()}else if(e.key=='Tab')shut(false)},true);
  document.addEventListener('click',e=>{if(!e.target.closest('#pm'))shut(false)},true)}
-function paintTheme(){const t=curTheme(),b=$('#theme');if(!b)return;const nx=t=='dark'?'light':'dark';b.querySelector('.ti').textContent=t=='dark'?'☀':'☾';b.querySelector('.tl').textContent=nx=='dark'?'Dark':'Light';b.setAttribute('aria-label','Switch to '+nx+' theme');b.title='Switch to '+nx+' theme'}
+function paintTheme(){const t=curTheme(),b=$('#theme');if(!b)return;const nx=t=='dark'?'light':'dark';b.querySelector('.ti').innerHTML=t=='dark'?MICO.sun:MICO.moon;b.querySelector('.tl').textContent=nx=='dark'?'Dark':'Light';b.setAttribute('aria-label','Switch to '+nx+' theme');b.title='Switch to '+nx+' theme'}
 $('#theme')?.addEventListener('click',()=>{const nx=curTheme()=='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',nx);STO.ui={...(STO.ui||{}),theme:nx};saveS();paintTheme()});
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change',e=>{if(!(STO.ui&&STO.ui.theme)){document.documentElement.setAttribute('data-theme',e.matches?'dark':'light');paintTheme()}});
 paintTheme();
