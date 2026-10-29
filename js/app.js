@@ -1,6 +1,7 @@
 const D=window.__PTT_DATA, C=D.cards, IMGB=window.__PTT_IMG||null;
 const PLINES=PLINES_ALL.filter(p=>p[0]=='home'||(D.meta.lines||['cards','bank','broker','tel']).includes(p[0])),PRODUCT=PLINES.filter(p=>p[0]!='home');/* enabled product lines (build flag PTT_LINES, default cards) */
-const CARDS_ONLY=PRODUCT.length==1&&PRODUCT[0][0]=='cards',CT_ALL=CARDS_ONLY?['ov','dtl','rw','prom','ins','fees']:null,SUBONLY=new Set(['trv','prot']),HIDE=new Set(['dtl','prom']),CTV=()=>CT_ALL&&CT_ALL.filter(i=>!HIDE.has(i));/* Credit Cards sub-tabs: Overview, Rewards, Insurance, Fees (this order). HIDE is the per-line config of hidden sub-tabs (Full Detail, Promotions): code and data stay, nav and routes skip them, a hidden id in a link or hash falls back to Overview. Cards-only release: the other Cards views and the user pages stay in the code, off the nav */
+const CARDS_ONLY=PRODUCT.length==1&&PRODUCT[0][0]=='cards',CT_ALL=CARDS_ONLY?['ov','dtl','rw','prom','ins','perk','fees']:null,SUBONLY=new Set(['trv','prot','pkT','pkE']),HIDE=new Set(['dtl','prom']),CTV=()=>CT_ALL&&CT_ALL.filter(i=>!HIDE.has(i));/* Credit Cards sub-tabs: Overview, Rewards, Insurance, Perks, Fees (this order). HIDE is the per-line config of hidden sub-tabs (Full Detail, Promotions): code and data stay, nav and routes skip them, a hidden id in a link or hash falls back to Overview. Cards-only release: the other Cards views and the user pages stay in the code, off the nav */
+if(!CARDS_ONLY)SUBONLY.add('perk');/* the per-card Perks sub-tab (PKF, renderPerks) belongs to the cards-only release; the all-lines build keeps its own Perks view (id perks) */
 const $=s=>document.querySelector(s), esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const money=v=>v==null?'<span class=u>—</span>':v==0?'<span class=y>Free</span>':'$'+v.toLocaleString();
 const pct=(v,hi)=>v==null?'<span class=u>—</span>':`<span class="${hi&&v>=hi?'hi':''}">${v.toFixed(2)}%</span>`;
@@ -11,6 +12,7 @@ const INS_TK=['emergency_medical','trip_cancellation','trip_interruption','fligh
 const insN=(c,L)=>L.filter(([k])=>c.ins[k]===1).length,insU=(c,L)=>L.filter(([k])=>c.ins[k]==null).length;
 /* third-level row (one reusable component, keyed per sub-tab): GROUPS[sub-tab id] = [[screen id, label], ...]; st.g[sub-tab id] is the chosen one. A group's screen is an entry of S with that id, off the nav (SUBONLY). */
 const GROUPS={ins:[['trv','Travel'],['prot','Protection']]},GKEY=()=>GROUPS[st.s]?((st.g||{})[st.s]&&GROUPS[st.s].some(x=>x[0]==st.g[st.s])?st.g[st.s]:GROUPS[st.s][0][0]):st.s;
+GROUPS.perk=[['pkT','Travel'],['pkE','Everyday']];/* Perks = Travel | Everyday, keyed to perk_group (PKG) */
 // filter option builders
 const ge=(f,vals,u='%')=>vals.map(v=>[`≥ ${u=='$'?'$'+v.toLocaleString():v+u}`,c=>c[f]!=null&&c[f]>=v]);
 const le=(f,vals,u='%')=>vals.map(v=>[`≤ ${u=='$'?'$'+v.toLocaleString():v+u}`,c=>c[f]!=null&&c[f]<=v]);
@@ -35,6 +37,23 @@ const ALLF={fee:['fee','Cost',()=>FEEO],other:['other','Base %',()=>ge('other',[
 const OV_LIST=['fee','other','pcn','best','nins','kind','ofc'];/* Andrew's Overview list, in order */
 const FIELDS={ov:OV_LIST,dtl:Object.keys(ALLF).filter(k=>!OV_LIST.includes(k))},FDEF={ov:ALLF,dtl:ALLF};
 const fcols=id=>FIELDS[id],ffilt=id=>FIELDS[id].map(k=>{const[i,l,o]=FDEF[id][k];return[i,l,o()]});
+/* Perks sub-tab (Credit Cards): one row per card perk (D.pk, from card_perk_facts; a card with no perk row is absent). PKF is its ordered field config: the columns (FIELDS.perk) and the filter panel (pkFilt) are both read from it, so column order = filter order. A perk row has .card; a card has .cp (its perk rows), so a perk filter also works on the card views: a card matches when any of its perks does. Values are shown as stored: never annualised, never guessed. */
+const PKCAT=[['statement_credit','Statement credit'],['lounge','Lounge'],['nexus_global_entry','NEXUS / Global Entry'],['membership','Membership'],['discount','Discount'],['other','Other']],PKREC=[['annual','Annual'],['monthly','Monthly'],['one_time','One-time'],['per_use','Per use'],['ongoing','Ongoing'],['every_48_months','Every 48 months']],PKG={pkT:'Travel',pkE:'Everyday'},PKCI={};
+C.forEach((c,i)=>{PKCI[c.id]=i;c.cp=[]});
+const PKR=(D.pk||[]).map(r=>({...r,card:C[PKCI[r.c]]})).filter(r=>r.card);PKR.forEach(r=>r.card.cp.push(r));
+const pkAny=f=>x=>(x.cp||[x]).some(f),pkOf=(k,L)=>L.filter(([v])=>PKR.some(r=>r[k]===v)).map(([v,l])=>[l,pkAny(r=>r[k]===v)]),pkVals=k=>[...new Set(PKR.map(r=>r[k]).filter(Boolean))].sort();
+const PKDAYS=r=>{const m=/^(\d{4})-(\d\d)-(\d\d)$/.exec(r.ex||'');return m?Math.round((new Date(+m[1],m[2]-1,+m[3])-TODAY)/864e5):null};
+const PKF={pk_n:['pk_n','Card',()=>[...new Set(PKR.map(r=>r.card))].sort((a,b)=>a.n.localeCompare(b.n)).map(c=>[c.n,pkAny(r=>r.card===c)]),1],pk_perk:['pk_perk','Perk',null],
+ pk_cat:['pk_cat','Category',()=>pkOf('cat',PKCAT),1],pk_val:['pk_val','Value',()=>[['Has a stated value',pkAny(r=>r.a!=null)],['No value stated',pkAny(r=>r.a==null)]]],
+ pk_rec:['pk_rec','Recurrence',()=>pkOf('rec',PKREC),1],pk_en:['pk_en','Enrol',()=>[['Required',pkAny(r=>r.en===1)],['Not stated',pkAny(r=>r.en!==1)]]],
+ pk_rg:['pk_rg','Region',()=>pkVals('rg').map(v=>[v,pkAny(r=>r.rg===v)]),1],
+ pk_ex:['pk_ex','Expiry',()=>[['Ending within 30 days',pkAny(r=>{const d=PKDAYS(r);return d!=null&&d>=0&&d<=30})],['Has an end date',pkAny(r=>PKDAYS(r)!=null)],['Ongoing',pkAny(r=>r.ex=='ongoing')]]],
+ pk_ev:['pk_ev','Evidence',()=>['CITED','ESTIMATE','REPORTED'].filter(v=>PKR.some(r=>r.vb===v)).map(v=>[v,pkAny(r=>r.vb===v)])],
+ pk_i:['pk_i','Issuer',()=>[...new Set(PKR.map(r=>r.card.i))].sort().map(v=>[v,pkAny(r=>r.card.i===v)]),1],
+ pk_st:['pk_st','Status',()=>[['Live',pkAny(r=>r.s=='live')],['Unverified',pkAny(r=>r.s=='unverified')]]]};
+const pkCols=['pk_n','pk_perk','pk_cat','pk_val','pk_rec','pk_en','pk_rg','pk_ex','pk_ev'];/* filter-only fields (Issuer, Status) follow the column-backed filters */
+FIELDS.perk=pkCols;FDEF.perk=PKF;
+const pkFilt=()=>[...FIELDS.perk,'pk_i','pk_st'].filter(k=>PKF[k][2]).map(k=>{const[i,l,o,m]=PKF[k];return m?[i,l,o(),1]:[i,l,o()]});
 /* Rewards fits one window: the six most-carried categories and the base rate get their own column; every other category is merged into one 'More categories' cell (its filters stay) */
 const RWTOP=RC.filter(k=>k!='other').slice(0,6),RWMORE=RC.filter(k=>k!='other'&&!RWTOP.includes(k));
 const S=[
@@ -67,6 +86,8 @@ const S=[
   ['x_ppd','Price prot. window',[['Stated',c=>X(c,'pp_days')!=null],['≥ 60 days',c=>X(c,'pp_days')>=60]]],
   ['x_ppi','Price prot. per item',[['Stated',c=>X(c,'pp_item')!=null],['≥ $500',c=>X(c,'pp_item')>=500]]],
   ['x_ppy','Price prot. per year',[['Stated',c=>X(c,'pp_year')!=null],['≥ $1,000',c=>X(c,'pp_year')>=1000]]]]},
+ {id:'pkT',name:'Travel',cols:[],f:pkFilt()},{id:'pkE',name:'Everyday',cols:[],f:pkFilt()},/* cols stay empty here: the perk table (pkCols = FIELDS.perk) is drawn by renderPerks, and its filters are labelled and ordered by PKF */
+ {id:'perk',name:'Perks',cols:[],f:pkFilt()},/* nav entry (after its two groups so the chips name Perks): the views are the third-level rows pkT (Travel) and pkE (Everyday), see GROUPS */
  {id:'perks',name:'Perks',cols:['fee','offer','tpo','odl','credits','perks','exp'],f:[
   ['offer','Welcome offer',OFFO],['tpo','Sign-up bonus',[['Has third-party offer',c=>c.tpo.length>0],...[25,50,100,150,200].map(v=>['≥ $'+v,c=>(c.tpo[0]?.a||0)>=v])]],['soon','Apply by',[['Within 30 days',SOON],['Within 60 days',c=>{const d=ODAYS(c);return d!=null&&d>=0&&d<=60}]]],['credits','Credits & bonuses',[['Any',c=>c.credits.length>0]]],
   ['perks','Partner perks',[['Any',c=>c.perks.length>0]]],['exp','Points expiry',[['None',c=>c.exp=='none']]]]},
@@ -99,6 +120,21 @@ const NWB={Visa:'V',Mastercard:'MC','American Express':'AX'};/* network marks ar
 const icoCell=(k,v)=>v?`<span class="ico" role=img aria-label="${esc(v)}" title="${esc(v)}">${ICOS[k]?.[v]||(k=='nw'?`<b class=nb>${esc(NWB[v]||v.slice(0,2))}</b>`:esc(v))}</span>`:'<span class=u title="Not recorded">—</span>';
 COL.ofc=['Welcome offer','ic',c=>OFLIVE(c)?1:0,c=>{const on=OFLIVE(c),t=on?'Welcome offer: live now':'Welcome offer: none or expired';return `<span class="ico ${on?'y':'u'}" role=img aria-label="${t}" title="${t}">${on?svgI('<path d="M3 8.5l3.2 3.2L13 4.5"/>'):svgI('<path d="M4 4l8 8M12 4l-8 8"/>')}</span>`}];
 const CHIPI={acct:'acct',net:'nw'};
+/* Perks columns, over a perk row r (not a card): [label, class, sort key, cell] */
+const PKU={visits:['visit','visits'],voucher:['voucher','vouchers'],bag:['bag','bags'],credit:['credit','credits'],points:['point','points']},
+ pkMoney=r=>(r.vu=='USD'?'US$':'$')+r.a.toLocaleString(undefined,{maximumFractionDigits:2}),
+ pkVal=r=>{if(r.a!=null)return esc(pkMoney(r))+(r.q>1&&r.u=='visits'?`<span class=mute> · ${r.q} visits</span>`:'');if(r.u=='membership')return '<span class=mute>Included</span>';if(r.q==null||!r.u)return '<span class=u>—</span>';
+  if(r.u=='pct_of_plan'||r.u=='pct_of_annual_earn')return `${r.q}${r.u=='pct_of_plan'?'% of plan':'% of annual earn'}`;const w=PKU[r.u];return `${r.q.toLocaleString()} ${w?(r.q==1?w[0]:w[1]):esc(r.u)}`},
+ pkLab=(L,v)=>(L.find(x=>x[0]==v)||[,v])[1];
+COL.pk_n=['Card','l nm pkc',r=>r.card?r.card.n:r.n,r=>`<button type=button class=nmb data-m="${C.indexOf(r.card)}" aria-haspopup=dialog title="All details"><b class=cl>${esc(r.card.n)}</b></button><small>${esc(r.card.i)}</small>`];
+COL.pk_perk=['Perk','pkn',r=>r.n,r=>`<button type=button class=pkb aria-expanded=false title="Quote and source">${esc(r.n)}</button>`];
+COL.pk_cat=['Category','l',r=>pkLab(PKCAT,r.cat),r=>esc(pkLab(PKCAT,r.cat))];
+COL.pk_val=['Value','',r=>r.a,pkVal];
+COL.pk_rec=['Recurrence','l',r=>PKREC.findIndex(x=>x[0]==r.rec),r=>r.rec?esc(pkLab(PKREC,r.rec)):'<span class=u>—</span>'];
+COL.pk_en=['Enrol','ctr',r=>r.en===1?1:0,r=>r.en===1?'<span class=y title="Enrolment is required">✓</span>':'<span class=u title="Not stated">—</span>'];
+COL.pk_rg=['Region','l',r=>r.rg,r=>r.rg?esc(r.rg):'<span class=u>—</span>'];
+COL.pk_ex=['Expiry','l',r=>PKDAYS(r)!=null?r.ex:r.ex=='ongoing'?'9999':null,r=>{const d=PKDAYS(r);return d==null?(r.ex=='ongoing'?'Ongoing':r.ex?esc(r.ex):'<span class=u>—</span>'):esc(r.ex)+(d>=0&&d<=30?`<span class=soon title="Ending soon">${d==0?'Ends today':'Ends in '+d+'d'}</span>`:'')}];
+COL.pk_ev=['Evidence','l',r=>r.vb||null,r=>(r.vb?`<span class=t title="Value basis: ${esc(r.vb)}">${esc(r.vb)}</span>`:'<span class=u title="No value stated, so no value tag">—</span>')+(r.s=='unverified'?'<span class="t unv" title="Not yet re-checked against the issuer page">unverified</span>':'')];
 /* v3.5.2: '?' only when genuinely unknown. A card whose record says it carries no included insurance shows ✗ for every type;
    roadside (rarely a card benefit) not listed in an otherwise-captured coverage list shows '—' (not listed), not '?'. */
 const NOINS=c=>c.ix.insurers&&c.ix.insurers[0]&&c.ix.insurers[0].length==0;
@@ -742,6 +778,26 @@ function render0(){$('#grp').hidden=true;$('#grp').innerHTML='';if(st.s=='trv'||
  $('#th').innerHTML='<tr>'+cols.map(k=>{const [l,cl]=k=='n'?['Card','l nm']:COL[k];return`<th data-k="${k}" class="${cl=='wrapt'?'l':cl} ${k==sk?'s'+(dir>0?' asc':''):''}">${l}</th>`}).join('')+'</tr>';
  $('#tb').innerHTML=R.length?R.map((c,ix)=>`<tr data-i="${C.indexOf(c)}">`+cols.map(k=>k=='n'?`<td class="l nm"><button type=button class=nmb data-m="${C.indexOf(c)}" aria-haspopup=dialog title="All details"><b class=cl>${esc(c.n)}</b></button>${c.st=='discontinued'?'<span class=disc>Discontinued</span>':''}${soonB(c)}<small>${esc(c.i)} · ${esc(c.prog)}</small></td>`:`<td class="${COL[k][1]}">${COL[k][3](c)}</td>`).join('')+'</tr>').join(''):`<tr><td class=empty colspan=${cols.length}>No cards match. Remove a filter.</td></tr>`;
 }
+/* Perks sub-tab body: bar and the per-perk table (one row per card perk). The tab row, group row and filter panel are drawn by render0 like every other sub-tab. */
+function renderPerks(scr){
+ const grp=PKG[GKEY()]||'Travel',q=st.q.toLowerCase(),keep=r=>Object.entries(st.f).every(([id,i])=>{const F=FI[id];if(!F)return true;const x=F.s.id=='perk'?r:r.card;return Array.isArray(i)?(!i.length||i.some(j=>F.o[j]?.[1](x))):F.o[i]?.[1](x)});
+ const all=PKR.filter(r=>LIVE(r.card)&&r.g==grp),R=all.filter(r=>keep(r)&&(!q||(r.card.n+' '+r.card.i+' '+r.n).toLowerCase().includes(q)));
+ const chips=Object.entries(st.f).filter(([id])=>FI[id]).map(([id,i])=>`<span class=chip><i>${FI[id].s.name} ·</i> ${FI[id].l} ${esc(Array.isArray(i)?i.map(j=>FI[id].o[j]?.[0]).join(' or '):FI[id].o[i]?.[0])}<button data-x="${id}" aria-label="Remove">×</button></span>`);
+ if(st.q)chips.push(`<span class=chip><i>Search ·</i> “${esc(st.q)}”<button data-x="__q">×</button></span>`);
+ const so=st.sort=='n'?'pk_n':st.sort,sk=pkCols.includes(so)?so:'pk_n',dir=sk==so?st.dir:1;
+ if(sk==so)chips.push(`<span class=chip><i>Sort ·</i> ${esc(COL[sk][0])} ${dir>0?'▴':'▾'}<button data-x="__sort" aria-label="Reset sort">×</button></span>`);
+ $('#pre').innerHTML=PRESETS().map(p=>`<a href="#preset/${p.id}" class="pchip ${curPre()==p.id?'on':''}" data-pre="${p.id}">${esc(p.n)}</a>`).join('');
+ $('#bar').innerHTML=`<span class=count>${R.length} <span>of ${all.length} ${grp} perks on ${new Set(R.map(r=>r.card)).size} cards</span></span>${chips.join('')}${chips.length?'<button class=clr data-x="__all">Clear all</button>':''}`;
+ const key=COL[sk][2];R.sort((a,b)=>nlast(key(a),key(b),dir)||a.card.n.localeCompare(b.card.n)||a.n.localeCompare(b.n));
+ $('#th').innerHTML='<tr>'+pkCols.map(k=>`<th data-k="${k}" class="${COL[k][1]} ${k==sk?'s'+(dir>0?' asc':''):''}">${COL[k][0]}</th>`).join('')+'</tr>';
+ $('#tb').innerHTML=R.length?R.map(r=>`<tr data-pk="${PKR.indexOf(r)}">`+pkCols.map(k=>`<td class="${COL[k][1]}">${COL[k][3](r)}</td>`).join('')+'</tr>').join(''):`<tr><td class=empty colspan=${pkCols.length}>No perks match. Remove a filter.</td></tr>`}
+/* a perk row opens its quote and source under it (same pattern as the Insurance rows): the sentence from the issuer page, its link, the evidence class, the archived capture and the capture date */
+const pkDet=(r,n)=>`<tr class="det pkd"><td colspan=${n}>${r.qt?`<p class=pkq>“${esc(r.qt)}”</p>`:''}<div class=pkm>${[r.el?`<span><b>Eligibility</b> ${esc(r.el)}</span>`:'',r.nt?`<span><b>Note</b> ${esc(r.nt)}</span>`:'',`<span><b>Source</b> ${r.su?lnk(r.su):'—'}</span>`,r.ec?`<span><b>Evidence</b> <span class=t>${esc(r.ec)}</span></span>`:'',r.ap?`<span><b>Archived</b> <code>${esc(r.ap)}</code></span>`:'',r.rt?`<span><b>Retrieved</b> ${esc(r.rt)}</span>`:''].filter(Boolean).join('')}</div></td></tr>`;
+/* render0 draws the tab row, group row and filter panel (and, for the card views, the card table); on the Perks sub-tab the perk table replaces that table straight after */
+{const r0=render0;render0=function(){const x=r0.apply(this,arguments);if(st.pl=='cards'&&st.s=='perk'&&!st.card&&!$('.wrap').hidden)renderPerks(S.find(s=>s.id==GKEY()));return x}}
+document.addEventListener('click',e=>{const t=e.target.closest('tr[data-pk]');if(!t||st.s!='perk'||e.target.closest('a,.nmb'))return;const b=t.querySelector('.pkb'),n=t.nextElementSibling;
+ if(n&&n.classList.contains('pkd')){n.remove();t.classList.remove('op');b&&b.setAttribute('aria-expanded','false');return}
+ t.classList.add('op');b&&b.setAttribute('aria-expanded','true');t.insertAdjacentHTML('afterend',pkDet(PKR[t.dataset.pk],t.children.length))});
 function renderVal(){const P=D.val.programs,cnt=p=>C.filter(c=>c.prog==p).length,rt=(p,k)=>p.routes&&p.routes[k];
  const VC=[['cpp','Baseline ¢/pt',p=>p.cpp],['cash','Cash / statement credit',p=>rt(p,'cash')?.[0]],['travel','Travel (fixed / portal)',p=>rt(p,'travel')?.[0]],['transfer','Transfer partners',p=>rt(p,'transfer')?.[0]],['gift','Gift cards / merchandise',p=>rt(p,'gift')?.[0]],['cards','Cards',p=>cnt(p.program)]];
  const vf=st.vf||{},VF=[['c1','Cash / statement credit ≥ 1¢',p=>rt(p,'cash')?.[0]>=1],['t1','Travel (fixed / portal) ≥ 1¢',p=>rt(p,'travel')?.[0]>=1],['tr','Transfer partners: any',p=>rt(p,'transfer')?.[0]>0]];
