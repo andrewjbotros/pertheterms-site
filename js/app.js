@@ -661,7 +661,7 @@ const PRE=[{id:'no-fee-cash-back',n:'Best no-fee cash back',s:'ov',f:{fee:'$0/yr
  {id:'apply-by-soon',n:'Apply by soon',s:'perks',f:{soon:'Within 30 days'},sort:'odl',dir:1}];
 function presetState(p){const f={};for(const[id,l]of Object.entries(p.f)){const i=FI[id]?.o.findIndex(x=>x[0]==l);if(i>=0)f[id]=i}return{s:p.s,f,q:'',sort:p.sort,dir:p.dir||-1,card:null}}
 const curPre=()=>PRESETS().find(p=>{const x=presetState(p);return x.s==st.s&&x.sort==st.sort&&x.dir==st.dir&&!st.q&&JSON.stringify(x.f)==JSON.stringify(Object.fromEntries(Object.entries(st.f).sort()))&&Object.keys(x.f).length==Object.keys(st.f).length})?.id;
-COL.ptt=['PTT Score','',c=>c.ptt.v,c=>`<span class="band b${c.ptt.band[0]}">${c.ptt.band}</span> <b>$${c.ptt.v}</b>${c.ptt.u?'<span class=mute>*</span>':''}<span class=mute>/yr</span>`];
+COL.ptt=['<img class=thlogo src="images/brand/logo-mark.svg" width=14 height=14 alt="PerTheTerms">Score','',c=>c.ptt.v,c=>`<span class="band b${c.ptt.band[0]}">${c.ptt.band}</span> <b>$${c.ptt.v}</b>${c.ptt.u?'<span class=mute>*</span>':''}<span class=mute>/yr</span>`];
 const FMTD=d=>MON[+d.slice(5,7)-1]+' '+(+d.slice(8,10));/* 'YYYY-MM-DD' -> 'Oct 28' */
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],dfmt=d=>d?MON[+d.slice(5,7)-1]+' '+(+d.slice(8,10)):'';
 COL.tpo=['Sign-up bonus','',c=>c.tpo[0]?.a,c=>c.tpo.length?`<span class=ofr tabindex=0 role=button aria-haspopup=dialog data-tpo="${C.indexOf(c)}">$${c.tpo[0].a.toLocaleString()} · ${esc(c.tpo[0].s)}${new Set(c.tpo.map(x=>x.s)).size>1?` <span class=mute>+${new Set(c.tpo.map(x=>x.s)).size-1}</span>`:''}</span>`:''];
@@ -779,13 +779,13 @@ function render0(){if(st.pl=='info'){if(!INFOK.includes(st.s))st.s='about';$('#g
  $('#tabs').innerHTML=LINECFG.cards.tabs().map(s=>{const k=s.f.filter(f=>st.f[f[0]]!=null).length;return`<button data-s="${s.id}" class="${s.id==st.s?'on':''}">${s.name}${k?`<span class=dot>${k}</span>`:''}</button>`}).join('');
  if(GROUPS[st.s]){const gk=GKEY();$('#grp').hidden=false;$('#grp').setAttribute('aria-label',(S.find(x=>x.id==st.s)||{}).name+' view');$('#grp').innerHTML=GROUPS[st.s].map(([id,n])=>`<button type=button data-g="${id}" class="${id==gk?'on':''}"${id==gk?' aria-current=true':''}>${n}${(()=>{const k=S.find(x=>x.id==id).f.filter(f=>st.f[f[0]]!=null).length;return k?`<span class=dot>${k}</span>`:''})()}</button>`).join('')}
  $('#filters').innerHTML=scr.f.map(([id,l,o,m])=>m?`<label>${l}<details class="ms ${st.f[id]?.length?'set':''}"><summary>${st.f[id]?.length?st.f[id].length+' selected':'Any'}</summary><div>${o.map((x,i)=>`<label class=ck><input type=checkbox data-fm="${id}" value="${i}" ${st.f[id]?.includes(i)?'checked':''}> ${esc(x[0])}</label>`).join('')}</div></details></label>`:`<label>${l}<select data-f="${id}" class="${st.f[id]!=null?'set':''}"><option value="">Any</option>${o.map((x,i)=>`<option value="${i}" ${st.f[id]==i?'selected':''}>${esc(x[0])}</option>`).join('')}</select></label>`).join('');
- $('#filters').style.display=scr.f.length?'':'none';{const na=Object.keys(st.f).filter(k=>FI[k]).length,fc=STO.ui?.fcol===true,pc=STO.ui?.pcol===true;$('#fhead').innerHTML=`<button type=button id=fcol aria-expanded=${!fc} aria-controls=filters aria-label="Filters${na?', '+na+' active':''}">Filters</button><button type=button id=pcol aria-expanded=${!pc} aria-controls=pre aria-label="Suggested filters">Suggested</button><button type=button id=freset data-x=__all aria-label="Reset filters and search${na?', '+na+' active':''}"${na||st.q?'':' disabled'}>Reset</button>`;$('#filters').classList.toggle('fcol',fc);$('#pre').classList.toggle('pcol',pc)}
+ $('#filters').style.display=scr.f.length?'':'none';{const na=Object.keys(st.f).filter(k=>FI[k]).length,fc=STO.ui?.fcol===true;$('#fhead').innerHTML=`<button type=button id=fcol aria-expanded=${!fc} aria-controls=filters aria-label="Filters${na?', '+na+' active':''}">Filters</button><button type=button id=freset class="${na||st.q?'on':''}" data-x=__all aria-label="Reset filters and search${na?', '+na+' active':''}"${na||st.q?'':' disabled'}>Reset</button>`;$('#filters').classList.toggle('fcol',fc)}
  
  const R=rows(),chips=Object.entries(st.f).filter(([id])=>FI[id]).map(([id,i])=>`<span class=chip><i>${FI[id].s.name} ·</i> ${FI[id].l} ${CHIPI[id]&&!Array.isArray(i)?icoCell(CHIPI[id],FI[id].o[i][0]):''} ${esc(Array.isArray(i)?i.map(j=>FI[id].o[j][0]).join(' or '):FI[id].o[i][0])}<button data-x="${id}" aria-label="Remove">×</button></span>`);
  if(st.q)chips.push(`<span class=chip><i>Search ·</i> “${esc(st.q)}”<button data-x="__q">×</button></span>`);
  const SL=k=>k=='n'?'Card':String(COL[k]?.[0]||k).replace(/<[^>]+>/g,'').trim();
  if(st.sort&&(st.sort=='n'||COL[st.sort])&&!['val'].includes(st.s))chips.push(`<span class=chip><i>Sort ·</i> ${esc(SL(st.sort))} ${st.dir>0?'▴':'▾'}<button data-x="__sort" aria-label="Reset sort">×</button></span>`);
- $('#pre').innerHTML=PRESETS().map(p=>`<a href="#preset/${p.id}" class="pchip ${curPre()==p.id?'on':''}" data-pre="${p.id}">${esc(p.n)}</a>`).join('');
+/* Suggested presets removed (Andrew 2026-10-29): no preset bubbles on card views */$('#pre').innerHTML='';$('#pre').hidden=true;if(0)PRESETS().map(p=>`<a href="#preset/${p.id}" class="pchip ${curPre()==p.id?'on':''}" data-pre="${p.id}">${esc(p.n)}</a>`).join('');
  $('#bar').innerHTML=`<span class=count>${R.length} <span>of ${C.filter(LIVE).length} cards</span></span>${chips.join('')}`;
  if(st.s=='val')return renderVal();
  const cols=['n',...scr.cols];
@@ -808,7 +808,7 @@ function renderPerks(scr){
  if(st.q)chips.push(`<span class=chip><i>Search ·</i> “${esc(st.q)}”<button data-x="__q">×</button></span>`);
  const so=st.sort=='n'?'pk_n':st.sort,sk=pkCols.includes(so)?so:'pk_n',dir=sk==so?st.dir:1;
  if(sk==so)chips.push(`<span class=chip><i>Sort ·</i> ${esc(COL[sk][0])} ${dir>0?'▴':'▾'}<button data-x="__sort" aria-label="Reset sort">×</button></span>`);
- $('#pre').innerHTML=pkPre();/* Perks has its own preset row (category filters from the data), not the card presets */
+ $('#pre').innerHTML=pkPre();$('#pre').hidden=false;/* Perks has its own preset row (category filters from the data), not the card presets */
  $('#bar').innerHTML=`<span class=count>${R.length} <span>of ${all.length} ${grp} perks on ${new Set(R.map(r=>r.card)).size} cards</span></span>${chips.join('')}`;
  const key=COL[sk][2];R.sort((a,b)=>nlast(key(a),key(b),dir)||a.card.n.localeCompare(b.card.n)||a.n.localeCompare(b.n));
  $('#th').innerHTML='<tr>'+pkCols.map(k=>`<th data-k="${k}" class="${COL[k][1]} ${k==sk?'s'+(dir>0?' asc':''):''}">${COL[k][0]}</th>`).join('')+'</tr>';
@@ -892,7 +892,7 @@ document.addEventListener('keydown',e=>{const b=e.target.closest?.('#nav3 nav bu
 document.addEventListener('keydown',e=>{if(e.key=='Escape')closeM();if((e.key=='Enter'||e.key==' ')&&e.target.dataset?.mf){e.preventDefault();e.target.click()}if((e.key=='Enter'||e.key==' ')&&e.target.dataset?.wtile!=null){e.preventDefault();openM(C[+e.target.dataset.wtile])}if((e.key=='Enter'||e.key==' ')&&e.target.classList?.contains('prow')){e.preventDefault();e.target.click()}if(e.key=='Enter'&&e.target.id=='logo'){e.target.click()}});
 document.addEventListener('click',e=>{
  if(e.target.closest('#fcol')){STO.ui={...(STO.ui||{}),fcol:STO.ui?.fcol!==true};saveS();render();$('#fcol')?.focus();return}
- if(e.target.closest('#pcol')){STO.ui={...(STO.ui||{}),pcol:STO.ui?.pcol!==true};saveS();render();$('#pcol')?.focus();return}
+
  {const mx=e.target.closest('[data-subsx]');if(mx){e.stopPropagation();STO.wallet.services=(STO.wallet.services||[]).filter(k=>k!=mx.dataset.subsx);saveS();render();return}}
  {const ms=e.target.closest('[data-subscriptions]');if(ms){const k=ms.dataset.subscriptions,S2=new Set(STO.wallet.services||[]);ms.checked?S2.add(k):S2.delete(k);STO.wallet.services=[...S2];saveS();render();return}}
  if(e.target.closest('#rtog')){togRail();return}

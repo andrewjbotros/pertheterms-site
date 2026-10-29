@@ -499,7 +499,7 @@ header>#pl button:focus-visible,#nav3 nav button:focus-visible,#logo:focus-visib
 .infopg{color:var(--ink)}#view .infopg h2{font-size:17px;margin:26px 0 6px}
 .hero2 .sbeat{scroll-margin-top:0}
 /* controls row: Filters / Suggested / Reset left, search right, on the page background (data views only) */
-#ctl{display:flex;align-items:center;gap:12px;margin-top:8px;margin-bottom:8px}#ctl[hidden]{display:none}#ctl #fhead{margin:0!important;flex:0 1 auto}#ctl #q,body.co #ctl #q{margin-left:auto;flex:0 1 300px;max-width:300px;background:var(--card)}
+#ctl{display:flex;align-items:center;gap:12px;margin-top:8px;margin-bottom:8px}#ctl[hidden]{display:none}#ctl #fhead{margin:0!important;flex:0 1 auto}#ctl #q,body.co #ctl #q{margin-left:auto;flex:0 1 375px;max-width:375px;background:var(--card)}
 header #pm{margin-left:auto}
 #view:has(>.infopg){background:none!important;border:0!important;box-shadow:none!important;border-radius:0}
 /* Andrew 2026-10-29: header product nav centered (logo left, profile right); sub-tab rows left-aligned with the Filters bubbles */
@@ -560,6 +560,14 @@ header>#pl button{transition:color .15s,border-color .25s ease!important}
 /* Insurance: Travel | Protection on the tabs row, after a divider, as smaller lighter sub-categories */
 #nav3>.nrow>nav{vertical-align:bottom}
 #nav3>.nrow>#grp:not([hidden]){display:inline-grid;margin-left:22px!important;padding-left:22px!important;border-left:1px solid var(--mute)!important;gap:16px!important;align-self:center;height:16px;align-items:center;margin-bottom:12px!important;overflow:visible}
-#nav3>.nrow>#grp button{font-size:12.5px!important;font-weight:500;padding:4px 0!important;color:var(--mute);border-bottom:1.5px solid transparent!important;margin:0!important}
-#nav3>.nrow>#grp button:hover{color:var(--ink)}
-#nav3>.nrow>#grp button.on{color:color-mix(in srgb,var(--acc) 65%,var(--card))!important;border-bottom-color:color-mix(in srgb,var(--acc) 50%,var(--card))!important;font-weight:600}
+/* Push E (2026-10-29): sub-category tabs (Travel | Protection, Travel | Everyday) at sub-tab size, always blue text; the active one has a darker blue underline */
+#nav3>.nrow>#grp button{font-size:14.5px!important;font-weight:500;padding:12px 0 11px!important;color:var(--acc)!important;border-bottom:2px solid transparent!important;margin:0 0 -1px!important}
+#nav3>.nrow>#grp:not([hidden]){height:auto;margin-bottom:0!important;align-self:auto}
+#nav3>.nrow>#grp button:hover{border-bottom-color:color-mix(in srgb,var(--acc) 40%,transparent)!important}
+#nav3>.nrow>#grp button.on{color:var(--acc)!important;font-weight:600;border-bottom-color:color-mix(in srgb,var(--acc) 70%,#000)!important}
+#nav3>.nrow>#grp:not([hidden]){border-left:0!important;position:relative}#nav3>.nrow>#grp:not([hidden])::before{content:"";position:absolute;left:0;top:50%;width:1px;height:16px;margin-top:-8px;background:var(--mute)}
+/* Filters: dark outline; Reset: always shown, solid while a filter or search is active, outline otherwise */
+#fcol,#fcol[aria-expanded=true]{background:transparent!important;color:var(--ink)!important;border:1px solid var(--ink)!important}#fcol[aria-expanded=true]{background:color-mix(in srgb,var(--ink) 9%,transparent)!important}
+#freset,#freset:disabled{opacity:1!important;background:transparent;color:var(--ink);border:1px solid var(--ink)}
+#freset.on{background:var(--acc)!important;border-color:var(--acc)!important;color:var(--onacc)!important}
+th .thlogo{width:14px;height:14px;vertical-align:-2px;margin-right:4px}
