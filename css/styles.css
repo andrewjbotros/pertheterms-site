@@ -551,3 +551,15 @@ header>#pl button.on{color:var(--ink);border-bottom-color:var(--acc)!important}
 #nav3 #tabs,#nav3 #grp{gap:6px!important}
 #nav3 #tabs button,#nav3 #grp button{padding:12px 14px 11px!important}
 #nav3 #tabs button:first-child,#nav3 #grp button:first-child{padding-left:0!important}
+/* Push B (2026-10-29): Credit Cards right-aligned beside the profile button; later nav items stack to its left */
+header>#pl{position:static!important;transform:none!important;display:inline-grid!important;grid-auto-flow:column;grid-auto-columns:1fr;direction:rtl;margin-left:auto!important;margin-right:0!important}
+header #pm{margin-left:0!important}
+header>#pl button{direction:ltr}
+header>#pl button.on:hover{color:var(--ink)!important;border-bottom-color:color-mix(in srgb,var(--acc) 45%,#fff)!important}
+header>#pl button{transition:color .15s,border-color .25s ease!important}
+/* Insurance: Travel | Protection on the tabs row, after a divider, as smaller lighter sub-categories */
+#nav3>.nrow>nav{vertical-align:bottom}
+#nav3>.nrow>#grp:not([hidden]){display:inline-grid;margin-left:22px!important;padding-left:22px!important;border-left:1px solid var(--mute)!important;gap:16px!important;align-self:center;height:16px;align-items:center;margin-bottom:12px!important;overflow:visible}
+#nav3>.nrow>#grp button{font-size:12.5px!important;font-weight:500;padding:4px 0!important;color:var(--mute);border-bottom:1.5px solid transparent!important;margin:0!important}
+#nav3>.nrow>#grp button:hover{color:var(--ink)}
+#nav3>.nrow>#grp button.on{color:color-mix(in srgb,var(--acc) 65%,var(--card))!important;border-bottom-color:color-mix(in srgb,var(--acc) 50%,var(--card))!important;font-weight:600}
