@@ -571,3 +571,10 @@ header>#pl button{transition:color .15s,border-color .25s ease!important}
 #freset,#freset:disabled{opacity:1!important;background:transparent;color:var(--ink);border:1px solid var(--ink)}
 #freset.on{background:var(--acc)!important;border-color:var(--acc)!important;color:var(--onacc)!important}
 th .thlogo{width:14px;height:14px;vertical-align:-2px;margin-right:4px}
+/* Insurance detail tabs (Coverage, Deductible, Limit, Conditions): top right of the table, same look as the third-level sub-tabs (#grp) */
+#bar:has(#imode){display:flex;align-items:center;flex-wrap:wrap;gap:6px}
+#imode{margin-left:auto;display:inline-flex;gap:16px;align-items:center}
+#imode button{font:inherit;font-size:14.5px;font-weight:500;line-height:1;color:var(--acc);background:transparent;border:0;border-bottom:2px solid transparent;border-radius:0;padding:8px 0 7px;margin:0;cursor:pointer}
+#imode button:hover{border-bottom-color:color-mix(in srgb,var(--acc) 40%,transparent)}
+#imode button.on{font-weight:600;border-bottom-color:color-mix(in srgb,var(--acc) 70%,#000)}
+td .cond{display:block;white-space:normal;min-width:120px;text-align:left;font-size:12.5px}

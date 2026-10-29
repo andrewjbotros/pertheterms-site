@@ -142,7 +142,7 @@ COL.pk_ev=['Evidence','l',r=>r.ec||null,r=>(r.ec?`<span class=t title="Evidence 
 const NOINS=c=>c.ix.insurers&&c.ix.insurers[0]&&c.ix.insurers[0].length==0;
 const insV=(c,k)=>c.ins[k]!=null?c.ins[k]:NOINS(c)?0:(k=='roadside'&&c.nins>0)?'nl':null;
 const ynI=(c,k)=>{const v=insV(c,k);return v=='nl'?'<span class=mute title="Not listed in this card’s insurance terms">—</span>':yn(v)};
-INS.forEach(([k,l])=>COL['ins_'+k]=[l,'ctr',c=>{const v=insV(c,k);return -(v===1?1:v===0||v=='nl'?0:-.5)},c=>ynI(c,k)]);
+INS.forEach(([k,l])=>COL['ins_'+k]=[l,'ctr',c=>{const v=insV(c,k);return -(v===1?1:v===0||v=='nl'?0:-.5)},c=>insCell(c,k)]);
 /* v3.5.2 single source of label truth: FIELD_LABEL names a field once; table headers and filters both read it, so they cannot drift. */
 const FIELD_LABEL={kind:'Reward type',acct:'Account type',fyf:'First-year fee',add:'Additional card',fx:'FX fee',apr:'Purchase APR',inc:'Income required',best:'Best earn %',nins:'Covers',nt:'Covers',np:'Covers',med:'Medical limit',mob:'Mobile cover',x_cc:'Carrier AD&D',x_ppd:'Price protection window',x_ppi:'Price protection per item',x_ppy:'Price protection per year',exp:'Points expiry'};
 Object.entries(FIELD_LABEL).forEach(([k,l])=>{if(COL[k])COL[k][0]=l});
@@ -786,7 +786,7 @@ function render0(){if(st.pl=='info'){if(!INFOK.includes(st.s))st.s='about';$('#g
  const SL=k=>k=='n'?'Card':String(COL[k]?.[0]||k).replace(/<[^>]+>/g,'').trim();
  if(st.sort&&(st.sort=='n'||COL[st.sort])&&!['val'].includes(st.s))chips.push(`<span class=chip><i>Sort ·</i> ${esc(SL(st.sort))} ${st.dir>0?'▴':'▾'}<button data-x="__sort" aria-label="Reset sort">×</button></span>`);
 /* Suggested presets removed (Andrew 2026-10-29): no preset bubbles on card views */$('#pre').innerHTML='';$('#pre').hidden=true;if(0)PRESETS().map(p=>`<a href="#preset/${p.id}" class="pchip ${curPre()==p.id?'on':''}" data-pre="${p.id}">${esc(p.n)}</a>`).join('');
- $('#bar').innerHTML=`<span class=count>${R.length} <span>of ${C.filter(LIVE).length} cards</span></span>${chips.join('')}`;
+ $('#bar').innerHTML=`<span class=count>${R.length} <span>of ${C.filter(LIVE).length} cards</span></span>${chips.join('')}${st.s=='ins'?`<span id=imode role=group aria-label="Insurance detail">${IMODES.map(([id,n])=>`<button type=button data-im=${id} class="${id==IMODE()?'on':''}" aria-pressed=${id==IMODE()}>${n}</button>`).join('')}</span>`:''}`;
  if(st.s=='val')return renderVal();
  const cols=['n',...scr.cols];
  let sk=st.sort&&(st.sort=='n'||COL[st.sort])?st.sort:(st.s=='rw'?'best':st.s=='fees'?'fee':st.s=='ins'?(GKEY()=='prot'?'covP':'covT'):'best');
@@ -838,11 +838,15 @@ const VE=(c,f)=>{const v=c.ve[f];return v?`<span class=t title="${esc(v[1]||'')}
 const lnk=u=>u?`<a href="${esc(u)}" target=_blank rel=noopener>${esc(u.replace(/^https?:\/\/(www\.)?/,'').slice(0,60))}</a>`:'';
 const INSN={emergency_medical:'med',trip_cancellation:'trip',trip_interruption:'trip',flight_delay:'fd',baggage:'bag',rental_car_cdw:'cdw',purchase_protection:'pp',extended_warranty:'ew',mobile_device:'mob'};
 const DEDK=new Set(['emergency_medical','mobile_device','rental_car_cdw']);
-function insSub(c,keys){const L=['Deductible','Limit','Conditions'];
- return L.map((l,j)=>`<tr class="det sub"><td class="l nm"><span class=mute>${l}</span></td>${keys.slice(1).map(k=>{if(!k.startsWith('ins_'))return '<td></td>';const cv=k.slice(4),st=insV(c,cv),r=(c.insr||{})[cv];if(st=='nl')return '<td><span class=mute>—</span></td>';
-  if(st===0)return `<td>${j==1?'<span class=z>$0</span>':j==2?'<span class=mute>Not included</span>':'<span class=mute>n/a</span>'}</td>`;
-  if(st==null)return '<td><span class=q>—</span></td>';const v=r?r[j]:null;if(v==null&&j==0&&!DEDK.has(cv))return '<td><span class=mute title="No deductible applies to this coverage type">—</span></td>';if(v==null&&j==2)return '<td class=cond><span class=mute>None stated</span></td>';
-  return `<td class=${j==2?'cond':''}>${v==null?'<span class=q>—</span>':j==1&&typeof v=='number'?'$'+(v>=1e6?v/1e6+'M':v.toLocaleString()):j==0&&v===0?'$0':esc(v)}</td>`}).join('')}</tr>`).join('')}
+/* Insurance table modes (st.im, persisted with the rest of the table state): Coverage = check or X only; Deductible, Limit, Conditions read c.insr[k] = [deductible, limit, conditions]. Missing values show the dash. */
+const IMODES=[['cov','Coverage'],['ded','Deductible'],['lim','Limit'],['cond','Conditions']],IMODE=()=>IMODES.some(m=>m[0]==st.im)?st.im:'cov';
+function insCell(c,cv){const m=IMODE(),st0=insV(c,cv);if(m=='cov'||st.s!='ins')return ynI(c,cv);const j={ded:0,lim:1,cond:2}[m],r=(c.insr||{})[cv];
+ if(st0=='nl')return '<span class=mute title="Not listed in this card’s insurance terms">—</span>';
+ if(st0===0)return '<span class=n>✗</span>';
+ if(st0==null)return '<span class=u>—</span>';const v=r?r[j]:null;
+ if(v==null&&j==0&&!DEDK.has(cv))return '<span class=mute title="No deductible applies to this coverage type">—</span>';
+ if(v==null)return '<span class=u>—</span>';
+ return j==2?`<span class=cond>${esc(v)}</span>`:j==1&&typeof v=='number'?'$'+(v>=1e6?v/1e6+'M':v.toLocaleString()):j==0&&v===0?'$0':esc(v)}
 function insX(c){const u=(c.ix.ins_uw_by_cov||[{}])[0],ut=c.ix.ins_uw_by_cov?XT(c,'ins_uw_by_cov'):'',L=[['Common carrier AD&D (max)','cc_add_max','$'],['Rental vehicle AD&D (max)','rental_add_max','$'],['Price protection window','pp_days','d'],['Price protection per item','pp_item','$'],['Price protection per year','pp_year','$'],['Price protection minimum difference','pp_min','$'],['Price protection only on tier','pp_tier','']];
  const CV={cc_add_max:'travel_accident',pp_days:'price_protection',pp_item:'price_protection',pp_year:'price_protection',pp_min:'price_protection'};
  const r=L.map(([l,k,f])=>X(c,k)!=null?`<tr><td>${l}</td><td>${f=='$'?'$'+X(c,k).toLocaleString():f=='d'?X(c,k)+' days':esc(X(c,k))}</td><td>${XT(c,k)}</td></tr>`:CV[k]&&c.ins[CV[k]]===0?`<tr><td>${l}</td><td><span class=z>$0</span> <span class=mute>not included</span></td><td></td></tr>`:k=='pp_tier'||k=='pp_min'||k=='rental_add_max'?'':`<tr><td>${l}</td><td><span class=q>—</span></td><td></td></tr>`).filter(Boolean);
@@ -914,10 +918,11 @@ document.addEventListener('click',e=>{
  if(e.target.closest('#modal'))return;
  const m=e.target.closest('[data-m]');if(m){e.stopPropagation();openM(C[m.dataset.m]);return}
  if(e.target.closest('#logo')){st.pl='home';st.s='ov';st.card=null;st.q='';if($('#q'))$('#q').value='';render();window.scrollTo(0,0);return}
+ {const im=e.target.closest('[data-im]');if(im){st.im=im.dataset.im;render();return}}
  const t=e.target.closest('[data-s],[data-x],[data-k],tr[data-i]');if(!t)return;const KP=t.closest('#tabs')&&t.dataset.s?posGet():null;
  if(t.dataset.s){st.s=t.dataset.s;st.card=null}else if(t.dataset.x){const x=t.dataset.x;if(x=='__all'){st.f={};st.q='';$('#q').value=''}else if(x=='__f'){st.f={}}else if(x=='__sort'){st.sort=null;st.dir=-1}else if(x=='__q'){st.q='';$('#q').value=''}else delete st.f[x]}
  else if(t.dataset.k){const k=t.dataset.k;if(st.sort==k)st.dir=-st.dir;else{st.sort=k;st.dir=(k=='n'||k=='fee'||k=='apr'||k=='fx'||COL[k]?.[1]=='l')?1:-1}}
- else if(t.dataset.i){if(st.s!='ins')return;let n=t.nextElementSibling;if(n&&n.classList.contains('det')){while(n&&n.classList.contains('det')){const x=n.nextElementSibling;n.remove();n=x}t.classList.remove('op');return}const c=C[t.dataset.i];t.classList.add('op');t.insertAdjacentHTML('afterend',insSub(c,[...$('#th tr').children].map(h=>h.dataset.k)));return;
+ else if(t.dataset.i){return;
   }
  render();if(KP)posSet(KP)});
 const BYN={};C.forEach((c,i)=>{if(LIVE(c))BYN[c.n.toLowerCase()]=i});
