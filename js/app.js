@@ -707,7 +707,7 @@ window.addEventListener('popstate',()=>{route();navK=NAVK();render()});
 function rows(){const q=st.q.toLowerCase();return C.filter(c=>LIVE(c)&&Object.entries(st.f).every(([id,i])=>FI[id]?(Array.isArray(i)?(!i.length||i.some(j=>FI[id].o[j]?.[1](c))):FI[id].o[i]?.[1](c)):true)&&(!q||(c.n+' '+c.i+' '+c.prog+' '+c.nw).toLowerCase().includes(q)))}
 /* left column = the user side (Docs/naming.md): the same six items on every view, product tabs included. #tabs (sub-tabs) stays under the top tabs. */
 const UNAV_ALL=[['profile','Profile'],['wallet','Accounts'],['spending','Spending'],['subscriptions','Subscriptions'],['points','Points'],['pyt','Per Your Terms','Wallet optimization']];
-const UNAV=CARDS_ONLY?UNAV_ALL.filter(u=>u[0]=='wallet'||u[0]=='spending'):UNAV_ALL;/* cards-only: Wallet is the one user page */
+const UNAV=CARDS_ONLY?[...UNAV_ALL.filter(u=>['wallet','spending','subscriptions'].includes(u[0])),['pointcards','Points Cards']]:UNAV_ALL;/* cards-only: the Profile menu items (Accounts, Spending, Subscriptions, Points Cards); Points Cards is a coming-soon page */
 const USR=new Set([...UNAV.map(u=>u[0]),...(CARDS_ONLY?[]:['premium'])]);
 const PL=new Set(PLINES.map(p=>p[0]));
 const railOpen=()=>CARDS_ONLY?true:(STO.ui?.rail??true);/* the logo button toggles the left column: collapses/expands it (persisted in STO.ui.rail, open by default) */
@@ -940,8 +940,8 @@ $('#q').value=st.q;$('#q').addEventListener('input',e=>{st.q=e.target.value;if(s
 const curTheme=()=>document.documentElement.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
 /* Profile menu (header): Wallet always first, Dark/Light always last; new profile items are added to PMENU and land between them */
 const MI=d=>`<svg viewBox="0 0 24 24" width=16 height=16 fill=none stroke=currentColor stroke-width=1.8 stroke-linecap=round stroke-linejoin=round focusable=false>${d}</svg>`;
-const MICO={spending:MI('<rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><path d="M7.5 15.5v-3M12 15.5v-6M16.5 15.5v-4.5"/>'),wallet:MI('<path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H17v2.5"/><rect x="4" y="7.5" width="16" height="11.5" rx="2.5"/><path d="M15.5 13.25h2"/>'),sun:MI('<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/>'),moon:MI('<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>')};
-const PMENU=[['wallet','Accounts'],['spending','Spending']];
+const MICO={spending:MI('<rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><path d="M7.5 15.5v-3M12 15.5v-6M16.5 15.5v-4.5"/>'),wallet:MI('<path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H17v2.5"/><rect x="4" y="7.5" width="16" height="11.5" rx="2.5"/><path d="M15.5 13.25h2"/>'),sun:MI('<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/>'),subscriptions:MI('<rect x="3.5" y="5" width="17" height="14" rx="2.5"/><path d="M3.5 9.5h17M8 14h3"/>'),pointcards:MI('<circle cx="12" cy="12" r="8"/><path d="M12 8l1.2 2.6 2.8.3-2.1 1.9.6 2.8-2.5-1.4-2.5 1.4.6-2.8-2.1-1.9 2.8-.3z"/>'),moon:MI('<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>')};
+const PMENU=[['wallet','Accounts'],['spending','Spending'],['subscriptions','Subscriptions'],['pointcards','Points Cards']];
 $('#pml').innerHTML=PMENU.map(([k,n])=>`<button type=button role=menuitem data-s=${k} tabindex=-1><span class=ti aria-hidden=true>${MICO[k]||''}</span><span class=tl>${n}</span></button>`).join('')+'<button type=button role=menuitem id=theme tabindex=-1><span class=ti aria-hidden=true></span><span class=tl></span></button>';
 {const b=$('#pbtn'),l=$('#pml'),it=()=>[...l.querySelectorAll('[role=menuitem]')],shut=f=>{if(l.hidden)return;l.hidden=true;b.setAttribute('aria-expanded','false');if(f)b.focus()},open=()=>{l.hidden=false;b.setAttribute('aria-expanded','true');it()[0].focus()};
  b.addEventListener('click',()=>l.hidden?open():shut(true));
@@ -1239,6 +1239,16 @@ if(CARDS_ONLY){renderWallet=renderWalletSimple;VIEWS.wallet=renderWalletSimple}
 function spendingView(){$('#view').innerHTML=`<div class="prof pstack wsimple"><div class=vhead><h2>Spending</h2></div><p class=lead>What you spend each month. Used to value your cards in <button type=button class=lnk data-s=wallet>Accounts</button>. It stays on this device. Leave blank for $0.</p>
  <section class=psec id=pw-spend><h3>Monthly spend</h3>${CARDS_ONLY?`<div class=wsp>${WSP.map(([k,n])=>`<label><span>${n}</span><input class=amt type=number min=0 step=10 inputmode=numeric data-sp=${k} value="${W.spend[k]||''}" placeholder="0" aria-label="${n}, dollars a month"></label>`).join('')}</div>`:spendHTML()}</section></div>`}
 VIEWS.spending=spendingView;
+/* Subscriptions, cards-only (Andrew 2026-10-29): a tile picker over the services on record (D.subs + D.subcat). Tap a tile to mark it as one you have; same store as the full build (STO.wallet.services). */
+const subPickTile=s=>{const[a,b]=SUBSOL[s.k]||['#6d28d9','#3b0764'],on=(STO.wallet.services||[]).includes(s.k),p=subPrice(s.k);return ctile({a,b,on,attrs:`data-subpick="${s.k}" aria-pressed=${on}`,top:'Subscription',name:s.n,foot:p?'$'+p.v.toFixed(2)+'/mo':'Price —',mark:on?'✓ You have it':''})};
+function subsPickView(){const L=SUBS.slice().sort((x,y)=>x.n.localeCompare(y.n)),n=L.filter(s=>(STO.wallet.services||[]).includes(s.k)).length;
+ $('#view').innerHTML=`<div class="prof pstack wsimple"><div class=vhead><h2>Subscriptions</h2></div><p class=lead>Tap the subscriptions you have. Tap again to remove one. It stays on this device.</p>
+ <section class=psec id=pw-subs><h3>Your subscriptions <span class=mute>(${n})</span></h3><div class="tiles ptiles">${L.map(subPickTile).join('')}</div></section></div>`}
+function pointCardsView(){$('#view').innerHTML=`<div class="prof pstack wsimple"><div class=vhead><h2>Points Cards</h2></div><section class=psec id=pw-ptcards><h3>Coming soon</h3><p class=lead>Points Cards is not available yet. It will hold the loyalty programs you collect points with.</p></section></div>`}
+if(CARDS_ONLY){VIEWS.subscriptions=subsPickView;VIEWS.pointcards=pointCardsView}
+{const tog=t=>{const k=t.dataset.subpick,S2=new Set(STO.wallet.services||[]);S2.has(k)?S2.delete(k):S2.add(k);STO.wallet.services=[...S2];saveS();const y=scrollY;render();scrollTo(0,y);document.querySelector(`[data-subpick="${k}"]`)?.focus()};
+ document.addEventListener('click',e=>{const t=e.target.closest('[data-subpick]');if(t){e.stopImmediatePropagation();tog(t)}},true);
+ document.addEventListener('keydown',e=>{const t=e.target.closest?.('[data-subpick]');if(t&&(e.key=='Enter'||e.key==' ')){e.preventDefault();e.stopImmediatePropagation();tog(t)}},true)}
 
 /* boot last, so every view helper above (Per Your Terms, rules, invites) is initialized before the first render */
 BANK.init();render();
