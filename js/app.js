@@ -48,7 +48,7 @@ const PKF={pk_n:['pk_n','Card',()=>[...new Set(PKR.map(r=>r.card))].sort((a,b)=>
  pk_rec:['pk_rec','Recurrence',()=>pkOf('rec',PKREC),1],pk_en:['pk_en','Enrol',()=>[['Required',pkAny(r=>r.en===1)],['Not stated',pkAny(r=>r.en!==1)]]],
  pk_rg:['pk_rg','Region',()=>pkVals('rg').map(v=>[v,pkAny(r=>r.rg===v)]),1],
  pk_ex:['pk_ex','Expiry',()=>[['Ending within 30 days',pkAny(r=>{const d=PKDAYS(r);return d!=null&&d>=0&&d<=30})],['Has an end date',pkAny(r=>PKDAYS(r)!=null)],['Ongoing',pkAny(r=>r.ex=='ongoing')]]],
- pk_ev:['pk_ev','Evidence',()=>['CITED','ESTIMATE','REPORTED'].filter(v=>PKR.some(r=>r.vb===v)).map(v=>[v,pkAny(r=>r.vb===v)])],
+ pk_ev:['pk_ev','Evidence',()=>['CITED','REPORTED','ESTIMATE'].filter(v=>PKR.some(r=>r.ec===v)).map(v=>[v,pkAny(r=>r.ec===v)])],
  pk_i:['pk_i','Issuer',()=>[...new Set(PKR.map(r=>r.card.i))].sort().map(v=>[v,pkAny(r=>r.card.i===v)]),1],
  pk_st:['pk_st','Status',()=>[['Live',pkAny(r=>r.s=='live')],['Unverified',pkAny(r=>r.s=='unverified')]]]};
 const pkCols=['pk_n','pk_perk','pk_cat','pk_val','pk_rec','pk_en','pk_rg','pk_ex','pk_ev'];/* filter-only fields (Issuer, Status) follow the column-backed filters */
@@ -123,7 +123,7 @@ const CHIPI={acct:'acct',net:'nw'};
 /* Perks columns, over a perk row r (not a card): [label, class, sort key, cell] */
 const PKU={visits:['visit','visits'],voucher:['voucher','vouchers'],bag:['bag','bags'],credit:['credit','credits'],points:['point','points']},
  pkMoney=r=>(r.vu=='USD'?'US$':'$')+r.a.toLocaleString(undefined,{maximumFractionDigits:2}),
- pkVal=r=>{if(r.a!=null)return esc(pkMoney(r))+(r.q>1&&r.u=='visits'?`<span class=mute> · ${r.q} visits</span>`:'');if(r.u=='membership')return '<span class=mute>Included</span>';if(r.q==null||!r.u)return '<span class=u>—</span>';
+ pkVal=r=>{if(r.a!=null)return esc(pkMoney(r))+(r.q>1&&r.u=='visits'?`<span class=mute> · ${r.q} visits</span>`:'')+(r.vb?`<span class=t title="Value basis: how the dollar figure was derived (${esc(r.vb)})">${esc(r.vb)}</span>`:'');if(r.u=='membership')return '<span class=mute>Included</span>';if(r.q==null||!r.u)return '<span class=u>—</span>';
   if(r.u=='pct_of_plan'||r.u=='pct_of_annual_earn')return `${r.q}${r.u=='pct_of_plan'?'% of plan':'% of annual earn'}`;const w=PKU[r.u];return `${r.q.toLocaleString()} ${w?(r.q==1?w[0]:w[1]):esc(r.u)}`},
  pkLab=(L,v)=>(L.find(x=>x[0]==v)||[,v])[1];
 COL.pk_n=['Card','l nm pkc',r=>r.card?r.card.n:r.n,r=>`<button type=button class=nmb data-m="${C.indexOf(r.card)}" aria-haspopup=dialog title="All details"><b class=cl>${esc(r.card.n)}</b></button><small>${esc(r.card.i)}</small>`];
@@ -134,7 +134,7 @@ COL.pk_rec=['Recurrence','l',r=>PKREC.findIndex(x=>x[0]==r.rec),r=>r.rec?esc(pkL
 COL.pk_en=['Enrol','ctr',r=>r.en===1?1:0,r=>r.en===1?'<span class=y title="Enrolment is required">✓</span>':'<span class=u title="Not stated">—</span>'];
 COL.pk_rg=['Region','l',r=>r.rg,r=>r.rg?esc(r.rg):'<span class=u>—</span>'];
 COL.pk_ex=['Expiry','l',r=>PKDAYS(r)!=null?r.ex:r.ex=='ongoing'?'9999':null,r=>{const d=PKDAYS(r);return d==null?(r.ex=='ongoing'?'Ongoing':r.ex?esc(r.ex):'<span class=u>—</span>'):esc(r.ex)+(d>=0&&d<=30?`<span class=soon title="Ending soon">${d==0?'Ends today':'Ends in '+d+'d'}</span>`:'')}];
-COL.pk_ev=['Evidence','l',r=>r.vb||null,r=>(r.vb?`<span class=t title="Value basis: ${esc(r.vb)}">${esc(r.vb)}</span>`:'<span class=u title="No value stated, so no value tag">—</span>')+(r.s=='unverified'?'<span class="t unv" title="Not yet re-checked against the issuer page">unverified</span>':'')];
+COL.pk_ev=['Evidence','l',r=>r.ec||null,r=>(r.ec?`<span class=t title="Evidence class: ${esc(r.ec)}">${esc(r.ec)}</span>`:'<span class=u title="Evidence class not recorded">—</span>')+(r.s=='unverified'?'<span class="t unv" title="Not yet re-checked against the issuer page">unverified</span>':'')];
 /* v3.5.2: '?' only when genuinely unknown. A card whose record says it carries no included insurance shows ✗ for every type;
    roadside (rarely a card benefit) not listed in an otherwise-captured coverage list shows '—' (not listed), not '?'. */
 const NOINS=c=>c.ix.insurers&&c.ix.insurers[0]&&c.ix.insurers[0].length==0;
@@ -812,6 +812,10 @@ function render0(){$('#grp').hidden=true;$('#grp').innerHTML='';if(st.s=='trv'||
  $('#tb').innerHTML=R.length?R.map((c,ix)=>`<tr data-i="${C.indexOf(c)}">`+cols.map(k=>k=='n'?`<td class="l nm"><button type=button class=nmb data-m="${C.indexOf(c)}" aria-haspopup=dialog title="All details"><b class=cl>${esc(c.n)}</b></button>${c.st=='discontinued'?'<span class=disc>Discontinued</span>':''}${soonB(c)}<small>${esc(c.i)} · ${esc(c.prog)}</small></td>`:`<td class="${COL[k][1]}">${COL[k][3](c)}</td>`).join('')+'</tr>').join(''):`<tr><td class=empty colspan=${cols.length}>No cards match. Remove a filter.</td></tr>`;
 }
 /* Perks sub-tab body: bar and the per-perk table (one row per card perk). The tab row, group row and filter panel are drawn by render0 like every other sub-tab. */
+const PKPRE=['lounge','nexus_global_entry','statement_credit','membership'],pkCatI=v=>FI.pk_cat?.o.findIndex(o=>o[0]==pkLab(PKCAT,v))??-1;
+const pkOn=v=>{const f=st.f.pk_cat;return Array.isArray(f)&&f.length==1&&f[0]===pkCatI(v)};
+const pkPre=()=>PKPRE.filter(v=>PKR.some(r=>r.cat===v)&&pkCatI(v)>=0).map(v=>`<a href="#" class="pchip ${pkOn(v)?'on':''}" data-pkpre="${v}">${esc(pkLab(PKCAT,v))}</a>`).join('');
+document.addEventListener('click',e=>{const a=e.target.closest('[data-pkpre]');if(!a)return;e.preventDefault();const i=pkCatI(a.dataset.pkpre);if(i<0)return;if(pkOn(a.dataset.pkpre))delete st.f.pk_cat;else st.f.pk_cat=[i];/* Category is a multi-select: its state is a list of option indexes */go(hashOf())});
 function renderPerks(scr){
  const grp=PKG[GKEY()]||'Travel',q=st.q.toLowerCase(),keep=r=>Object.entries(st.f).every(([id,i])=>{const F=FI[id];if(!F)return true;const x=F.s.id=='perk'?r:r.card;return Array.isArray(i)?(!i.length||i.some(j=>F.o[j]?.[1](x))):F.o[i]?.[1](x)});
  const all=PKR.filter(r=>LIVE(r.card)&&r.g==grp),R=all.filter(r=>keep(r)&&(!q||(r.card.n+' '+r.card.i+' '+r.n).toLowerCase().includes(q)));
@@ -819,7 +823,7 @@ function renderPerks(scr){
  if(st.q)chips.push(`<span class=chip><i>Search ·</i> “${esc(st.q)}”<button data-x="__q">×</button></span>`);
  const so=st.sort=='n'?'pk_n':st.sort,sk=pkCols.includes(so)?so:'pk_n',dir=sk==so?st.dir:1;
  if(sk==so)chips.push(`<span class=chip><i>Sort ·</i> ${esc(COL[sk][0])} ${dir>0?'▴':'▾'}<button data-x="__sort" aria-label="Reset sort">×</button></span>`);
- $('#pre').innerHTML=PRESETS().map(p=>`<a href="#preset/${p.id}" class="pchip ${curPre()==p.id?'on':''}" data-pre="${p.id}">${esc(p.n)}</a>`).join('');
+ $('#pre').innerHTML=pkPre();/* Perks has its own preset row (category filters from the data), not the card presets */
  $('#bar').innerHTML=`<span class=count>${R.length} <span>of ${all.length} ${grp} perks on ${new Set(R.map(r=>r.card)).size} cards</span></span>${chips.join('')}${chips.length?'<button class=clr data-x="__all">Clear all</button>':''}`;
  const key=COL[sk][2];R.sort((a,b)=>nlast(key(a),key(b),dir)||a.card.n.localeCompare(b.card.n)||a.n.localeCompare(b.n));
  $('#th').innerHTML='<tr>'+pkCols.map(k=>`<th data-k="${k}" class="${COL[k][1]} ${k==sk?'s'+(dir>0?' asc':''):''}">${COL[k][0]}</th>`).join('')+'</tr>';
