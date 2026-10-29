@@ -18,6 +18,8 @@ const eq=(f,vals)=>vals.map(v=>[v,c=>c[f]===v]);
 const RATES=[1,1.5,2,2.5,3,4,5];
 const TODAY=new Date();TODAY.setHours(0,0,0,0);
 const ODAYS=c=>{if(!c.offer||!/^\d{4}-\d\d-\d\d$/.test(c.odl||''))return null;const [y,m,d]=c.odl.split('-').map(Number);return Math.round((new Date(y,m-1,d)-TODAY)/864e5)};
+/* a welcome offer is live when the record has one and its deadline (when it is a date) has not passed; derived from the existing offer and deadline fields */
+const OFLIVE=c=>!!c.offer&&!(ODAYS(c)!=null&&ODAYS(c)<0);
 const SOON=c=>{const d=ODAYS(c);return d!=null&&d>=0&&d<=30};
 const soonB=c=>SOON(c)?`<span class=soon title="Offer deadline ${esc(c.odl)}">${ODAYS(c)==0?'Ends today':'Ends in '+ODAYS(c)+'d'}</span>`:'';
 const CN=D.meta.catn,CC=D.meta.catcount,RC=Object.keys(CN).filter(k=>k=='other'||CC[k]>=2).sort((a,b)=>a=='other'?1:b=='other'?-1:CC[b]-CC[a]);
@@ -27,10 +29,10 @@ const RTO=['Points','Cash back','Travel/airline miles','Store dollars','No rewar
  OFFO=[['Yes',c=>!!c.offer],['No',c=>!c.offer]];
 /* every field that has a column and a filter, by id: [filter id, label, options]. Overview is an explicit ordered list; Full Detail is every field not on Overview, so a new field is never lost. */
 const ALLF={fee:['fee','Cost',()=>FEEO],other:['other','Base %',()=>ge('other',[0.5,1,1.25,1.5,2])],pcn:['npc','Premium Categories',()=>ge('npc',[1,2,3,4,5],'')],best:['best','Best category',()=>ge('best',RATES)],nins:['nins','Covers',()=>[2,4,6,8,10,12,13].map(v=>['Covers ≥ '+v,c=>c.nins>=v])],
- kind:['rt','Reward type',()=>eq('rt',RTO)],offer:['offer','Welcome offer',()=>OFFO],
+ kind:['rt','Reward type',()=>eq('rt',RTO)],offer:['offer','Welcome offer',()=>OFFO],ofc:['ofl','Welcome offer',()=>[['Yes',OFLIVE],['No',c=>!OFLIVE(c)]]],
  i:['issuer','Issuer',()=>eq('i',uniq(c=>c.i))],cur:['cur','Currency',()=>eq('cur',['CAD','USD'])],acct:['acct','Account type',()=>eq('acct',['Personal','Business'])],nw:['net','Network',()=>eq('nw',uniq(c=>c.nw))],
  pt:['pt','Fee',()=>eq('pt',['Fee','No fee','Prepaid','Secured'])],tier:['tier','Tier',()=>eq('tier',uniq(c=>c.tier))],it:['itype','Issuer type',()=>eq('it',uniq(c=>c.it))],st:['status','Status',()=>eq('st',uniq(c=>c.st))]};
-const OV_LIST=['fee','other','pcn','best','nins','kind'];/* Andrew's Overview list, in order */
+const OV_LIST=['fee','other','pcn','best','nins','kind','ofc'];/* Andrew's Overview list, in order */
 const FIELDS={ov:OV_LIST,dtl:Object.keys(ALLF).filter(k=>!OV_LIST.includes(k))},FDEF={ov:ALLF,dtl:ALLF};
 const fcols=id=>FIELDS[id],ffilt=id=>FIELDS[id].map(k=>{const[i,l,o]=FDEF[id][k];return[i,l,o()]});
 /* Rewards fits one window: the six most-carried categories and the base rate get their own column; every other category is merged into one 'More categories' cell (its filters stay) */
@@ -95,6 +97,7 @@ const svgI=p=>`<svg viewBox="0 0 16 16" width=14 height=14 aria-hidden=true focu
 const ICOS={acct:{Personal:svgI('<circle cx=8 cy=5.2 r=2.6 /><path d="M3 13.5c.6-2.6 2.6-3.8 5-3.8s4.4 1.2 5 3.8"/>'),Business:svgI('<rect x=2 y=5 width=12 height=8.5 rx=1.2 /><path d="M5.8 5V3.6c0-.6.4-1 1-1h2.4c.6 0 1 .4 1 1V5M2 9h12"/>')}};
 const NWB={Visa:'V',Mastercard:'MC','American Express':'AX'};/* network marks are compact text badges (original, not official logos) */
 const icoCell=(k,v)=>v?`<span class="ico" role=img aria-label="${esc(v)}" title="${esc(v)}">${ICOS[k]?.[v]||(k=='nw'?`<b class=nb>${esc(NWB[v]||v.slice(0,2))}</b>`:esc(v))}</span>`:'<span class=u title="Not recorded">—</span>';
+COL.ofc=['Welcome offer','ic',c=>OFLIVE(c)?1:0,c=>{const on=OFLIVE(c),t=on?'Welcome offer: live now':'Welcome offer: none or expired';return `<span class="ico ${on?'y':'u'}" role=img aria-label="${t}" title="${t}">${on?svgI('<path d="M3 8.5l3.2 3.2L13 4.5"/>'):svgI('<path d="M4 4l8 8M12 4l-8 8"/>')}</span>`}];
 const CHIPI={acct:'acct',net:'nw'};
 /* v3.5.2: '?' only when genuinely unknown. A card whose record says it carries no included insurance shows ✗ for every type;
    roadside (rarely a card benefit) not listed in an otherwise-captured coverage list shows '—' (not listed), not '?'. */
@@ -108,7 +111,7 @@ Object.entries(FIELD_LABEL).forEach(([k,l])=>{if(COL[k])COL[k][0]=l});
 const FLD=k=>FIELD_LABEL[k]||(COL[k]?String(COL[k][0]).replace(/<[^>]+>/g,'').replace('ⓘ','').trim():null);
 /* 2026-10-20 filters and headers (Docs/naming.md): FBY maps a filter id to the column it filters (when the ids differ) and an optional condition suffix.
    A filter backed by a column of its view takes that column's label (+ suffix) and the column's position; filter-only fields keep their order, after them. */
-const FBY={issuer:['i'],itype:['it'],status:['st'],net:['nw'],rt:['kind'],rt2:['kind'],tag:['cpp',' tag'],nins:['cov'],npc:['pcn'],nt:['covT'],np:['covP'],soon:['odl']};
+const FBY={issuer:['i'],itype:['it'],status:['st'],net:['nw'],rt:['kind'],rt2:['kind'],tag:['cpp',' tag'],nins:['cov'],npc:['pcn'],ofl:['ofc'],nt:['covT'],np:['covP'],soon:['odl']};
 const syncLabels=()=>{Object.entries(FIELD_LABEL).forEach(([k,l])=>{if(COL[k])COL[k][0]=l});S.forEach(s=>{const ek=f=>s.cols.includes(f[0])?[f[0]]:(FBY[f[0]]||[f[0]]),pos=f=>{const i=s.cols.indexOf(ek(f)[0]);return i<0?1e3:i};
  s.f.forEach(f=>{const[k,suf='']=ek(f),l=s.cols.includes(k)?FLD(k):FIELD_LABEL[f[0]];if(l)f[1]=l+(s.cols.includes(k)?suf:'')});
  s.f=s.f.map((f,i)=>[f,i]).sort((a,b)=>pos(a[0])-pos(b[0])||a[1]-b[1]).map(x=>x[0])})};syncLabels();
@@ -118,8 +121,7 @@ COL.x_uw=['Underwriter','wrapt',c=>c.ix.insurers?(c.ix.insurers[0].join('; ')||'
 COL.x_cc=['Carrier AD&D','',c=>X(c,'cc_add_max'),xm('cc_add_max')];COL.x_rad=['Rental AD&D','',c=>X(c,'rental_add_max'),xm('rental_add_max')];
 COL.x_ppd=['PP days','',c=>X(c,'pp_days'),c=>X(c,'pp_days')==null?'<span class=u>—</span>':X(c,'pp_days')+XT(c,'pp_days')+(X(c,'pp_tier')?`<span class=t title="Only on the ${esc(X(c,'pp_tier'))} tier">${esc(X(c,'pp_tier'))} only</span>`:'')];
 COL.x_ppi=['PP / item','',c=>X(c,'pp_item'),xm('pp_item')];COL.x_ppy=['PP / year','',c=>X(c,'pp_year'),xm('pp_year')];
-const RM=matchMedia('(prefers-reduced-motion: reduce)'),MOB=matchMedia('(max-width:640px)'),MCOL={ov:['fee','other','best','nins'],trv:['covT','ptt','ins_emergency_medical'],prot:['covP','ptt','ins_roadside'],dtl:['i','acct','nw'],fees:['fee','fx'],rw:['kind','other','best'],ins:['cov','ptt','ins_'+INS[0][0]],perks:['fee','odl']};
-MOB.addEventListener('change',()=>render());
+const RM=matchMedia('(prefers-reduced-motion: reduce)');
 // $0 = the record says the coverage is not included; ? = not stated / unverified. Unknown is never shown as $0.
 const AMC={med:['med','emergency_medical'],mob:['mob','mobile_device'],x_cc:['cc_add_max','travel_accident'],x_rad:['rental_add_max',null],x_ppd:['pp_days','price_protection'],x_ppi:['pp_item','price_protection'],x_ppy:['pp_year','price_protection']};
 const AMV=(c,k)=>{const[f,cov]=AMC[k],v=k=='med'||k=='mob'?c[f]:X(c,f);if(v!=null&&v!==0)return v;if(cov&&c.ins[cov]===0)return 0;return null};
@@ -670,15 +672,13 @@ const UNAV_ALL=[['profile','Profile'],['wallet','Wallet'],['subscriptions','Subs
 const UNAV=CARDS_ONLY?UNAV_ALL.filter(u=>u[0]=='wallet'):UNAV_ALL;/* cards-only: Wallet is the one user page */
 const USR=new Set([...UNAV.map(u=>u[0]),...(CARDS_ONLY?[]:['premium'])]);
 const PL=new Set(PLINES.map(p=>p[0]));
-const NARROW=matchMedia('(max-width:900px)');
-const railOpen=()=>CARDS_ONLY?true:NARROW.matches?!!st.rdraw:(STO.ui?.rail??true);/* the logo button toggles the left column: desktop collapses/expands it (persisted in STO.ui.rail, open by default); phones/tablets: a drawer */
+const railOpen=()=>CARDS_ONLY?true:(STO.ui?.rail??true);/* the logo button toggles the left column: collapses/expands it (persisted in STO.ui.rail, open by default) */
 function rail(){const el=$('#urail');if(!el)return;document.documentElement.style.setProperty('--hh',($('header')?.offsetHeight||56)+'px');const o=railOpen();
  const tb=$('#tabs'),cur=tb.querySelector('button.on'),vh=$('#vh'),TN=Object.fromEntries(PLINES);if(vh){vh.hidden=!cur||!!st.card||USR.has(st.s);vh.textContent=cur?TN[st.pl||'cards']+' · '+cur.textContent.replace(/\d+$/,''):''}
  el.innerHTML=`<div class=rh>You</div>`+UNAV.map(([k,n,sub])=>{const on=st.s==k&&!st.card,pm=PREM.has(k);return `<button type=button data-s=${k} class="ri${on?' on':''}${pm?' prem':''}"${on?' aria-current=page':''}><span class=ril>${n}${pm?'<span class=premg role=img aria-label=Premium title=Premium>◆</span>':''}${sub?`<small>${sub}</small>`:''}</span></button>`}).join('');
- el.classList.toggle('open',o);document.body.classList.toggle('rail',o&&!NARROW.matches&&!CARDS_ONLY);$('#urbg').hidden=CARDS_ONLY||!(o&&NARROW.matches);const t=$('#rtog');if(t)t.setAttribute('aria-expanded',String(o));el.inert=!o}
+ el.classList.toggle('open',o);document.body.classList.toggle('rail',o&&!CARDS_ONLY);const t=$('#rtog');if(t)t.setAttribute('aria-expanded',String(o));el.inert=!o}
 if(CARDS_ONLY)document.body.classList.add('co');/* cards-only: no side column and no header Wallet button; Wallet is the first item of the Profile menu */
-function togRail(){if(CARDS_ONLY){$('#logo')?.click();return}if(NARROW.matches)st.rdraw=!st.rdraw;else{STO.ui={...(STO.ui||{}),rail:!railOpen()};saveS()}rail()}
-NARROW.addEventListener('change',()=>{st.rdraw=false;rail()});
+function togRail(){if(CARDS_ONLY){$('#logo')?.click();return}STO.ui={...(STO.ui||{}),rail:!railOpen()};saveS();rail()}
 function render(){render0();rail();hero()}
 /* cards-only landing hero: story + numbers that come from the database at build time (build_screener.py HERO_SQL → D.meta.hero). No number is typed here; the build fails if this block carries a digit. */
 /*HERO-START*/
@@ -715,26 +715,26 @@ document.addEventListener('click',e=>{const g=e.target.closest('[data-hgo]');if(
  const t=e.target.closest('[data-hcov]');if(t){st.pl='cards';st.s='ins';st.g={...(st.g||{}),ins:INS_P.some(x=>x[0]==t.dataset.hcov)?'prot':'trv'};st.card=null;render();scrollTo(0,0)}});
 function render0(){$('#grp').hidden=true;$('#grp').innerHTML='';if(st.s=='trv'||st.s=='prot'){st.g={...(st.g||{}),ins:st.s};st.s='ins'}if(!PL.has(st.pl))st.pl='cards';if(!USR.has(st.s)&&!(S.some(s=>s.id==st.s)&&!HIDE.has(st.s)&&!SUBONLY.has(st.s)&&(!CTV()||CTV().includes(st.s)||st.s=='wfolder')))st.s='ov';syncLabels();save();BANK.bar();
  if(st.card&&st.pl=='home')st.pl='cards';
- if(st.pl=='home'&&!st.card&&!USR.has(st.s)){['#pre','#page','.wrap','#bar','#filters','#view'].forEach(q=>{const e=$(q);if(e)e.hidden=true});$('#tabs').innerHTML='';$('#ftoggle').hidden=true;return}
- if(!st.card&&!USR.has(st.s)&&(st.pl=='broker'||st.pl=='tel')){['#pre','#page','.wrap','#bar','#filters'].forEach(q=>{const e=$(q);if(e)e.hidden=true});$('#view').hidden=false;$('#ftoggle').hidden=true;$('#tabs').innerHTML=LTABS(st.pl);return renderLine(st.pl)}
- if(st.pl=='cards'&&st.s=='prom'&&!st.card){['#pre','#page','.wrap','#bar','#filters'].forEach(q=>{const e=$(q);if(e)e.hidden=true});$('#view').hidden=false;$('#ftoggle').hidden=true;$('#tabs').innerHTML=LINECFG.cards.tabs().map(s=>`<button data-s="${s.id}" class="${s.id==st.s?'on':''}">${s.name}</button>`).join('');return renderPromos('cards')}
+ if(st.pl=='home'&&!st.card&&!USR.has(st.s)){['#pre','#page','.wrap','#bar','#filters','#view'].forEach(q=>{const e=$(q);if(e)e.hidden=true});$('#tabs').innerHTML='';return}
+ if(!st.card&&!USR.has(st.s)&&(st.pl=='broker'||st.pl=='tel')){['#pre','#page','.wrap','#bar','#filters'].forEach(q=>{const e=$(q);if(e)e.hidden=true});$('#view').hidden=false;$('#tabs').innerHTML=LTABS(st.pl);return renderLine(st.pl)}
+ if(st.pl=='cards'&&st.s=='prom'&&!st.card){['#pre','#page','.wrap','#bar','#filters'].forEach(q=>{const e=$(q);if(e)e.hidden=true});$('#view').hidden=false;$('#tabs').innerHTML=LINECFG.cards.tabs().map(s=>`<button data-s="${s.id}" class="${s.id==st.s?'on':''}">${s.name}</button>`).join('');return renderPromos('cards')}
  if(st.pl=='bank'&&!st.card&&!USR.has(st.s))return BANK.render();const scr=S.find(s=>s.id==GKEY());
  const pg=!!st.card,vw=!pg&&VIEWS[st.s];$('#pre').hidden=pg||!!vw;$('#page').hidden=!pg;$('#view').hidden=!vw;$('.wrap').hidden=pg||!!vw;$('#bar').hidden=pg||!!vw;$('#filters').hidden=pg||!!vw;
- if(vw){$('#tabs').innerHTML='';$('#ftoggle').hidden=true;return vw()}
+ if(vw){$('#tabs').innerHTML='';return vw()}
  if(pg){closeM();$('#tabs').innerHTML=LINECFG.cards.tabs().map(s=>`<button data-s="${s.id}">${s.name}</button>`).join('');return renderCard(C[BYID[st.card]])}
  $('#tabs').innerHTML=LINECFG.cards.tabs().map(s=>{const k=s.f.filter(f=>st.f[f[0]]!=null).length;return`<button data-s="${s.id}" class="${s.id==st.s?'on':''}">${s.name}${k?`<span class=dot>${k}</span>`:''}</button>`}).join('');
  if(GROUPS[st.s]){const gk=GKEY();$('#grp').hidden=false;$('#grp').setAttribute('aria-label',(S.find(x=>x.id==st.s)||{}).name+' view');$('#grp').innerHTML=GROUPS[st.s].map(([id,n])=>`<button type=button data-g="${id}" class="${id==gk?'on':''}"${id==gk?' aria-current=true':''}>${n}${(()=>{const k=S.find(x=>x.id==id).f.filter(f=>st.f[f[0]]!=null).length;return k?`<span class=dot>${k}</span>`:''})()}</button>`).join('')}
  $('#filters').innerHTML=scr.f.map(([id,l,o,m])=>m?`<label>${l}<details class="ms ${st.f[id]?.length?'set':''}"><summary>${st.f[id]?.length?st.f[id].length+' selected':'Any'}</summary><div>${o.map((x,i)=>`<label class=ck><input type=checkbox data-fm="${id}" value="${i}" ${st.f[id]?.includes(i)?'checked':''}> ${esc(x[0])}</label>`).join('')}</div></details></label>`:`<label>${l}<select data-f="${id}" class="${st.f[id]!=null?'set':''}"><option value="">Any</option>${o.map((x,i)=>`<option value="${i}" ${st.f[id]==i?'selected':''}>${esc(x[0])}</option>`).join('')}</select></label>`).join('');
- $('#filters').style.display=scr.f.length?'':'none';{const na=Object.keys(st.f).filter(k=>FI[k]).length,fc=STO.ui?.fcol===true;$('#filters').insertAdjacentHTML('afterbegin',`<div id=fhead><button type=button id=fcol aria-expanded=${!fc} aria-controls=filters aria-label="Filters${na?', '+na+' active':''}">Filters</button><button type=button id=freset data-x=__f aria-label="Reset filters${na?', '+na+' active':''}"${na?'':' disabled'}>Reset</button></div>`);$('#filters').classList.toggle('fcol',fc);$('#filters').insertAdjacentHTML('beforeend','<button id=fdone type=button>Show results</button>')}
- document.body.classList.toggle('full',!!st.full);const nf=Object.keys(st.f).filter(k=>FI[k]).length;$('#ftoggle').textContent='Filters';$('#ftoggle').setAttribute('aria-label','Filters'+(nf?', '+nf+' active':''));$('#ftoggle').hidden=!scr.f.length;$('#ftoggle').setAttribute('aria-controls','filters');$('#ftoggle').setAttribute('aria-expanded',String($('#filters').classList.contains('open')));
+ $('#filters').style.display=scr.f.length?'':'none';{const na=Object.keys(st.f).filter(k=>FI[k]).length,fc=STO.ui?.fcol===true;$('#filters').insertAdjacentHTML('afterbegin',`<div id=fhead><button type=button id=fcol aria-expanded=${!fc} aria-controls=filters aria-label="Filters${na?', '+na+' active':''}">Filters</button><button type=button id=freset data-x=__f aria-label="Reset filters${na?', '+na+' active':''}"${na?'':' disabled'}>Reset</button></div>`);$('#filters').classList.toggle('fcol',fc)}
+ 
  const R=rows(),chips=Object.entries(st.f).filter(([id])=>FI[id]).map(([id,i])=>`<span class=chip><i>${FI[id].s.name} ·</i> ${FI[id].l} ${CHIPI[id]&&!Array.isArray(i)?icoCell(CHIPI[id],FI[id].o[i][0]):''} ${esc(Array.isArray(i)?i.map(j=>FI[id].o[j][0]).join(' or '):FI[id].o[i][0])}<button data-x="${id}" aria-label="Remove">×</button></span>`);
  if(st.q)chips.push(`<span class=chip><i>Search ·</i> “${esc(st.q)}”<button data-x="__q">×</button></span>`);
  const SL=k=>k=='n'?'Card':String(COL[k]?.[0]||k).replace(/<[^>]+>/g,'').trim();
  if(st.sort&&(st.sort=='n'||COL[st.sort])&&!['val'].includes(st.s))chips.push(`<span class=chip><i>Sort ·</i> ${esc(SL(st.sort))} ${st.dir>0?'▴':'▾'}<button data-x="__sort" aria-label="Reset sort">×</button></span>`);
  $('#pre').innerHTML=PRESETS().map(p=>`<a href="#preset/${p.id}" class="pchip ${curPre()==p.id?'on':''}" data-pre="${p.id}">${esc(p.n)}</a>`).join('');
- $('#bar').innerHTML=`<span class=count>${R.length} <span>of ${C.filter(LIVE).length} cards</span></span>${chips.join('')}${chips.length?'<button class=clr data-x="__all">Clear all</button>':''}${st.s=='ins'?'<button class=how data-pttwhy>How the PTT Score is estimated</button>':''}${st.s!='val'?`<button class="mfull ${st.full?'on':''}" data-full>${st.full?'Compact':'Full table'}</button>`:''}`;
+ $('#bar').innerHTML=`<span class=count>${R.length} <span>of ${C.filter(LIVE).length} cards</span></span>${chips.join('')}${chips.length?'<button class=clr data-x="__all">Clear all</button>':''}${st.s=='ins'?'<button class=how data-pttwhy>How the PTT Score is estimated</button>':''}`;
  if(st.s=='val')return renderVal();
- const mob=MOB.matches&&!st.full&&MCOL[GKEY()],cols=['n',...(mob?MCOL[GKEY()]:scr.cols)];
+ const cols=['n',...scr.cols];
  let sk=st.sort&&(st.sort=='n'||COL[st.sort])?st.sort:(st.s=='rw'?'best':st.s=='fees'?'fee':st.s=='ins'?(GKEY()=='prot'?'covP':'covT'):'best');
  const dir=st.sort==sk?st.dir:(sk=='fee'||sk=='apr'||sk=='fx'?1:-1);
  const key=sk=='n'?c=>c.n:COL[sk][2];
@@ -745,7 +745,7 @@ function render0(){$('#grp').hidden=true;$('#grp').innerHTML='';if(st.s=='trv'||
 function renderVal(){const P=D.val.programs,cnt=p=>C.filter(c=>c.prog==p).length,rt=(p,k)=>p.routes&&p.routes[k];
  const VC=[['cpp','Baseline ¢/pt',p=>p.cpp],['cash','Cash / statement credit',p=>rt(p,'cash')?.[0]],['travel','Travel (fixed / portal)',p=>rt(p,'travel')?.[0]],['transfer','Transfer partners',p=>rt(p,'transfer')?.[0]],['gift','Gift cards / merchandise',p=>rt(p,'gift')?.[0]],['cards','Cards',p=>cnt(p.program)]];
  const vf=st.vf||{},VF=[['c1','Cash / statement credit ≥ 1¢',p=>rt(p,'cash')?.[0]>=1],['t1','Travel (fixed / portal) ≥ 1¢',p=>rt(p,'travel')?.[0]>=1],['tr','Transfer partners: any',p=>rt(p,'transfer')?.[0]>0]];
- $('#filters').style.display='';$('#ftoggle').hidden=false;$('#filters').innerHTML=VF.map(([k,l])=>`<label class=ck><input type=checkbox data-vf="${k}" ${vf[k]?'checked':''}> ${l}</label>`).join('');
+ $('#filters').style.display='';$('#filters').innerHTML=VF.map(([k,l])=>`<label class=ck><input type=checkbox data-vf="${k}" ${vf[k]?'checked':''}> ${l}</label>`).join('');
  const sk=st.vsort||'cpp',dir=st.vdir||-1,col=VC.find(x=>x[0]==sk)||VC[0];
  const L=P.filter(p=>VF.every(([k,,f])=>!vf[k]||f(p))).sort((a,b)=>nlast(col[2](a),col[2](b),dir)||a.program.localeCompare(b.program));
  $('.count').innerHTML=`${L.length} <span>of ${P.length} programs</span>`;
@@ -793,7 +793,7 @@ function cardHTML(c,full,ctx){const kv=(l,v,f)=>`<div><span>${l}:</span> ${v??'<
    deep:()=>`<table><tr><th>Welcome offer</th><td>${c.offer?esc(c.offer):'<span class=u>None public</span>'}</td></tr><tr><th>Spend requirement</th><td>${esc(c.pro.spend||'—')}</td></tr><tr><th>Apply by</th><td>${esc(c.odl||'—')}</td></tr><tr><th>First-year fee</th><td>${esc([c.pro.fyf,c.pro.fyfm].filter(Boolean).join(' · ')||'—')}</td></tr><tr><th>Offer captured</th><td>${esc(c.pro.d||'—')}</td></tr></table>
     ${c.credd.length?`<h4>Credits & bonuses</h4><table><tr><th>Credit</th><th>Value</th><th>Cap</th><th>Conditions</th></tr>${c.credd.map(m=>`<tr><td>${esc(m.t)}</td><td>${esc(m.v||'')}</td><td>${esc(m.cap||'')}</td><td>${esc(m.cond||'')} ${m.ev?'<span class=t>'+esc(m.ev)+'</span>':''}</td></tr>`).join('')}</table>`:''}
     ${c.perkd.length?`<h4>Partner perks</h4><table><tr><th>Perk</th><th>What you get</th><th>Conditions</th></tr>${c.perkd.map(m=>`<tr><td>${esc(m.n)}</td><td>${esc(m.v||m.m||'')}</td><td>${esc(m.cond||'')} ${m.cs?'<span class=t>'+esc(m.cs)+'</span>':''}</td></tr>`).join('')}</table>`:''}${srcL(srcF(/offer|promo|perk|benefit|product page/i))}`}};
- const head=`<h2>${esc(c.n)}${c.st=='discontinued'?'<span class=disc>Discontinued</span>':''}${soonB(c)}</h2><div class=mute>${esc(c.i)} · ${esc(c.nw||'')} ${esc(c.tier||'')} · ${esc(c.cur||'')}${VE(c,'currency')} · ${esc(c.acct||'')}${VE(c,'account_type')} · status: ${esc(c.st)}</div>`;
+ const head=`<h2>${esc(c.n)}${c.st=='discontinued'?'<span class=disc>Discontinued</span>':''}${soonB(c)}</h2><div class=mute>${esc(c.i)} · ${esc(c.nw||'')} ${esc(c.tier||'')}</div>`;
  const tail=`<h3>Evidence tags</h3><div class=kv>${Object.entries(c.ve).map(([f,v])=>`<div title="${esc(v[1]||'')}"><span>${esc(f)}:</span> <span class=t>${esc(v[0])}</span></div>`).join('')||'<span class=u>—</span>'}</div>
  <h3>Sources</h3><div style="font-size:12.5px">${c.url?'Issuer page: '+lnk(c.url)+'<br>':''}${c.srcs.map(x=>`${lnk(x.u)} <span class=mute>${esc(x.t||'')} · ${esc(x.d||'')}${x.vs&&x.vs!='VERIFIED'?' · '+esc(x.vs):''}</span>`).join('<br>')}</div>
  <p class=mute>Data as of ${esc(c.snap)}.</p>`;
@@ -814,19 +814,16 @@ function openM(c,full){$('#mc').innerHTML=cardHTML(c,0,full?null:st.s)+acts(c);
  $('#mbg').classList.add('on');$('#mbg').setAttribute('aria-hidden','false');$('#mx').focus()}
 const closeM=()=>{$('#mbg').classList.remove('on');$('#mbg').setAttribute('aria-hidden','true')};
 document.addEventListener('click',e=>{const b=e.target.closest('#grp [data-g]');if(!b)return;e.stopImmediatePropagation();st.g={...(st.g||{}),[st.s]:b.dataset.g};st.sort=null;render();const n=$('#grp [data-g].on');if(n)n.focus()},true);
+document.addEventListener('keydown',e=>{const b=e.target.closest?.('#nav3 nav button');if(b&&['ArrowRight','ArrowLeft','Home','End'].includes(e.key)){const L=[...b.closest('nav').querySelectorAll('button')],i=L.indexOf(b),n=e.key=='Home'?0:e.key=='End'?L.length-1:(i+(e.key=='ArrowRight'?1:-1)+L.length)%L.length;e.preventDefault();L[n].focus()}});
 document.addEventListener('keydown',e=>{if(e.key=='Escape')closeM();if((e.key=='Enter'||e.key==' ')&&e.target.dataset?.mf){e.preventDefault();e.target.click()}if((e.key=='Enter'||e.key==' ')&&e.target.dataset?.wtile!=null){e.preventDefault();openM(C[+e.target.dataset.wtile])}if((e.key=='Enter'||e.key==' ')&&e.target.classList?.contains('prow')){e.preventDefault();e.target.click()}if(e.key=='Enter'&&e.target.id=='logo'){st.s='ov';st.card=null;render()}});
-const fclose=()=>{$('#filters').classList.remove('open');$('#fbg')?.remove();$('#ftoggle')?.setAttribute('aria-expanded','false')};
-document.addEventListener('keydown',e=>{if(e.key=='Escape'&&$('#filters')?.classList.contains('open')){fclose();$('#ftoggle')?.focus()}});
-document.addEventListener('click',e=>{if(e.target.id=='fdone'||e.target.id=='fbg'){fclose();return}
+document.addEventListener('click',e=>{
  if(e.target.closest('#fcol')){STO.ui={...(STO.ui||{}),fcol:STO.ui?.fcol!==true};saveS();render();$('#fcol')?.focus();return}
  {const mx=e.target.closest('[data-subsx]');if(mx){e.stopPropagation();STO.wallet.services=(STO.wallet.services||[]).filter(k=>k!=mx.dataset.subsx);saveS();render();return}}
  {const ms=e.target.closest('[data-subscriptions]');if(ms){const k=ms.dataset.subscriptions,S2=new Set(STO.wallet.services||[]);ms.checked?S2.add(k):S2.delete(k);STO.wallet.services=[...S2];saveS();render();return}}
- if(e.target.closest('#rtog')){togRail();return}if(e.target.id=='urbg'){st.rdraw=false;rail(1);return}if(NARROW.matches&&e.target.closest('#urail [data-s]'))st.rdraw=false;
+ if(e.target.closest('#rtog')){togRail();return}
  {const t=e.target;if(t.closest('[data-pelig]')){st.pelig=t.closest('[data-pelig]').checked;render();return}if(t.closest('[data-pend]')){st.pend=t.closest('[data-pend]').checked;render();return}const py=t.closest('[data-pty]');if(py){st.pty=py.dataset.pty;render();return}const pb=t.closest('[data-pdf]');if(pb){pdfModal(pb.dataset.pdf,pb.dataset.pdft,pb.dataset.pdfd);return}if(t.closest('[data-pdfx]')||t.id=='pdfm'){$('#pdfm')?.remove();return}}
  {const t=e.target,ps=t.closest('[data-psort]'),pr=t.closest('tr.prow');if(ps){const k=ps.dataset.psort,o=st.psort||{k:'v',d:-1};st.psort={k,d:o.k==k?-o.d:(['v','mp','aum'].includes(k)?-1:1)};render();return}if(pr&&!t.closest('a,button,label')){st.popen=st.popen==pr.dataset.pk?null:pr.dataset.pk;render();return}}
 {const t=e.target,cg=t.closest('[data-cardgo]'),sg=t.closest('[data-subsgo]');if(cg){st.pl='cards';st.card=cg.dataset.cardgo;render();scrollTo(0,0);return}if(sg){const k=sg.dataset.subsgo;st.subo=st.s=='subscriptions'&&st.subo==k?null:k;st.s='subscriptions';st.card=null;render();document.querySelector(`[data-sub="${k}"]`)?.scrollIntoView({block:'nearest'});return}}
- if(e.target.closest('[data-full]')){st.full=!st.full;render();return}
- if(MOB.matches&&!st.full){const r=e.target.closest('#tb tr[data-i]');if(r&&!e.target.closest('a')){openM(C[r.dataset.i]);return}}
  if(e.target.id=='mbg'||e.target.id=='mx'){closeM();return}
  {const b=e.target.closest('[data-my1]');if(b){st.my1=+b.dataset.my1;render();return}}
  if(e.target.closest('[data-mdiff]')){st.mdiff=e.target.checked;render();return}
@@ -842,8 +839,7 @@ document.addEventListener('click',e=>{if(e.target.id=='fdone'||e.target.id=='fbg
  if(e.target.closest('#modal'))return;
  const m=e.target.closest('[data-m]');if(m){e.stopPropagation();openM(C[m.dataset.m]);return}
  if(e.target.closest('#logo')){st.pl='home';st.s='ov';st.card=null;render();window.scrollTo(0,0);return}
- const t=e.target.closest('[data-s],[data-x],[data-k],tr[data-i],#ftoggle');if(!t)return;
- if(t.id=='ftoggle'){$('#filters').classList.add('open');t.setAttribute('aria-expanded','true');document.body.insertAdjacentHTML('beforeend','<div id=fbg></div>');return}
+ const t=e.target.closest('[data-s],[data-x],[data-k],tr[data-i]');if(!t)return;
  if(t.dataset.s){st.s=t.dataset.s;st.card=null}else if(t.dataset.x){const x=t.dataset.x;if(x=='__all'){st.f={};st.q='';$('#q').value=''}else if(x=='__f'){st.f={}}else if(x=='__sort'){st.sort=null;st.dir=-1}else if(x=='__q'){st.q='';$('#q').value=''}else delete st.f[x]}
  else if(t.dataset.k){const k=t.dataset.k;if(st.sort==k)st.dir=-st.dir;else{st.sort=k;st.dir=(k=='n'||k=='fee'||k=='apr'||k=='fx'||COL[k]?.[1]=='l')?1:-1}}
  else if(t.dataset.i){if(st.s!='ins')return;let n=t.nextElementSibling;if(n&&n.classList.contains('det')){while(n&&n.classList.contains('det')){const x=n.nextElementSibling;n.remove();n=x}t.classList.remove('op');return}const c=C[t.dataset.i];t.classList.add('op');t.insertAdjacentHTML('afterend',insSub(c,[...$('#th tr').children].map(h=>h.dataset.k)));return;
@@ -930,7 +926,6 @@ document.addEventListener('click',e=>{if(!e.target.closest('[data-plnow]'))retur
 /* v3.5.2: the card name itself opens its popup (click, Enter/Space, or hover after a short pause on pointer devices). */
 {let ht;const HOV=matchMedia('(hover:hover) and (pointer:fine)');document.addEventListener('mouseover',e=>{const b=e.target.closest&&e.target.closest('.nmb');if(!b||!HOV.matches)return;clearTimeout(ht);ht=setTimeout(()=>{if(b.matches(':hover')&&!document.querySelector('#mbg.on'))b.click()},450)});document.addEventListener('mouseout',e=>{if(e.target.closest&&e.target.closest('.nmb'))clearTimeout(ht)})}
 
-document.addEventListener('keydown',e=>{if(e.key=='Escape'&&st.rdraw){st.rdraw=false;rail();$('#rtog')?.focus()}});
 
 /* v3.5.9 archived terms viewer: our dated PDF copy in an in-app modal (close, open in new tab, download) */
 function pdfModal(u,t,d){$('#pdfm')?.remove();document.body.insertAdjacentHTML('beforeend',`<div id=pdfm role=dialog aria-modal=true aria-label="Archived terms"><div class=pdfbox><div class=pdfhd><div><b>${esc(t)}</b><small>Archived ${esc(fmtD(d))}</small></div><a class=btn href="${esc(u)}" target=_blank rel=noopener>Open in new tab ↗</a><a class=btn href="${esc(u)}" download>Download</a><button type=button class=btn data-pdfx aria-label=Close>✕</button></div><iframe src="${esc(u)}#view=FitH" title="Archived terms PDF"></iframe></div></div>`);$('#pdfm [data-pdfx]').focus()}

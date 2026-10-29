@@ -1,7 +1,7 @@
 :root{--bg:#f6f7f9;--card:#fff;--ink:#14171c;--mute:#5f6673;--line:#e5e7eb;--acc:#1d4ed8;--accl:#e8efff;--good:#0a7a3d;--bad:#b42318;--hd:#f1f3f6;--onacc:#fff;--teal:#0f766e;--tealbg:#0f766e;--badbg:#b42318;--warnbg:#9a3412;--winbg:#ecfdf5;--notebg:#fff7e6;--notebd:#f0c36d;--bGb:#dcfce7;--bGf:#166534;--bFb:#fef3c7;--bFf:#92400e;--bWb:#fee2e2;--bWf:#991b1b;--ph:#5f6673;color-scheme:light}
 :root[data-theme=dark]{--bg:#0d1014;--card:#151a21;--ink:#e6e9ee;--mute:#9aa3b2;--line:#2c3440;--acc:#6ea0ff;--accl:#1b2a45;--good:#4ade80;--bad:#f87171;--hd:#1a2029;--onacc:#0b1220;--teal:#2dd4bf;--tealbg:#115e59;--badbg:#991b1b;--warnbg:#9a3412;--winbg:#0f2e1f;--notebg:#3a2a0a;--notebd:#a16207;--bGb:#14532d;--bGf:#bbf7d0;--bFb:#713f12;--bFf:#fde68a;--bWb:#7f1d1d;--bWf:#fecaca;--ph:#9aa3b2;color-scheme:dark}
 @media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0d1014;--card:#151a21;--ink:#e6e9ee;--mute:#9aa3b2;--line:#2c3440;--acc:#6ea0ff;--accl:#1b2a45;--good:#4ade80;--bad:#f87171;--hd:#1a2029;--onacc:#0b1220;--teal:#2dd4bf;--tealbg:#115e59;--badbg:#991b1b;--warnbg:#9a3412;--winbg:#0f2e1f;--notebg:#3a2a0a;--notebd:#a16207;--bGb:#14532d;--bGf:#bbf7d0;--bFb:#713f12;--bFf:#fde68a;--bWb:#7f1d1d;--bWf:#fecaca;--ph:#9aa3b2;color-scheme:dark}}
-*{box-sizing:border-box}body{margin:0;font:14px/1.35 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+*{box-sizing:border-box}/* phones get the desktop layout: the viewport meta is width=1024 and the page never reflows below 1024px (it scrolls or scales) */body{min-width:1024px;margin:0;font:14px/1.35 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;background:var(--bg);color:var(--ink)}
 header{display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
 .logo{font-weight:800;letter-spacing:-.02em;font-size:17px}.logo b{color:var(--acc)}
 #q{flex:1;max-width:320px;margin-left:auto;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
@@ -24,12 +24,12 @@ nav button.on{color:var(--ink);border-color:var(--acc)}nav button[data-s=wallet]
 /* filter panel header (finviz-style, sober): collapse toggle, active count, one-click reset; the count stays visible when collapsed */
 #fhead{grid-column:1/-1;display:flex;align-items:center;justify-content:flex-end;gap:8px;min-height:24px;padding-bottom:4px;border-bottom:1px solid var(--line);font-size:12px}
 /* pill buttons (Filters toggle, Reset): neutral when off, accent when the panel is on; no counts in the text (the aria-label carries them) */
-#fcol,#freset,#ftoggle{display:inline-flex;align-items:center;justify-content:center;min-height:30px;box-sizing:border-box;padding:5px 16px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);font:600 12px/1 inherit;text-transform:none;letter-spacing:0;text-decoration:none;cursor:pointer}
-#fcol:hover,#freset:not(:disabled):hover,#ftoggle:hover{border-color:var(--acc)}
-#fcol[aria-expanded=true],#ftoggle[aria-expanded=true]{background:var(--acc);border-color:var(--acc);color:var(--onacc)}
+#fcol,#freset{display:inline-flex;align-items:center;justify-content:center;min-height:30px;box-sizing:border-box;padding:5px 16px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);font:600 12px/1 inherit;text-transform:none;letter-spacing:0;text-decoration:none;cursor:pointer}
+#fcol:hover,#freset:not(:disabled):hover{border-color:var(--acc)}
+#fcol[aria-expanded=true]{background:var(--acc);border-color:var(--acc);color:var(--onacc)}
 #freset:disabled{opacity:.45;cursor:default}
 #fcol:focus-visible,#freset:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
-@media(min-width:641px){#filters.fcol>:not(#fhead){display:none}#filters.fcol{padding-bottom:6px}#filters.fcol #fhead{border-bottom:0;padding-bottom:0}}
+#filters.fcol>:not(#fhead){display:none}#filters.fcol{padding-bottom:6px}#filters.fcol #fhead{border-bottom:0;padding-bottom:0}
 /* every filter row: one box width (118px); flex:none so long labels wrap instead of shrinking the box */
 #filters select{width:118px;flex:none;height:24px;padding:2px 4px;border:1px solid var(--line);border-radius:3px;background:var(--bg);color:var(--ink);font:12px inherit}
 #filters select.set{border-color:var(--acc);background:var(--accl);color:var(--ink);font-weight:600}
@@ -38,7 +38,6 @@ nav button.on{color:var(--ink);border-color:var(--acc)}nav button[data-s=wallet]
 .chip{display:inline-flex;align-items:center;gap:6px;padding:4px 6px 4px 10px;border-radius:14px;background:var(--accl);color:var(--ink);font-size:12px;border:1px solid transparent}
 .chip i{font-style:normal;color:var(--mute)}.chip button{border:0;background:none;color:var(--mute);cursor:pointer;font-size:14px;line-height:1;padding:0 2px}
 .chip button:hover{color:var(--bad)}.clr{border:0;background:none;color:var(--acc);cursor:pointer;font-size:12px}
-#ftoggle{display:none}
 .wrap{overflow:auto;max-height:calc(100vh - 150px);margin:0 16px 16px;border:1px solid var(--line);border-radius:10px;background:var(--card)}
 table{border-collapse:separate;border-spacing:0;width:100%;font-variant-numeric:tabular-nums}
 th,td{padding:7px 10px;border-bottom:1px solid var(--line);white-space:nowrap;text-align:right}
@@ -61,7 +60,6 @@ tr:hover td{background:var(--accl)}tr.op td{background:var(--accl)}
 #mx{position:absolute;top:10px;right:12px;border:0;background:none;font-size:22px;color:var(--mute);cursor:pointer}
 .kv{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:4px 16px;font-size:13px}.kv div span{color:var(--mute)}
 .disc{display:inline-block;background:var(--badbg);color:#fff;border-radius:4px;padding:1px 6px;font-size:11px;margin-left:6px}
-@media(max-width:700px){#mbg{padding:0;align-items:stretch}#modal{max-height:100vh;border-radius:0;padding:14px}}
 [hidden]{display:none!important}
 .ofr{border-bottom:1px dotted var(--mute);cursor:help;outline-offset:2px}
 #ofp{position:fixed;z-index:40;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.25);padding:10px 12px;font-size:12.5px;white-space:normal;text-align:left}
@@ -88,9 +86,7 @@ details.ms{position:relative;width:118px;flex:none}details.ms summary{list-style
 details.ms.set summary{border-color:var(--acc);background:var(--accl);font-weight:600}details.ms>div{position:absolute;right:0;z-index:12;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:6px;box-shadow:0 6px 20px rgba(0,0,0,.15);min-width:240px;max-height:300px;overflow:auto}
 label.ck{display:flex!important;justify-content:flex-start!important;gap:6px;padding:4px 2px;color:var(--ink)!important;min-height:28px;align-items:center}
 
-.mfull{display:none}
 
-@media(min-width:641px){#fdone,#fbg{display:none!important}}
 .wrap{cursor:grab}.wrap.drag{cursor:grabbing;user-select:none}.wrap a,.wrap button,.wrap input,.wrap select,.wrap th{cursor:pointer}
 #page{margin:0 16px 16px;padding:18px 22px;background:var(--card);border:1px solid var(--line);border-radius:10px;max-width:980px}
 #page h2{margin:0 0 2px;font-size:22px}#page h3{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--mute);margin:18px 0 6px}
@@ -100,7 +96,6 @@ label.ck{display:flex!important;justify-content:flex-start!important;gap:6px;pad
 .btn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:6px 10px;font:600 12px inherit;cursor:pointer;text-decoration:none;display:inline-block}
 .btn.on{background:var(--accl);border-color:var(--acc)}.back{border:0;background:none;color:var(--acc);cursor:pointer;font:600 13px inherit;padding:0;margin-bottom:10px}
 .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
-@media(max-width:700px){#page{margin:0;border-radius:0;border-left:0;border-right:0;padding:14px}}
 
 .mspend{border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--bg);position:sticky;top:12px;max-height:calc(100vh - 40px);overflow:auto}
 .mspend summary{font-weight:700;font-size:13px;cursor:pointer;margin-bottom:6px}.mspend summary .mute{font-weight:400;display:block;font-size:11px}
@@ -174,8 +169,6 @@ table.kv{width:100%;border-collapse:collapse;font-size:13px}table.kv th{width:34
 .sgrp .amt{width:100%;box-sizing:border-box}
 
 @media(max-width:1360px){.mx{grid-template-columns:320px minmax(0,1fr)}}
-@media(max-width:860px){#view:has(.mx){padding:8px 12px 16px}.mx{grid-template-columns:minmax(0,1fr);gap:16px}.mx .mspend{position:static;max-height:none;order:1}}
-@media(max-width:380px){.sgrp{grid-template-columns:minmax(0,1fr)}}
 
 /* v3.4.4 coverage icons */
 .covl{display:inline-flex;align-items:center;gap:10px}
@@ -232,11 +225,8 @@ body.rail{padding-left:212px}body.rail>header{margin-left:-212px}
 /* sub-tab row (folder tabs under the top tabs): equal width */
 #tabs button,#grp button{flex:1 1 0;max-width:150px;min-width:0;padding-left:8px;padding-right:8px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .vt tr.theld td{background:color-mix(in srgb,var(--acc) 6%,transparent)}.tmine{font-size:11px;color:var(--acc);font-weight:600}
-#urbg{position:fixed;inset:0;background:rgb(0 0 0/.35);z-index:24}
-@media(max-width:900px){#urail{top:0;width:min(82vw,280px);z-index:40;box-shadow:4px 0 24px rgb(0 0 0/.2)}#urbg{z-index:39}}
 @media(prefers-reduced-motion:reduce){#urail,.lmark{transition:none}}
 #urail .ri{color:var(--ink);border:0;margin:0;box-shadow:none}#urail .ri.on{color:var(--acc);background:color-mix(in srgb,var(--acc) 12%,transparent)}#urail .ri:not(.on):hover{background:var(--bg)}
-#urbg:not([hidden]){display:block}
 /* v3.5.3 Services is a cross-section graph view: violet accent on its section tab (WCAG AA on both themes). */
 :root{--subs:#6d28d9;--subsbg:#f3efff}[data-theme=dark]{--subs:#b79cff;--subsbg:#241c3d}
 labellabel
@@ -252,9 +242,6 @@ header .logo{padding-left:0!important;margin-left:-6px!important}header .rtog{ma
 .lnk{all:unset;cursor:pointer;color:var(--acc,#2563eb);text-decoration:underline}.kidb{margin-right:10px}
 
 .phero{grid-template-columns:1.4fr 1.4fr 1fr 1fr}.ptot b{font-size:24px!important;line-height:1.2}.ptot b em{font-style:normal;font-size:12px;font-weight:500;color:var(--mute)}.ptot span{line-height:1.35}
-@media(max-width:760px){.phero{grid-template-columns:1fr 1fr}.phero .ptot{grid-column:1/-1}
-
-}
 /* ===== v3.5.8 global layout: ONE centered container for every view. Tune per device via these variables only. ===== */
 :root{--content-max:1320px;--gutter:24px}
 @media(max-width:1100px){:root{--gutter:16px}}
@@ -288,19 +275,11 @@ header .logo{padding-left:0!important;margin-left:-6px!important}header .rtog{ma
 .pdet td{padding:4px 18px 16px 30px;background:color-mix(in srgb,var(--prem) 8%,transparent);border-bottom:1px solid var(--line)}
 .pdl{display:grid;grid-template-columns:max-content 1fr;gap:6px 18px;margin:0;font-size:13.5px;line-height:1.45;max-width:980px}.pdl dt{color:var(--mute);font-weight:600}.pdl dd{margin:0}
 .ptab2 tr.pdq td{opacity:.55}
-@media(max-width:760px){.ptw{border:0;overflow:visible}.ptab2,.ptab2 tbody,.ptab2 tr,.ptab2 td{display:block;width:auto}.ptab2 thead{display:block}.ptab2 thead tr{display:flex;gap:6px;overflow-x:auto;padding:0 0 10px}.ptab2 th{position:static;border:1px solid var(--line);border-radius:999px;background:var(--bg);flex:0 0 auto}.ptab2 th button{padding:8px 12px;min-height:28px}
-.ptab2 tr.prow{display:grid;grid-template-columns:1fr auto;gap:2px 10px;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:0 0 10px;background:var(--card)}
-.ptab2 tr.prow td{border:0;padding:2px 0;text-align:left;white-space:normal;min-width:0}.ptab2 tr.prow td.l{grid-column:1/2}.ptab2 tr.prow td.pv{grid-column:2/3;grid-row:1;text-align:right}
-.ptab2 tr.prow td:nth-child(2),.ptab2 tr.prow td:nth-child(4){display:none}
-.ptab2 tr.prow td:nth-child(5)::before{content:'Match ';color:var(--mute);font-size:12px}.ptab2 tr.prow td:nth-child(7)::before{content:'Window (d) ';color:var(--mute);font-size:12px}.ptab2 tr.prow td:nth-child(8)::before{content:'Expiry ';color:var(--mute);font-size:12px}.ptab2 tr.prow td:nth-child(9)::before{content:'Holding (d) ';color:var(--mute);font-size:12px}.ptab2 tr.prow td:nth-child(10)::before{content:'Min ';color:var(--mute);font-size:12px}
-.ptab2 tr.prow td:nth-child(n+5){font-size:13.5px}.ptab2 tr.prow td:last-child small{display:inline;margin-left:8px}.ptab2 tr.prow td.paum::before{content:'At my AUM ';color:var(--mute);font-size:12px}
-.ptab2 tr.pdet{display:block;margin:-12px 0 10px;border:1px solid var(--line);border-top:0;border-radius:0 0 12px 12px}.ptab2 tr.pdet td{display:block;padding:10px 14px}.pdl{grid-template-columns:1fr;gap:2px}.pdl dd{margin-bottom:6px}}
 /* v358-fit */
 .ptab2 td:nth-child(n+5):not(:last-child){white-space:normal;min-width:84px}.ptab2 td:last-child{min-width:70px}
 
-.ptab2 td:nth-child(6){white-space:nowrap!important}@media(max-width:760px){.ptab2 td:nth-child(6){white-space:normal!important}}
-.ptab2 tr.pdet td{white-space:normal;text-align:left}@media(hover:none){.prow:hover td{background:none}}@media(max-width:760px){.ptab2 tr.prow td{background:none!important}.ptab2 tr.prow.open{background:color-mix(in srgb,var(--prem) 6%,var(--card));border-radius:12px 12px 0 0;margin-bottom:0}.ptab2 tr.pdet{margin:0 0 10px;background:color-mix(in srgb,var(--prem) 6%,var(--card))}.ptab2 tr.pdet td{background:none;border:0}}
-.vnote{margin-top:16px;font-size:13px;color:var(--mute)}.vnote summary{cursor:pointer;font-weight:600}.vnote>div{margin-top:6px;line-height:1.45}.wlay:not(:has(.wside)){grid-template-columns:minmax(0,1fr)}.wlay:not(:has(.wside)) .wmain{max-width:none!important}
+.ptab2 td:nth-child(6){white-space:nowrap!important}
+.ptab2 tr.pdet td{white-space:normal;text-align:left}@media(hover:none){.prow:hover td{background:none}}.vnote{margin-top:16px;font-size:13px;color:var(--mute)}.vnote summary{cursor:pointer;font-weight:600}.vnote>div{margin-top:6px;line-height:1.45}.wlay:not(:has(.wside)){grid-template-columns:minmax(0,1fr)}.wlay:not(:has(.wside)) .wmain{max-width:none!important}
 .soon{display:block;color:var(--ink);font-size:14px;margin-left:0}.soon p{margin:0;line-height:1.5}
 
 /* v3.5.9 archived-terms modal, status, % match highlight */
@@ -312,7 +291,6 @@ header .logo{padding-left:0!important;margin-left:-6px!important}header .rtog{ma
 #pdfm .pdfbox{background:var(--card,#fff);border-radius:14px;width:min(1000px,100%);height:min(90vh,1100px);display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
 #pdfm .pdfhd{display:flex;gap:8px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line)}#pdfm .pdfhd>div{flex:1;min-width:0}#pdfm .pdfhd b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#pdfm .pdfhd small{color:var(--mute)}
 #pdfm iframe{flex:1;border:0;width:100%;background:#525659}
-@media(max-width:760px){#pdfm{padding:0}#pdfm .pdfbox{border-radius:0;height:100%}#pdfm .pdfhd{flex-wrap:wrap}#pdfm .pdfhd>div{flex-basis:100%}#pdfm .btn{font-size:12.5px;padding:6px 10px}}
 /* v3.5.10 info popups: commentary behind ⓘ (hover, focus or tap) */
 .ip{position:relative;display:inline-block;margin-left:5px;color:var(--mute);font-size:12px;cursor:help;vertical-align:middle;line-height:1}
 .ip:hover,.ip:focus{color:var(--prem);outline:none}
@@ -326,9 +304,9 @@ header .logo{padding-left:0!important;margin-left:-6px!important}header .rtog{ma
 .aws ul{list-style:none;margin:0 0 8px;padding:0}.aws li{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line);font-size:14px}.aws li small{display:block;color:var(--mute);font-size:12px}
 .awadd{display:flex;gap:6px}.awadd input{flex:1;min-width:0;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
 .phld{font-style:normal;color:var(--prem);font-size:11.5px;white-space:nowrap}
-@media(min-width:761px){.ptab2{font-size:14px}.ptab2 td{padding:12px 6px}.ptab2 th button{padding:12px 6px;font-size:10.5px;letter-spacing:.02em}.ptab2 td:nth-child(n+5):not(:last-child){min-width:0;white-space:nowrap}.ptab2 td.l{min-width:170px}}
-@media(min-width:761px){.ptab2 td.l{min-width:130px;max-width:190px}.ptab2 td.l b{font-size:14px}.ptab2 td{padding:11px 5px}.ptab2 td:last-child{min-width:0}}
-@media(min-width:761px){.ptab2 th button{white-space:normal;line-height:1.2;text-align:center}}
+.ptab2{font-size:14px}.ptab2 td{padding:12px 6px}.ptab2 th button{padding:12px 6px;font-size:10.5px;letter-spacing:.02em}.ptab2 td:nth-child(n+5):not(:last-child){min-width:0;white-space:nowrap}.ptab2 td.l{min-width:170px}
+.ptab2 td.l{min-width:130px;max-width:190px}.ptab2 td.l b{font-size:14px}.ptab2 td{padding:11px 5px}.ptab2 td:last-child{min-width:0}
+.ptab2 th button{white-space:normal;line-height:1.2;text-align:center}
 /* v3.4 design tune-up: one content width + folder sub-tabs + type hierarchy */
 /* equal width: every view fills the shared container (--content-max,centred) with one inner padding; wide tables scroll inside */
 #view,#view:has(.mx){padding:20px 22px 24px!important}
@@ -344,7 +322,7 @@ header .logo{padding-left:0!important;margin-left:-6px!important}header .rtog{ma
 #tabs button.on,#grp button.on{color:var(--ink);background:var(--card);border-color:var(--line);border-bottom:1px solid var(--card);box-shadow:inset 0 2px 0 var(--acc)}
 
 #tabs:empty,#grp[hidden],#grp:empty{display:none}
-#tabs+#filters,#grp+#filters,#tabs~.wrap{border-top-left-radius:0}
+#nav3~#filters,#nav3~.wrap{border-top-left-radius:0}
 tbody td{font-size:14px}
 
 /* v3.6.1 points wallet tiles: same grid as the Perks wallet (.stiles); missing values are a plain muted dash, never '?' */
@@ -402,7 +380,7 @@ tbody td{font-size:14px}
 .sflag.cd{color:var(--mute)}
 .sdet{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;margin:0;font-size:12.5px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card)}.sdet dt{color:var(--mute);font-weight:600}.sdet dd{margin:0}.sdet ul{margin:0;padding-left:16px}
 .premp .prembuy{margin:10px 0 18px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.premgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}@media(max-width:700px){.premgrid{grid-template-columns:1fr}}
+.premgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 .premf{margin:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--card)}
 .premf img{display:block;width:100%;height:220px;object-fit:cover;object-position:top;border-bottom:1px solid var(--line)}
 .premf figcaption{padding:10px 12px;display:flex;flex-direction:column;gap:3px;font-size:13px}.premf figcaption b{font-size:14px}
@@ -415,52 +393,6 @@ tbody td{font-size:14px}
 .btab td{vertical-align:top}.btab .bac{font-size:10.5px;padding:1px 6px;margin:1px 0;display:inline-block}.btab tr.bheld td{background:color-mix(in srgb,var(--acc) 6%,transparent)}.bmine{font-size:12px;color:var(--acc);font-weight:600}.btab .wprom{margin:0;padding-left:14px;font-size:12.5px}
 
 /* ---- Phones (<=640px). Every phone-only rule lives in this one block. ---- */
-@media(max-width:640px){
-.wlay{display:flex;flex-direction:column-reverse}.wside{position:static;width:100%}.tiles{flex-direction:row;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:4px}.ctile{flex:0 0 78%;scroll-snap-align:start}.wperk{columns:1}
-header{flex-wrap:wrap}#q{max-width:none;order:3;flex-basis:100%}
-#ftoggle{display:inline-flex;margin-left:auto}#ftoggle[hidden]{display:none}
-#filters{display:none;grid-template-columns:1fr 1fr}#filters.open{display:grid}#filters select{width:100%}#filters label{flex-direction:column;align-items:stretch;gap:3px}
-.wrap{margin:0 0 12px;border-radius:0;border-left:0;border-right:0;max-height:none}th,td{padding:7px 8px}
-.ofr{display:inline-block;min-height:44px;line-height:44px}
-.pchip{min-height:44px;display:inline-flex;align-items:center}
-#view{margin:0;border-radius:0;border-left:0;border-right:0;padding:14px}.pick{flex-basis:100%;min-height:44px}.amt{min-height:44px;width:120px}.rm{min-width:44px;min-height:44px}
-details.ms{width:100%}details.ms summary{min-height:44px;padding:12px 8px}details.ms>div{position:static;box-shadow:none}label.ck{min-height:44px}
-nav button{min-height:44px;padding:14px 14px 12px}#ftoggle,.mfull,.clr{min-height:44px;min-width:44px}.mfull{display:inline-block;margin-left:auto;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:0 12px;font:600 12px inherit}
- .mfull.on{background:var(--accl);border-color:var(--acc)}.chip{min-height:36px}.chip button{min-width:36px;min-height:36px}
- #tb tr[data-i] td{padding-top:12px;padding-bottom:12px}.info{min-width:32px;min-height:32px}
- #filters.open{position:fixed;left:0;right:0;bottom:0;max-height:72vh;overflow:auto;z-index:30;border-top:1px solid var(--line);border-radius:14px 14px 0 0;box-shadow:0 -10px 40px rgba(0,0,0,.3);padding:12px 16px 20px}
- #fhead{display:none}#filters select{min-height:44px;font-size:14px}#fdone{grid-column:1/-1;min-height:44px;border:0;border-radius:8px;background:var(--acc);color:var(--onacc);font:600 14px inherit}
- #fbg{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:29}
- .wrap{cursor:auto}body:not(.full) #tb td .t{display:none}
-.mspend{position:static;max-height:none}
-.logo{order:1;margin-right:auto}#ftoggle{order:2;margin-left:0}#pm{order:2}#pbtn{width:44px;height:44px}#pml button{min-height:44px}#q{order:3}
-.bkv{grid-template-columns:minmax(0,1fr)}.bkv dt{margin-top:6px}
-:root{--gutter:0px}
-#tabs,#grp{flex-wrap:nowrap;overflow-x:auto;padding:8px 8px 0}#tabs button,#grp button{font-size:14px;padding:12px 12px 10px;flex:0 0 auto}
-/* nothing wider than the screen: side-by-side layouts stack at full width, wide tables scroll inside themselves */
-.wlay{align-items:stretch}.wlay>*{min-width:0}
-.vt:not(.ptab2){display:block;overflow-x:auto;max-width:100%}.vt:not(.ptab2)>tbody{display:table;width:100%}
-.yougrid{grid-template-columns:minmax(0,1fr)}
-.pytl li{grid-template-columns:minmax(0,1fr) auto auto}.pytl li>:first-child{grid-column:1/-1}
-/* top tabs: one swipeable strip with full labels (desktop keeps equal widths) */
-#pl{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;scrollbar-width:none}#pl::-webkit-scrollbar{display:none}
-#pl button{flex:0 0 auto;min-height:44px;font-size:14px;padding:10px 12px}
-/* card names wrap instead of clipping; headings line up with the content */
-td.nm,th.nm{max-width:150px;min-width:120px;white-space:normal}
-#vh{padding:0 14px}
-/* Wallet add row: the search field gets its own line */
-.awadd{flex-wrap:wrap}.awadd input[list],.awadd>input:first-child{flex:1 1 100%}
-/* tap targets >= 32px */
-button,select,summary,[role=button],input:not([type=checkbox],[type=radio],[type=range],[type=hidden]){min-height:32px;min-width:32px}
-.lnk,.nmb,.trc,.rwl{display:inline-flex;align-items:center;min-height:32px}.lnk{min-width:32px;justify-content:center}.ptbtn,.ptab2 th button{min-height:32px;box-sizing:border-box}.ptbtn{display:inline-flex;align-items:center}.rtog{min-width:32px;min-height:32px;align-items:center;justify-content:center}
-.ip{display:inline-flex;align-items:center;justify-content:center;min-width:32px;min-height:32px;margin-left:0}
-a[href]:not(.cl){display:inline-flex;align-items:center;min-height:32px}
-label:has(>input[type=checkbox],>input[type=radio]){min-height:32px;align-items:center}
-input[type=checkbox],input[type=radio]{width:18px;height:18px}
-/* text >= 12px */
-th,.t,.disc,.band,.soon,.fam,.held,.otag,.oty,.plab,.plest,.premg,.ptag,.sar,.pcar,.rmk,.rh,.wss,.phld,.hero span,.hero .hsub,.ctile .ti,.stiles .ti,.subst .chip,.btab .bac,.brate small,.bfee small,.ogain small,.sgrp legend,.mspend summary .mute,.ways .wk,nav button .dot,#modal h4,#page h4,table.one th,#ofp th,tr.sub td,td.nm small,.ptab2 th button{font-size:12px}
-.ilw{font-size:12px!important}small,.le{font-size:max(12px,.84em)}
-}
 
 /* Brokers sub-tabs (Fees / Accounts / Features / Promotions) */
 .brtab td{font-size:13px;vertical-align:top}.brtab td.l{max-width:240px}.brtab[data-brtab=braccts] td{text-align:center}.bryes{color:var(--ok,#1a7f37);font-weight:700}.brno{color:var(--mute)}
@@ -501,10 +433,7 @@ body.co .wrap{border-radius:14px;box-shadow:0 1px 2px rgba(20,23,28,.04),0 6px 2
 body.co .pchip,body.co .pchip2{border-radius:999px}
 body.co .ctile{border-radius:16px}
 [data-theme=dark] .hero2{border-bottom-color:rgba(255,255,255,.06)}
-@media(max-width:900px){.hero2 .hin{grid-template-columns:1fr;gap:26px;padding:30px var(--gutter) 28px}}
-@media(max-width:640px){.hero2 .hin{padding:26px 16px 24px}.hero2 .hsub{font-size:15px}.hero2 .hcta .btn{flex:1 1 100%}.hero2 .hstats dd{font-size:20px}.hero2 .hstats div{padding:11px}body.co header{flex-wrap:wrap}.hero2 .hstats{grid-template-columns:1fr 1fr 1.5fr}.hero2 .hstats dd{font-size:18px}}
 .hero2 .hin>*{min-width:0}
-@media(max-width:360px){.hero2 .hstats{grid-template-columns:1fr 1fr}.hero2 .hstats div:last-child{grid-column:1/-1}.hero2 .hin{padding-left:14px;padding-right:14px}}
 .hero2 .hcov{margin-top:18px;padding-top:16px;border-top:1px solid rgba(255,255,255,.14)}.hero2 .hcov .hkick{margin:0 0 10px}.hero2 .hcov .htagd{min-height:6.4em}
 /* skinny icon columns (Account type, Network): header wraps small, cell is one centred mark */
 th.ic,td.ic{text-align:center;width:1%;padding-left:4px;padding-right:4px}th.ic{font-size:10px;line-height:1.15;white-space:normal}
@@ -530,7 +459,6 @@ th.ic,td.ic{text-align:center;width:1%;padding-left:4px;padding-right:4px}th.ic{
 .hstep b{font-size:15px;font-weight:800}.hstep>span:last-child{font-size:12.5px;color:var(--mute)}.hsv svg{width:84px;height:56px;color:var(--ink)}
 .hclose{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:22px;padding:18px 20px;border-radius:14px;background:linear-gradient(135deg,#0a1020,#12306b);color:#fff}.hclose p{margin:0 auto 0 0;font-size:20px;font-weight:800;letter-spacing:-.02em}
 .hclose .btn{padding:11px 20px;border-radius:999px;font-size:14px;font-weight:700;line-height:1;cursor:pointer}.hfill2{background:#fff;color:#0a1020;border:1px solid #fff}.hline2{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.5)}
-@media(max-width:640px){.beats{grid-template-columns:repeat(2,minmax(0,1fr))}.hmcols{grid-template-columns:minmax(0,1fr)}.hero2 .hart{right:-30px;opacity:.16;max-height:200px}.hnews li{grid-template-columns:56px 66px minmax(0,1fr)}.hclose p{flex-basis:100%}}
 /* tables fit one window (about 1280px): tighter padding, header and text cells wrap, long text columns are capped */
 .wrap th{white-space:normal;line-height:1.15;vertical-align:bottom}.wrap th,.wrap td{padding:6px 7px}
 .wrap td.nm,.wrap th.nm{white-space:normal;min-width:150px;max-width:220px}
@@ -538,3 +466,13 @@ th.ic,td.ic{text-align:center;width:1%;padding-left:4px;padding-right:4px}th.ic{
 .wrap td.ctr,.wrap th.ctr{padding-left:4px;padding-right:4px}
 .wrap th.ctr{font-size:10px;letter-spacing:0}.wrap th.wrapt,.wrap td.wrapt{max-width:120px}
 .wrap th.ic,.wrap td.ic{max-width:56px;padding-left:3px;padding-right:3px;overflow-wrap:anywhere}
+/* three-level nav on ONE row (desktop): Home | Credit Cards, then the sub-tabs, then the sub-sub tabs open to the right of the selected one.
+   Each level is an equal-width grid sized to its longest label; levels differ in weight and size; a thin divider separates them; the active path is highlighted. */
+#nav3{display:flex;align-items:flex-end;flex-wrap:wrap;gap:0;padding:8px 12px 0;border-bottom:1px solid var(--line);margin-left:max(var(--gutter),calc((100% - var(--content-max))/2))!important;margin-right:max(var(--gutter),calc((100% - var(--content-max))/2))!important;box-sizing:border-box}
+#nav3>nav{display:inline-grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:2px;align-items:end;justify-content:start!important;margin:0!important;padding:0;border:0;max-width:none!important;overflow:visible;position:relative;z-index:2}
+#nav3>nav button{flex:none;width:auto;min-width:0;max-width:none;white-space:nowrap;overflow:visible;text-overflow:clip;text-align:center;margin-bottom:-1px}
+#nav3>#pl button{font-family:inherit;font-weight:700;font-size:15px;line-height:1;padding:11px 20px 10px}
+#nav3>#tabs button{font-family:inherit;font-weight:600;font-size:14px;line-height:1;padding:11px 14px 10px}
+#nav3>#grp button{font-family:inherit;font-weight:500;font-size:13px;line-height:1;padding:11px 12px 10px}
+#nav3>#tabs:not(:empty),#nav3>#grp:not([hidden]):not(:empty){margin-left:14px!important;padding-left:14px;border-left:1px solid var(--line)}
+#nav3>#pl button.on{color:var(--ink)}#nav3>nav button:focus-visible{outline:2px solid var(--acc);outline-offset:-2px}

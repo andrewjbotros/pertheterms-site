@@ -45,10 +45,10 @@ const BANK=(()=>{
   wv:['Waives a card fee',[['Yes',o=>o.wv.length>0],['None on record',o=>!o.wv.length]]],rule:['Product-count rebate',[['Yes',o=>o.rules.length>0]]],
   mb:['Min. balance',[['$0 / none needed',o=>o.mbk=='none-needed'],['≤ $4,000',o=>o.mbk=='waive'&&o.mb<=4000],['No balance waiver',o=>o.mbk=='no-waiver']]],
   pr:['Sign-up offer',[['Yes',o=>o.pr.length>0]]],et:['e-Transfer',[['Send free',o=>o.et===1]]],atmr:['ATM fee refund',[['Yes',o=>o.atmr?.st===1],['No',o=>o.atmr?.st===0],['? (unconfirmed)',o=>!o.atmr||o.atmr.st==null],['No cap',o=>o.atmr?.unl===1]]],intr:['Interest',[['Pays interest',o=>o.intr===1],['No interest',o=>o.intr===0]]]});
- const BS=[{id:'bov',name:'Overview',cols:['fam','i','fee','feey','tx'],f:['fam','inst','fee'],mob:['fee','tx']},
-  {id:'bfees',name:'Fees & waivers',cols:['fee','feey','mb','rule','wv','wvt'],f:['fee','mb','rule','wv','inst'],mob:['fee','mb']},
-  {id:'bperks',name:'Perks & sign-up',cols:['pr','svc','uf'],f:['pr','inst'],mob:['pr']},
-  {id:'bacc',name:'Access',cols:['et','etl','atmr','atmc','atms','atmp','nets','atm','intr'],f:['et','atmr','intr','inst'],mob:['et','atmr']},
+ const BS=[{id:'bov',name:'Overview',cols:['fam','i','fee','feey','tx'],f:['fam','inst','fee']},
+  {id:'bfees',name:'Fees & waivers',cols:['fee','feey','mb','rule','wv','wvt'],f:['fee','mb','rule','wv','inst']},
+  {id:'bperks',name:'Perks & sign-up',cols:['pr','svc','uf'],f:['pr','inst']},
+  {id:'bacc',name:'Access',cols:['et','etl','atmr','atmc','atms','atmp','nets','atm','intr'],f:['et','atmr','intr','inst']},
   {id:'binst',name:'Institutions',cols:[],f:[]},
   {id:'bprom',name:'Promotions',cols:[],f:[]}];
  const HELP={wv:'<h2>Waives card fee</h2><p>From the record’s fee-waiver links (<code>edges</code>, type WAIVES) and <code>waiver_chains</code>: holding this account rebates or waives the annual fee on the named credit card(s). “None on record” means no link is recorded, not that one is impossible.</p>',
@@ -95,21 +95,21 @@ const BANK=(()=>{
   $('#tabs').innerHTML=tabs(st.s=='wfolder'?'wallet':s.id);
   $('#pre').hidden=true;$('#page').hidden=true;
   if(s.id=='binst')return renderInst();
-  if(s.id=='bprom'){$('.wrap').hidden=true;$('#bar').hidden=true;$('#filters').hidden=true;$('#ftoggle').hidden=true;$('#view').hidden=false;return renderPromos('bank')}
+  if(s.id=='bprom'){$('.wrap').hidden=true;$('#bar').hidden=true;$('#filters').hidden=true;$('#view').hidden=false;return renderPromos('bank')}
   $('#view').hidden=true;$('.wrap').hidden=false;$('#bar').hidden=false;$('#filters').hidden=false;
   const F=BF(),bf=st.bf||{};
-  $('#filters').innerHTML=s.f.map(id=>`<label>${F[id][0]}<select data-bf="${id}" class="${bf[id]!=null?'set':''}"><option value="">Any</option>${F[id][1].map((x,i)=>`<option value="${i}" ${bf[id]==i?'selected':''}>${esc(x[0])}</option>`).join('')}</select></label>`).join('')+'<button id=fdone type=button>Show results</button>';
-  $('#filters').style.display='';const nf=Object.keys(bf).length;$('#ftoggle').hidden=false;$('#ftoggle').textContent='Filters'+(nf?` (${nf})`:'');document.body.classList.toggle('full',!!st.full);
+  $('#filters').innerHTML=s.f.map(id=>`<label>${F[id][0]}<select data-bf="${id}" class="${bf[id]!=null?'set':''}"><option value="">Any</option>${F[id][1].map((x,i)=>`<option value="${i}" ${bf[id]==i?'selected':''}>${esc(x[0])}</option>`).join('')}</select></label>`).join('');
+  $('#filters').style.display='';
   const R=rows(),chips=Object.entries(bf).filter(([k])=>F[k]).map(([k,i])=>`<span class=chip><i>Banking ·</i> ${F[k][0]} ${esc(F[k][1][i]?.[0]||'')}<button data-bx="${k}" aria-label="Remove">×</button></span>`);
   if(st.q)chips.push(`<span class=chip><i>Search ·</i> “${esc(st.q)}”<button data-x="__q">×</button></span>`);
   const sk=st.bsort&&(st.bsort=='n'||BCOL[st.bsort])?st.bsort:'fee',dir=st.bsort==sk?(st.bdir||1):1;
   if(st.bsort)chips.push(`<span class=chip><i>Sort ·</i> ${sk=='n'?'Account':BCOL[sk][0].replace(/<[^>]+>.*$/,'').trim()} ${dir>0?'▴':'▾'}<button data-bx="__sort" aria-label="Reset sort">×</button></span>`);
-  $('#bar').innerHTML=`<span class=count>${R.length} <span>of ${A().filter(o=>o.st!='discontinued').length} accounts</span></span>${chips.join('')}${chips.length?'<button class=clr data-bx="__all">Clear all</button>':''}<button class="mfull ${st.full?'on':''}" data-full>${st.full?'Compact':'Full table'}</button>`;
+  $('#bar').innerHTML=`<span class=count>${R.length} <span>of ${A().filter(o=>o.st!='discontinued').length} accounts</span></span>${chips.join('')}${chips.length?'<button class=clr data-bx="__all">Clear all</button>':''}`;
   const key=sk=='n'?o=>o.n:BCOL[sk][2];R.sort((a,b)=>nlast(key(a),key(b),dir)||a.n.localeCompare(b.n));
-  const cols=['n',...(MOB.matches&&!st.full?s.mob:s.cols)];
+  const cols=['n',...s.cols];
   $('#th').innerHTML='<tr>'+cols.map(k=>{const[l,cl]=k=='n'?['Account','l nm']:BCOL[k];return `<th data-bk="${k}" class="${cl=='wrapt'?'l':cl} ${k==sk?'s'+(dir>0?' asc':''):''}">${l}</th>`}).join('')+'</tr>';
   $('#tb').innerHTML=R.length?R.map(o=>`<tr data-bi="${o.id}">`+cols.map(k=>k=='n'?`<td class="l nm"><button type=button class=nmb data-bm="${o.id}" aria-haspopup=dialog title="All details"><b class=cl>${esc(o.n)}</b></button>${o.st=='discontinued'?'<span class=disc>Discontinued</span>':''}${(STO.wallet.banks||[]).some(x=>x.id==o.id)?'<span class=held>In wallet</span>':''}<small>${esc(o.i)}${o.fam?' · '+esc(famN(o.fam)):''}</small></td>`:`<td class="${BCOL[k][1]}">${BCOL[k][3](o)}</td>`).join('')+'</tr>').join(''):`<tr><td class=empty colspan=${cols.length}>No accounts match. Remove a filter.</td></tr>`}
- function renderInst(){$('.wrap').hidden=true;$('#bar').hidden=true;$('#filters').hidden=true;$('#ftoggle').hidden=true;$('#view').hidden=false;
+ function renderInst(){$('.wrap').hidden=true;$('#bar').hidden=true;$('#filters').hidden=true;$('#view').hidden=false;
   const I=BD().inst;$('#view').innerHTML=`<div class=vhead><h2>Institutions</h2><span class=mute>${I.length} Canadian institutions · ${A().length} chequing accounts</span></div>
   <div class=bwrap><table class=vt><tr><th class=l>Institution</th><th>Accounts</th><th>Lowest monthly fee</th><th>$0 accounts</th><th>Waive a card fee</th><th>Product rebates</th><th>Waiver chains</th><th>Sign-up offers</th></tr>
   ${I.map(x=>`<tr><td class=l><button class=lnk data-binst="${esc(x.i)}">${esc(x.i)}</button></td><td>${x.n}</td><td>${m2(x.lo)}</td><td>${x.free}</td><td>${x.wv?'<span class=y>✓</span> '+x.wv:'<span class=mute>0</span>'}</td><td>${x.rules?'<span class=y>✓</span> '+x.rules:'<span class=mute>0</span>'}</td><td>${x.ch}</td><td>${x.pr}</td></tr>`).join('')}</table></div>
@@ -149,7 +149,6 @@ const BANK=(()=>{
    const bk=t.closest('[data-bk]');if(bk){e.stopPropagation();const k=bk.dataset.bk;if(st.bsort==k)st.bdir=-(st.bdir||1);else{st.bsort=k;st.bdir=(k=='n'||BCOL[k][1]!='')||['fee','feey','mb'].includes(k)?1:-1}render();return}
    const bx=t.closest('[data-bx]');if(bx){e.stopPropagation();const x=bx.dataset.bx;if(x=='__all'){st.bf={};st.q='';$('#q').value=''}else if(x=='__sort'){st.bsort=null;st.bdir=1}else{const f={...(st.bf||{})};delete f[x];st.bf=f}render();return}
    {const tr=t.closest('[data-trc]');if(tr&&!tr.matches('td.nm')&&!t.closest('a,button'))return}
-   if(MOB.matches&&!st.full){const r=t.closest('#tb tr[data-bi]');if(r&&!t.closest('a,button')){e.stopPropagation();openB(BI[r.dataset.bi]);return}}
    if(t.closest('#tb tr[data-bi]'))e.stopPropagation()},true);
   document.addEventListener('change',e=>{const k=e.target.dataset.bf;if(!k)return;e.stopPropagation();const f={...(st.bf||{})};if(e.target.value==='')delete f[k];else f[k]=+e.target.value;st.bf=f;render()},true);
   document.addEventListener('input',e=>{const k=e.target.dataset.bmi;if(k){e.stopPropagation();st[k]=Math.max(0,+e.target.value||0);const pos=e.target.value;save();render();const n=document.querySelector(`[data-bmi=${k}]`);if(n){n.focus();n.value=pos}return}},true);
