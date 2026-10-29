@@ -476,7 +476,7 @@ header>#pl button.on{color:var(--ink);background:var(--bg);border-color:var(--li
 header>#pl button:focus-visible,#nav3 nav button:focus-visible,#logo:focus-visible{outline:2px solid var(--acc);outline-offset:-2px}
 #nav3{display:flex;flex-direction:column;align-items:stretch;margin-left:max(var(--gutter),calc((100% - var(--content-max))/2))!important;margin-right:max(var(--gutter),calc((100% - var(--content-max))/2))!important;box-sizing:border-box}
 #nav3>.nrow{border-bottom:1px solid var(--line);padding:8px 12px 0;box-sizing:border-box;min-width:0;text-align:center}
-#nav3>.nrow:has(>nav:empty),#nav3>.nrow:has(>nav[hidden]){display:none}
+#nav3>.nrow[hidden]{display:none!important}
 #nav3>.nrow>nav{display:inline-grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:2px;align-items:end;justify-content:start!important;margin:0!important;padding:0;border:0;max-width:none!important;overflow:visible;position:relative;z-index:2}
 #nav3>.nrow>nav button{flex:none;width:auto;min-width:0;max-width:none;white-space:nowrap;overflow:visible;text-overflow:clip;text-align:center;margin-bottom:-1px}
 #nav3 #tabs button{font-family:inherit;font-weight:600;font-size:14px;line-height:1;padding:11px 16px 10px}
@@ -522,7 +522,9 @@ header>#pl{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
 #nav3~#filters,#nav3~.wrap{border-top-left-radius:inherit}
 @media(prefers-reduced-motion:reduce){#nav3 nav button{transition:none}}
 /* Andrew 2026-10-29: story arrow sits under the panel text, left-aligned with it */
-.hero2 .stx>.scue{position:static;left:auto;bottom:auto;margin:28px 0 0}
+.hero2 .stx>.scue{position:static;left:auto;bottom:auto;margin:28px 0 0;display:flex}
+/* 2026-10-29: the arrow sits on the outer edge of its text block: left on text-left panels, right on text-right panels (side by side, ≥900px); stacked panels keep it left */
+@media(min-width:900px){.hero2 .sbeat:nth-of-type(even) .stx>.scue{margin-left:auto}}
 /* Mobile: Home story, header, footer and footer pages (html.resp is set only on Home and footer pages) */
 @media(max-width:899px){
 html.resp,html.resp body{overflow-x:hidden}
@@ -546,3 +548,11 @@ html.resp #view,html.resp #page{margin-left:0!important;margin-right:0!important
 header{position:sticky!important;top:0;z-index:60!important;background:var(--card)}
 .hero2 .sbeat,#sitefoot,#view,#page{scroll-margin-top:var(--hh,60px)}
 html.resp body{min-width:0}
+/* Andrew 2026-10-29: header line tabs and sub-tabs are plain text on the page background: no pill, box or white panel (light and dark); muted inactive text, a thin accent underline on the active one, a subtle hover; sub-tabs stay left-aligned with room between them */
+header>#pl button{background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;border-bottom:2px solid transparent!important;padding:10px 4px 8px!important;margin:0 10px;color:var(--mute);transition:color .15s,border-color .15s}
+header>#pl button:hover{color:var(--ink);border-bottom-color:var(--line)!important}
+header>#pl button.on{color:var(--ink);border-bottom-color:var(--acc)!important}
+#nav3,#nav3>.nrow,#nav3 #tabs,#nav3 #grp{background:transparent!important;box-shadow:none!important}
+#nav3 #tabs,#nav3 #grp{gap:6px!important}
+#nav3 #tabs button,#nav3 #grp button{padding:12px 14px 11px!important}
+#nav3 #tabs button:first-child,#nav3 #grp button:first-child{padding-left:0!important}

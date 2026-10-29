@@ -4,7 +4,7 @@ const CARDS_ONLY=PRODUCT.length==1&&PRODUCT[0][0]=='cards',CT_ALL=CARDS_ONLY?['o
 if(!CARDS_ONLY)SUBONLY.add('perk');/* the per-card Perks sub-tab (PKF, renderPerks) belongs to the cards-only release; the all-lines build keeps its own Perks view (id perks) */
 const $=s=>document.querySelector(s), esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const money=v=>v==null?'<span class=u>—</span>':v==0?'<span class=y>Free</span>':'$'+v.toLocaleString();
-const pct=(v,hi)=>v==null?'<span class=u>—</span>':`<span class="${hi&&v>=hi?'hi':''}">${v.toFixed(2)}%</span>`;
+const pct=(v,hi)=>v==null?'<span class=u>—</span>':hi!=null&&v>=hi?`<span class=hi>${v.toFixed(2)}%</span>`:`${v.toFixed(2)}%`;
 const yn=v=>v===1?'<span class=y>✓</span>':v===0?'<span class=n>✗</span>':'<span class=u>—</span>';
 const uniq=f=>[...new Set(C.map(f).filter(x=>x!=null&&x!==''))].sort();
 const INS=[['emergency_medical','Medical'],['trip_cancellation','Trip cancel'],['trip_interruption','Trip interrupt'],['flight_delay','Flight delay'],['baggage','Baggage'],['hotel_burglary','Hotel burglary'],['rental_car_cdw','Rental CDW'],['purchase_protection','Purchase prot.'],['extended_warranty','Ext. warranty'],['mobile_device','Mobile device'],['price_protection','Price prot.'],['travel_accident','Travel accident'],['roadside','Roadside']];
@@ -14,7 +14,9 @@ const insN=(c,L)=>L.filter(([k])=>c.ins[k]===1).length,insU=(c,L)=>L.filter(([k]
 const GROUPS={ins:[['trv','Travel'],['prot','Protection']]},GKEY=()=>GROUPS[st.s]?((st.g||{})[st.s]&&GROUPS[st.s].some(x=>x[0]==st.g[st.s])?st.g[st.s]:GROUPS[st.s][0][0]):st.s;
 GROUPS.perk=[['pkT','Travel'],['pkE','Everyday']];/* Perks = Travel | Everyday, keyed to perk_group (PKG) */
 // filter option builders
-const ge=(f,vals,u='%')=>vals.map(v=>[`≥ ${u=='$'?'$'+v.toLocaleString():v+u}`,c=>c[f]!=null&&c[f]>=v]);
+const ge=(f,vals,u='%')=>vals.map(v=>[`≥ ${u=='$'?'$'+v.toLocaleString():v+u}`,c=>c[f]!=null&&c[f]>=v,v]);
+/* bold earn cells derive only from the active filters: a cell is bold when its own column has an active ≥ filter and the value meets it; no filter, no bold */
+const fhi=k=>{const i=st.f?.[k];return i==null||Array.isArray(i)?null:FI[k]?.o[i]?.[2]??null};
 const le=(f,vals,u='%')=>vals.map(v=>[`≤ ${u=='$'?'$'+v.toLocaleString():v+u}`,c=>c[f]!=null&&c[f]<=v]);
 const eq=(f,vals)=>vals.map(v=>[v,c=>c[f]===v]);
 const RATES=[1,1.5,2,2.5,3,4,5];
@@ -66,7 +68,7 @@ const S=[
   ['fx','FX fee',[['None (0%)',c=>c.fx===0],['< 2.5%',c=>c.fx!=null&&c.fx<2.5],['≥ 2.5%',c=>c.fx>=2.5]]],
   ['apr','Purchase APR',le('apr',[12.99,15,19.99,20.99])],
   ['inc','Income required',[['None stated',c=>!c.inc],...le('inc',[15000,40000,60000,80000],'$')]]]},
- {id:'rw',name:'Rewards',cols:['kind','prog','cpp',...RWTOP.map(k=>'r_'+k),'r_other','best','rmore'],f:[
+ {id:'rw',name:'Rewards',cols:['kind','cpp',...RWTOP.map(k=>'r_'+k),'r_other','best','rmore'],f:[
   ...RC.map(k=>['r_'+k,CN[k],ge('r_'+k,k=='other'?[0.5,1,1.25,1.5,2]:RATES)]),['best','Best earn %',ge('best',RATES)],
   ['rt2','Reward type',eq('rt',['Points','Cash back','Travel/airline miles','Store dollars','No rewards','Unconfirmed'])],['prog','Program',eq('prog',uniq(c=>c.kind=='Points'?c.prog:null))],
   ['tag','¢/pt tag',eq('tag',['CITED','ESTIMATE','REPORTED'])]]},
@@ -96,22 +98,22 @@ const S=[
  {id:'wfolder',name:'Wallet folder',cols:[],f:[]}
 ];
 const COL={i:['Issuer','l',c=>c.i,c=>esc(c.i)],nw:['Network','ic',c=>c.nw,c=>icoCell('nw',c.nw)],kind:['Type','l',c=>c.rt,c=>esc(c.rt)+VE(c,'reward_type')],
- prog:['Program','l',c=>c.prog,c=>esc(c.prog)],fee:['Cost','',c=>c.fee,c=>{if(c.fee==null)return money(null);const r=cmods(c).find(r=>(r.when||[]).some(w=>w.f=='tier'));return r?'$'+effFee0(c).toLocaleString()+'/yr → <b>$'+Math.max(0,c.fee+(r.value||0))+'/yr</b>'+rateMark({...r,when:[{v:provTier(c.i)}]}):'$'+c.fee.toLocaleString()+'/yr'}],best:['Best earn %','',c=>c.best,c=>pct(c.best,3)],
- other:['Base earn %','',c=>c.other,c=>pct(c.other,1.5)],pcn:['Premium Categories','',c=>c.npc,c=>c.npc==null?'<span class=u title="No base earn rate on record, so no count">—</span>':`<span title="Count of reward categories that earn strictly more than the base rate. Derived at build time from this card's sourced category rates (CITED data); a count, not a rate.">${c.npc}</span>`],nins:['Ins.','',c=>c.nins,c=>c.nins+'<span class=mute>/'+INS.length+'</span>'],
+ prog:['Program','l',c=>c.prog,c=>esc(c.prog)],fee:['Cost','',c=>c.fee,c=>{if(c.fee==null)return money(null);const r=cmods(c).find(r=>(r.when||[]).some(w=>w.f=='tier'));return r?'$'+effFee0(c).toLocaleString()+'/yr → <b>$'+Math.max(0,c.fee+(r.value||0))+'/yr</b>'+rateMark({...r,when:[{v:provTier(c.i)}]}):'$'+c.fee.toLocaleString()+'/yr'}],best:['Best earn %','',c=>c.best,c=>pct(c.best,fhi('best'))],
+ other:['Base earn %','',c=>c.other,c=>pct(c.other,fhi('other'))],pcn:['Premium Categories','',c=>c.npc,c=>c.npc==null?'<span class=u title="No base earn rate on record, so no count">—</span>':`<span title="Count of reward categories that earn strictly more than the base rate. Derived at build time from this card's sourced category rates (CITED data); a count, not a rate.">${c.npc}</span>`],nins:['Ins.','',c=>c.nins,c=>c.nins+'<span class=mute>/'+INS.length+'</span>'],
  offer:['Welcome offer','l',c=>c.offer?0:1,c=>c.offer?`<span class=ofr tabindex=0 role=button aria-haspopup=dialog data-ofr="${C.indexOf(c)}">${esc(c.offer.slice(0,46))}${c.offer.length>46?'…':''}</span>`:'<span class=u>—</span>'],
  fyf:['1st yr','',c=>c.fyf?0:1,c=>c.fyf?'<span class=y>Waived</span>':'<span class=u>—</span>'],add:['Additional card','',c=>c.add,c=>c.add==null?(/^not offered/i.test(c.addt||'')?'<span class=u title="'+esc(c.addt)+'">Not offered</span>':'<span class=u>—</span>'):'$'+c.add.toLocaleString()],
  fx:['FX','',c=>c.fx,c=>c.fx==null?'<span class=u>—</span>':c.fx==0?'<span class=y>0%</span>':c.fx+'%'],apr:['APR','',c=>c.apr,c=>c.apr==null?'<span class=u>—</span>':c.apr.toFixed(2)+'%'],
  inc:['Income','',c=>c.inc??0,c=>c.inc?'$'+c.inc.toLocaleString():'<span class=u>—</span>'],hinc:['Household','',c=>c.hinc??0,c=>c.hinc?'$'+c.hinc.toLocaleString():'<span class=u>—</span>'],
  cpp:['¢/pt','',c=>c.kind=='Points'?c.cpp:-1,c=>c.kind=='Points'?`${c.cpp}<span class=t>${c.tag[0]}</span>`:'<span class=mute>cash</span>'],
- gas:['Gas','',c=>c.gas,c=>pct(c.gas,3)],groc:['Grocery','',c=>c.groc,c=>pct(c.groc,3)],dine:['Dining','',c=>c.dine,c=>pct(c.dine,3)],trav:['Travel','',c=>c.trav,c=>pct(c.trav,3)],
+ gas:['Gas','',c=>c.gas,c=>pct(c.gas,fhi('gas'))],groc:['Grocery','',c=>c.groc,c=>pct(c.groc,fhi('groc'))],dine:['Dining','',c=>c.dine,c=>pct(c.dine,fhi('dine'))],trav:['Travel','',c=>c.trav,c=>pct(c.trav,fhi('trav'))],
  med:['Med. limit','',c=>c.med??0,c=>c.med?'$'+(c.med>=1e6?c.med/1e6+'M':c.med.toLocaleString()):'<span class=u>—</span>'],mob:['Mobile','',c=>c.mob??0,c=>c.mob?'$'+c.mob.toLocaleString():'<span class=u>—</span>'],
  odl:['Apply by','',c=>c.odl||'9',c=>c.odl?esc(c.odl):'<span class=u>—</span>'],
  credits:['Credits & bonuses','wrapt',c=>-c.credits.length,c=>c.credits.length?esc(c.credits.join(' · ')):'<span class=u>—</span>'],
  perks:['Partner perks','wrapt',c=>-c.perks.length,c=>c.perks.length?esc(c.perks.join(' · ')):'<span class=u>—</span>'],
  exp:['Expiry','l',c=>c.exp||'z',c=>c.exp?esc(c.exp):'<span class=u>—</span>']};
 const rmoreOf=c=>RWMORE.filter(k=>c['r_'+k]!=null&&c['r_'+k]>(c.other??0)).sort((a,b)=>c['r_'+b]-c['r_'+a]);
-COL.rmore=['More categories','l',c=>Math.max(0,...rmoreOf(c).map(k=>c['r_'+k])),c=>{const L=rmoreOf(c);return L.length?L.map(k=>`<span title="${esc(CN[k])}">${esc(CN[k].replace(/ \(.*/,''))} <b>${c['r_'+k].toFixed(1)}%</b></span>`).join(', '):'<span class=u>—</span>'}];
-RC.forEach(k=>COL['r_'+k]=[CN[k]+(k=='other'?'':` <span class=mute>(${CC[k]})</span>`),'',c=>c['r_'+k],c=>pct(c['r_'+k],3)]);
+COL.rmore=['More categories','l',c=>Math.max(0,...rmoreOf(c).map(k=>c['r_'+k])),c=>{const L=rmoreOf(c);return L.length?L.map(k=>`<span title="${esc(CN[k])}">${esc(CN[k].replace(/ \(.*/,''))} ${fhi('r_'+k)!=null&&c['r_'+k]>=fhi('r_'+k)?`<b>${c['r_'+k].toFixed(1)}%</b>`:c['r_'+k].toFixed(1)+'%'}</span>`).join(', '):'<span class=u>—</span>'}];
+RC.forEach(k=>COL['r_'+k]=[CN[k]+(k=='other'?'':` <span class=mute>(${CC[k]})</span>`),'',c=>c['r_'+k],c=>pct(c['r_'+k],fhi('r_'+k))]);
 COL.pt=['Fee','l',c=>c.pt,c=>esc(c.pt||'—')+VE(c,'card_product_type')];COL.tier=['Tier','l',c=>c.tier,c=>esc(c.tier||'—')];COL.it=['Issuer type','l',c=>c.it,c=>esc(c.it||'—')];COL.st=['Status','l',c=>c.st,c=>esc(c.st||'—')];COL.cur=['Currency','l',c=>c.cur,c=>esc(c.cur||'—')];COL.acct=['Account','ic',c=>c.acct,c=>icoCell('acct',c.acct)];
 /* skinny icon columns (Account type; Network follows): original inline SVG marks, one vocabulary shared by the table cell and the active-filter chip; the full word is the title and aria-label, sorting and the filter still use the word */
 const svgI=p=>`<svg viewBox="0 0 16 16" width=14 height=14 aria-hidden=true focusable=false fill=none stroke=currentColor stroke-width=1.4 stroke-linecap=round stroke-linejoin=round>${p}</svg>`;
@@ -993,7 +995,9 @@ function gate(){const v0=$('#view');if(!v0)return;v0.querySelectorAll('#plock').
  d.innerHTML=nn?'':`<div class=plcard>${body}<p class=plprice><span class=premg aria-hidden=true>◆</span> Premium</p><p class=plbtns><a class="btn plbtn" href="${PREMIUM_URL.mo}" data-unlock=mo>Unlock for $5/mo</a> <a class="btn plbtn2" href="${PREMIUM_URL.yr}" data-unlock=yr>$50/yr</a></p><button type=button class=lnk data-plnow>Not now</button></div>`;v.prepend(d)}
 /* 'Not now' hides the invitation for this browser session; the view stays blurred */
 document.addEventListener('click',e=>{if(!e.target.closest('[data-plnow]'))return;try{sessionStorage.setItem('ptt.plnow','1')}catch(_){}const c=document.querySelector('#plock .plcard');if(c)c.remove()});
-{const _r=render;render=function(){const out=_r.apply(this,arguments);try{gate()}catch(e){}return out}}
+/* sub-tab rows: shown or hidden by JS after every render from their nav's content (never a CSS :has() rule, which Safari can leave stale after a Home → Credit Cards transition) */
+const navRows=()=>document.querySelectorAll('#nav3>.nrow').forEach(r=>{const n=r.querySelector('nav');r.hidden=!n||n.hidden||!n.children.length});
+{const _r=render;render=function(){let out;try{out=_r.apply(this,arguments)}finally{navRows()}try{gate()}catch(e){}return out}}
 
 /* v3.5.2: the card name itself opens its popup (click, Enter/Space, or hover after a short pause on pointer devices). */
 {let ht;const HOV=matchMedia('(hover:hover) and (pointer:fine)');document.addEventListener('mouseover',e=>{const b=e.target.closest&&e.target.closest('.nmb');if(!b||!HOV.matches)return;clearTimeout(ht);ht=setTimeout(()=>{if(b.matches(':hover')&&!document.querySelector('#mbg.on'))b.click()},450)});document.addEventListener('mouseout',e=>{if(e.target.closest&&e.target.closest('.nmb'))clearTimeout(ht)})}
@@ -1239,3 +1243,5 @@ BANK.init();render();
 /* Mobile (Andrew 2026-10-29): Home and footer pages are responsive (device width); data views keep the desktop layout (1100px canvas, horizontal scroll on phones). */
 function vpSet(){const m=document.querySelector('meta[name=viewport]');if(!m)return;const r=(st.pl=='home'&&!st.card&&!USR.has(st.s))||st.pl=='info';const v=r?'width=device-width,initial-scale=1':'width=1100';if(m.content!=v)m.content=v;document.documentElement.classList.toggle('resp',r);const hd=document.querySelector('header');if(hd)document.documentElement.style.setProperty('--hh',hd.offsetHeight+'px')}
 addEventListener('resize',()=>{const hd=document.querySelector('header');if(hd)document.documentElement.style.setProperty('--hh',hd.offsetHeight+'px')});
+/* first load: the header height settles after fonts and layout; keep --hh live so no stale offset leaves a gap above the Home hero */
+{const hd=document.querySelector('header'),hh=()=>{if(hd)document.documentElement.style.setProperty('--hh',hd.offsetHeight+'px')};if(hd&&'ResizeObserver' in window)new ResizeObserver(hh).observe(hd);document.fonts?.ready?.then(hh);addEventListener('load',hh)}
