@@ -594,3 +594,17 @@ td .cond{display:block;white-space:normal;min-width:120px;text-align:left;font-s
 #imode button:hover{color:var(--subdk);border-bottom-color:var(--line)}
 #imode button.on{color:var(--subdk);font-weight:600;background:var(--tbl);border-bottom-color:var(--tbl);padding-top:10px;position:relative;z-index:1}
 .wrap td.nm{background:var(--tbl)}.wrap th.nm{background:var(--hd)}.wrap tr:hover td.nm{background:var(--accl)}
+
+/* G3 brand tiles (subscriptions, institutions): card-tile footprint, neutral, no card cues */
+.btile{position:relative;aspect-ratio:1.586;border-radius:10px;background:var(--card);color:var(--ink);border:1px solid var(--line);padding:12px 14px;display:flex;flex-direction:column;gap:4px;cursor:pointer;overflow:hidden;box-shadow:0 1px 3px rgba(15,23,42,.06)}
+.btile:hover{border-color:var(--sublt)}.btile.on{border:2px solid var(--subdk);padding:11px 13px}.btile:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.btile .blogo{width:40px;height:40px;flex:none;display:flex;align-items:center;justify-content:center;border-radius:8px;background:#fff;border:1px solid var(--line);overflow:hidden}
+.btile .blogo img{width:32px;height:32px;object-fit:contain}.btile .blogo b{font:700 14px/1 inherit;color:var(--subdk)}
+.btile .bn{font-weight:700;font-size:14px;line-height:1.25}.btile .binc{font-size:11px;color:var(--mute,#64748b);line-height:1.3}
+.btile .bf{margin-top:auto;font-size:12px;font-variant-numeric:tabular-nums}.btile .bmk{position:absolute;right:12px;bottom:11px;font-size:12px;font-weight:700;color:var(--subdk)}
+.btile .bsw{position:absolute;right:12px;bottom:10px;width:34px;height:20px;border-radius:10px;background:#cbd5e1;transition:background .15s}.btile .bsw i{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.3);transition:left .15s}
+.btile .bsw.on{background:var(--subdk)}.btile .bsw.on i{left:16px}
+.sitefoot .sftm{font-size:12px;opacity:.8}
+.btile .bico{color:var(--subdk);background:var(--accl)}.sptile{cursor:default}.sptile .bf{display:flex;align-items:center;gap:4px}.sptile .amt{width:100%;max-width:140px}
+.tiles.ptiles.wsp{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}.wsp label.btile{color:var(--ink);font-size:inherit;gap:4px}
+.onpay{font-size:10px;color:var(--subdk);white-space:nowrap}.upto{display:block;font-size:10px}

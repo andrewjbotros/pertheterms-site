@@ -1,0 +1,573 @@
+{
+ "doc": "Logo library. Each file is the unaltered brand icon served by the owner's official site (bytes as fetched; extension matches the actual format). Logos are trademarks of their owners and identify their products. No endorsement implied. images/banks and images/cards hold PerTheTerms placeholder art, not issuer logos, so they are not listed here.",
+ "logos": {
+  "dashpass": {
+   "file": "dashpass.png",
+   "source_url": "https://cdn.doordash.com/static/img/favicon@2x.ico",
+   "official_page": "https://www.doordash.com/en-CA/dashpass/",
+   "fetched": "2026-10-29",
+   "format": "PNG",
+   "px": [
+    32,
+    32
+   ]
+  },
+  "skip": {
+   "file": "skip.png",
+   "source_url": "https://www.skipthedishes.com/images/logo-orange-144x144.png",
+   "official_page": "https://www.skipthedishes.com/",
+   "fetched": "2026-10-29",
+   "format": "PNG",
+   "px": [
+    144,
+    144
+   ]
+  },
+  "uberone": {
+   "file": "uberone.ico",
+   "source_url": "https://www.uber.com/favicon.ico",
+   "official_page": "https://www.uber.com/ca/en/u/uber-one/",
+   "fetched": "2026-10-29",
+   "format": "ICO",
+   "px": [
+    48,
+    48
+   ]
+  },
+  "prime": {
+   "file": "prime.ico",
+   "source_url": "https://www.amazon.ca/favicon.ico",
+   "official_page": "https://www.amazon.ca/amazonprime",
+   "fetched": "2026-10-29",
+   "format": "ICO",
+   "px": [
+    48,
+    48
+   ]
+  },
+  "walmart": {
+   "file": "walmart.ico",
+   "source_url": "https://www.walmart.ca/favicon.ico",
+   "official_page": "https://www.walmart.ca/",
+   "fetched": "2026-10-29",
+   "format": "ICO",
+   "px": [
+    16,
+    16
+   ]
+  },
+  "netflix": {
+   "file": "netflix.png",
+   "source_url": "https://assets.nflxext.com/us/ffe/siteui/common/icons/nficon2016.png",
+   "official_page": "https://www.netflix.com/ca/",
+   "fetched": "2026-10-29",
+   "format": "PNG",
+   "px": [
+    64,
+    64
+   ]
+  },
+  "disney": {
+   "file": "disney.png",
+   "source_url": "https://static-assets.bamgrid.com/product/disneyplus/favicons/disPlus-favicon-180x180.7d56f648dc95f591721935193bc827cb.png",
+   "official_page": "https://www.disneyplus.com/en-ca",
+   "fetched": "2026-10-29",
+   "format": "PNG",
+   "px": [
+    180,
+    180
+   ]
+  },
+  "crave": {
+   "file": "crave.png",
+   "source_url": "https://www.crave.ca/9683/assets/logos/craveLogo.png",
+   "official_page": "https://www.crave.ca/",
+   "fetched": "2026-10-29",
+   "format": "PNG",
+   "px": [
+    120,
+    120
+   ]
+  },
+  "appletv": {
+   "file": "appletv.png",
+   "source_url": "https://tv.apple.com/favicon.ico",
+   "official_page": "https://tv.apple.com/",
+   "fetched": "2026-10-29",
+   "format": "PNG",
+   "px": [
+    16,
+    16
+   ]
+  },
+  "costco": {
+   "file": "costco.png",
+   "source_url": "https://www.costco.ca/apple-touch-icon.png",
+   "official_page": "https://www.costco.ca/",
+   "fetched": "2026-10-29",
+   "format": "PNG",
+   "px": [
+    152,
+    152
+   ]
+  },
+  "globe": {
+   "file": "globe.jpg",
+   "source_url": "https://www.theglobeandmail.com/pf/resources/assets/meta/apple-touch-icon.png?d=986",
+   "official_page": "https://www.theglobeandmail.com/",
+   "fetched": "2026-10-29",
+   "format": "JPEG",
+   "px": [
+    180,
+    180
+   ]
+  },
+  "starbucks": {
+   "file": "starbucks.png",
+   "source_url": "https://www.starbucks.ca/apple-touch-icon.png",
+   "official_page": "https://www.starbucks.ca/",
+   "fetched": "2026-10-29",
+   "format": "PNG",
+   "px": [
+    180,
+    180
+   ]
+  },
+  "spotify": {
+   "file": "spotify.png",
+   "source_url": "https://wwwmarketing.scdn.co/img/apple-touch-icon-180x180.png",
+   "official_page": "https://www.spotify.com/ca-en/premium/",
+   "fetched": "2026-10-29",
+   "format": "PNG",
+   "px": [
+    180,
+    180
+   ]
+  },
+  "youtube": {
+   "file": "youtube.png",
+   "source_url": "https://www.youtube.com/s/desktop/5b8fd169/img/favicon_144x144.png",
+   "official_page": "https://www.youtube.com/premium",
+   "fetched": "2026-10-29",
+   "format": "PNG",
+   "px": [
+    144,
+    144
+   ]
+  },
+  "applemusic": {
+   "file": "applemusic.ico",
+   "source_url": "https://music.apple.com/favicon.ico",
+   "official_page": "https://music.apple.com/",
+   "fetched": "2026-10-29",
+   "format": "ICO",
+   "px": [
+    48,
+    48
+   ]
+  },
+  "caa": {
+   "file": "caa.png",
+   "source_url": "https://www.caa.ca/app/themes/caa-national/dist/images/favicon-96x96.82c512be7e.png",
+   "official_page": "https://www.caa.ca/",
+   "fetched": "2026-10-29",
+   "format": "PNG",
+   "px": [
+    96,
+    96
+   ]
+  },
+  "streamplus": {
+   "file": "streamplus.ico",
+   "source_url": "https://www.koodomobile.com/favicon.ico",
+   "official_page": "https://www.koodomobile.com/en/shop/entertainment/subscriptions/stream-plus",
+   "fetched": "2026-10-29",
+   "format": "ICO",
+   "px": [
+    48,
+    48
+   ]
+  },
+  "Alterna Savings": {
+   "file": "alterna-savings.ico",
+   "source_url": "https://www.alterna.ca/media/gdap0p3d/favicon.ico",
+   "official_page": "https://www.alterna.ca/",
+   "format": "ICO",
+   "px": [
+    48,
+    48
+   ],
+   "fetched": "2026-10-29",
+   "kind": "institution"
+  },
+  "American Express Canada": {
+   "file": "american-express-canada.png",
+   "source_url": "https://www.americanexpress.com/apple-touch-icon.png",
+   "official_page": "https://www.americanexpress.com/en-ca/",
+   "format": "PNG",
+   "px": [
+    152,
+    152
+   ],
+   "fetched": "2026-10-29",
+   "kind": "institution"
+  },
+  "BMO": {
+   "file": "bmo.ico",
+   "source_url": "https://www.bmo.com/favicon.ico",
+   "official_page": "https://www.bmo.com/en-ca/main/personal/",
+   "format": "ICO",
+   "px": [
+    48,
+    48
+   ],
+   "fetched": "2026-10-29",
+   "kind": "institution"
+  },
+  "Brim Financial": {
+   "file": "brim-financial.png",
+   "source_url": "https://static.brimfinancial.com/brim/images/cropped-favico-192x192.png",
+   "official_page": "https://brimfinancial.com/",
+   "format": "PNG",
+   "px": [
+    192,
+    192
+   ],
+   "fetched": "2026-10-29",
+   "kind": "institution"
+  },
+  "CIBC": {
+   "file": "cibc.png",
+   "source_url": "https://www.cibc.com/content/dam/favicon/cibc-favicon/favicon.ico",
+   "official_page": "https://www.cibc.com/en/personal-banking.html",
+   "format": "PNG",
+   "px": [
+    192,
+    192
+   ],
+   "fetched": "2026-10-29",
+   "kind": "institution"
+  },
+  "Canadian Tire": {
+   "file": "canadian-tire.png",
+   "source_url": "https://media.ctfs.com/dash_icons/favicons/CTB_Favicon_EN_144x144.png",
+   "official_page": "https://www.ctfs.com/",
+   "format": "PNG",
+   "px": [
+    144,
+    144
+   ],
+   "fetched": "2026-10-29",
+   "kind": "institution"
+  },
+  "Capital One Canada": {
+   "file": "capital-one-canada.ico",
+   "source_url": "https://www.capitalone.ca/favicon.ico",
+   "official_page": "https://www.capitalone.ca/",
+   "format": "ICO",
+   "px": [
+    48,
+    48
+   ],
+   "fetched": "2026-10-29",
+   "kind": "institution"
+  },
+  "Coast Capital Savings": {
+   "file": "coast-capital-savings.ico",
+   "source_url": "https://www.coastcapitalsavings.com/favicon.ico",
+   "official_page": "https://www.coastcapitalsavings.com/",
+   "format": "ICO",
+   "px": [
+    16,
+    16
+   ],
+   "fetched": "2026-10-29",
+   "kind": "institution"
+  },
+  "Conexus Credit Union": {
+   "file": "conexus-credit-union.ico",
+   "source_url": "https://www.conexus.ca/favicon.ico",
+   "official_page": "https://www.conexus.ca/",
+   "format": "ICO",
+   "px": [
+    48,
+    48
+   ],
+   "fetched": "2026-10-29",
+   "kind": "institution"
+  },
+  "DUCA": {
+   "file": "duca.png",
+   "source_url": "https://www.duca.com/assets/favicon.png",
+   "official_page": "https://www.duca.com/",
+   "format": "PNG",
+   "px": [
+    16,
+    16
+   ],
+   "fetched": "2026-10-29",
+   "kind": "institution"
+  },
+  "Desjardins": {
+   "file": "desjardins.ico",
+   "source_url": "https://www.desjardins.com/etc.clientlibs/dcom/clientlibs/clientlib-base/resources/favicon.ico",
+   "official_page": "https://www.desjardins.com/en",
+   "format": "ICO",
+   "px": [
+    48,
+    48
+   ],
+   "fetched": "2026-10-29",
+   "kind": "institution"
+  },
+  "EQ Bank": {
+   "file": "eq-bank.png",
+   "source_url": "https://www.eqbank.ca/eqbank/eqbank-favicon.png",
+   "official_page": "https://www.eqbank.ca/",
+   "format": "PNG",
+   "px": [
+    32,
+    32
+   ],
+   "fetched": "2026-10-29",
+   "kind": "institution"
+  },
+  "FirstOntario Credit Union": {
+   "file": "firstontario-credit-union.png",
+   "source_url": "https://www.firstontario.com/wp-content/uploads/2026/02/apple-touch-icon.png",
+   "official_page": "https://www.firstontario.com/",
+   "format": "PNG",
+   "px": [
+    180,
+    180
+   ],
+   "fetched": "2026-10-29",
+   "kind": "institution"
+  },
+  "Innovation Federal Credit Union": {
+   "file": "innovation-federal-credit-union.png",
+   "source_url": "https://www.innovationcu.ca/etc.clientlibs/innovationcu/clientlibs/clientlib-site/resources/images/favicons/mstile-310x310.png",
+   "official_page": "https://www.innovationcu.ca/",
+   "format": "PNG",
+   "px": [
+    558,
+    558
+   ],
+   "fetched": "2026-10-29",
+   "kind": "institution"
+  },
+  "KOHO": {
+   "file": "koho.png",
+   "source_url": "https://www.koho.ca/static/icons/icon-512x512-3162206e8ea2aff961d8c3bdfbfae643.png",
+   "official_page": "https://www.koho.ca/",
+   "format": "PNG",
+   "px": [
+    512,
+    512
+   ],
+   "fetched": "2026-10-29",
+   "kind": "institution"
+  },
+  "Libro Credit Union": {
+   "file": "libro-credit-union.jpg",
+   "source_url": "https://www.libro.ca/uploads/2025/12/cropped-favicon-2025-192x192.jpg",
+   "official_page": "https://www.libro.ca/",
+   "format": "JPEG",
+   "px": [
+    192,
+    192
+   ],
+   "fetched": "2026-10-29",
+   "kind": "institution"
+  },
+  "MBNA": {
+   "file": "mbna.ico",
+   "source_url": "https://www.mbna.ca/etc.clientlibs/tdsite/clientlibs/clientlib-sapphire/resources/images/mbna-favicon.ico",
+   "official_page": "https://www.mbna.ca/en",
+   "format": "ICO",
+   "px": [
+    16,
+    16
+   ],
+   "fetched": "2026-10-29",
+   "kind": "institution"
+  },
+  "Meridian Credit Union": {
+   "file": "meridian-credit-union.ico",
+   "source_url": "https://www.meridiancu.ca/build/images/favicon.ico?v=3",
+   "official_page": "https://www.meridiancu.ca/",
+   "format": "ICO",
+   "px": [
+    64,
+    64
+   ],
+   "fetched": "2026-10-29",
+   "kind": "institution"
+  },
+  "National Bank of Canada": {
+   "file": "national-bank-of-canada.png",
+   "source_url": "https://www.nbc.ca/etc.clientlibs/web-sites-toolkit/clientlibs/clientlib-static/resources/apple-touch-icon.png",
+   "official_page": "https://www.nbc.ca/",
+   "format": "PNG",
+   "px": [
+    180,
+    180
+   ],
+   "fetched": "2026-10-29",
+   "kind": "institution"
+  },
+  "Neo Financial": {
+   "file": "neo-financial.ico",
+   "source_url": "https://www.neofinancial.com/favicon.ico",
+   "official_page": "https://www.neofinancial.com/",
+   "format": "ICO",
+   "px": [
+    256,
+    256
+   ],
+   "fetched": "2026-10-29",
+   "kind": "institution"
+  },
+  "PC Financial": {
+   "file": "pc-financial.png",
+   "source_url": "https://www.pcfinancial.ca/favicon.ico?favicon.2-ns6y5crl603.ico",
+   "official_page": "https://www.pcfinancial.ca/en/",
+   "format": "PNG",
+   "px": [
+    64,
+    64
+   ],
+   "fetched": "2026-10-29",
+   "kind": "institution"
+  },
+  "RBC Royal Bank": {
+   "file": "rbc-royal-bank.ico",
+   "source_url": "https://www.rbcroyalbank.com/favicon.ico",
+   "official_page": "https://www.rbcroyalbank.com/personal.html",
+   "format": "ICO",
+   "px": [
+    32,
+    32
+   ],
+   "fetched": "2026-10-29",
+   "kind": "institution"
+  },
+  "Rogers Bank": {
+   "file": "rogers-bank.ico",
+   "source_url": "https://www.rogersbank.com/favicon.ico",
+   "official_page": "https://www.rogersbank.com/en/",
+   "format": "ICO",
+   "px": [
+    32,
+    32
+   ],
+   "fetched": "2026-10-29",
+   "kind": "institution"
+  },
+  "Scotiabank": {
+   "file": "scotiabank.ico",
+   "source_url": "https://www.scotiabank.com/content/dam/scotiabank/enterprise/images/logos/favicon.ico",
+   "official_page": "https://www.scotiabank.com/ca/en/personal.html",
+   "format": "ICO",
+   "px": [
+    48,
+    48
+   ],
+   "fetched": "2026-10-29",
+   "kind": "institution"
+  },
+  "Shakepay": {
+   "file": "shakepay.ico",
+   "source_url": "https://shakepay.com/favicon.ico",
+   "official_page": "https://shakepay.com/",
+   "format": "ICO",
+   "px": [
+    48,
+    48
+   ],
+   "fetched": "2026-10-29",
+   "kind": "institution"
+  },
+  "Simplii Financial": {
+   "file": "simplii-financial.png",
+   "source_url": "https://www.simplii.com/content/dam/simplii-assets/global/logos/partners-logos/apple-touch-icon.png",
+   "official_page": "https://www.simplii.com/en/home.html",
+   "format": "PNG",
+   "px": [
+    180,
+    180
+   ],
+   "fetched": "2026-10-29",
+   "kind": "institution"
+  },
+  "TD Bank": {
+   "file": "td-bank.ico",
+   "source_url": "https://www.td.com/etc.clientlibs/tdsite/clientlibs/clientlib-wealth/resources/images/favicon.ico",
+   "official_page": "https://www.td.com/ca/en/personal-banking",
+   "format": "ICO",
+   "px": [
+    96,
+    96
+   ],
+   "fetched": "2026-10-29",
+   "kind": "institution"
+  },
+  "Tangerine": {
+   "file": "tangerine.png",
+   "source_url": "https://www.tangerine.ca/etc.clientlibs/tangerine/clientlibs/clientlib-site/resources/icon-192x192.png",
+   "official_page": "https://www.tangerine.ca/en/personal",
+   "format": "PNG",
+   "px": [
+    192,
+    192
+   ],
+   "fetched": "2026-10-29",
+   "kind": "institution"
+  },
+  "Walmart Rewards": {
+   "file": "walmart-rewards.png",
+   "source_url": "https://www.walmartrewardsmc.ca/brands/FAIRSTONE/images/favicon-38b4421bb0cf8fbc5f6000d541bdcf2e.png",
+   "official_page": "https://www.walmartrewardsmc.ca/",
+   "format": "PNG",
+   "px": [
+    128,
+    128
+   ],
+   "fetched": "2026-10-29",
+   "kind": "institution"
+  },
+  "Wealthsimple": {
+   "file": "wealthsimple.png",
+   "source_url": "https://www.wealthsimple.com/icon1.png?39b8825bd6a1a38d",
+   "official_page": "https://www.wealthsimple.com/en-ca",
+   "format": "PNG",
+   "px": [
+    196,
+    196
+   ],
+   "fetched": "2026-10-29",
+   "kind": "institution"
+  },
+  "Wise": {
+   "file": "wise.png",
+   "source_url": "https://wise.com/public-resources/assets/icons/wise-personal/android_chrome_256x256.png",
+   "official_page": "https://wise.com/ca/",
+   "format": "PNG",
+   "px": [
+    256,
+    256
+   ],
+   "fetched": "2026-10-29",
+   "kind": "institution"
+  }
+ },
+ "missing": {
+  "Vancity": "no icon found on https://www.vancity.com/ (fetch 2026-10-29); tile shows a text monogram",
+  "Home Trust": "hometrust.ca serves a generic WordPress favicon, not a Home Trust logo (checked 2026-10-29); tile shows a text monogram"
+ },
+ "icons": {
+  "set": "CICO in Website/src/app.js",
+  "licence": "Original line icons drawn for PerTheTerms (no third-party icon set used)",
+  "created": "2026-10-29"
+ }
+}
