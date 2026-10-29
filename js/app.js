@@ -1219,10 +1219,10 @@ document.addEventListener('click',e=>{const u=e.target.closest('[data-unlock],[d
 /* cards-only release Wallet (Docs/naming.md build modes): your cards, four monthly spend inputs, two result lines. Same store as the full Wallet (STO.wallet.cards / .spend).
    Line 1 = walletCalc().rows (best card per category among the cards you hold). Line 2 "leaving on the table" is not a walletCalc output, so it is derived here from the same optimizer:
    pytRew() over every live card on record for the same spend, per category, minus what your wallet earns. ESTIMATE, before annual fees and welcome bonuses. */
-const WSP=[['groc','Groceries'],['dine','Dining'],['gas','Gas'],['other','Everything else']];
+const WSP=[['groc','Groceries'],['gas','Gas'],['dine','Dining'],['bills','Bills'],['trav','Travel'],['other','Everything else']];
 const WGAP_METHOD='ESTIMATE: your monthly spend × the earn rates on record (best live card per category, spend routed to the best rate first). Annual fees, welcome bonuses and category caps not on record are not counted. A ceiling, not a promise.';
 function walletGap(R){const all=pytRew(C.filter(LIVE),{...W.spend});let tot=0;const rows=all.rows.map(a=>{const m=R.rows.find(r=>r.k==a.k),g=Math.max(0,a.r-(m?m.r:0));tot+=g;return{k:a.k,best:a,mine:m,g}});return{rows,tot}}
-function renderWalletSimple(){const R=walletCalc(),cs=R.cs,has=WSP.some(([k])=>+W.spend[k]>0),nm=k=>(WSP.find(x=>x[0]==k)||[])[1]||CN[k]||k,pc=x=>(+x.r).toFixed(2).replace(/\.?0+$/,'')+'%';
+function renderWalletSimple(){const R=walletCalc(),cs=R.cs,has=Object.keys(CN).some(k=>+W.spend[k]>0),nm=k=>(WSP.find(x=>x[0]==k)||[])[1]||CN[k]||k,pc=x=>(+x.r).toFixed(2).replace(/\.?0+$/,'')+'%';
  let l1,l2='';
  if(!cs.length)l1='<span class=mute>Add a card to see which one to use for each category.</span>';
  else if(!has)l1='<span class=mute>Enter your monthly spend in <button type=button class=lnk data-s=spending>Spending</button> to see which of your cards to use for each category.</span>';
@@ -1246,7 +1246,15 @@ function instPickHTML(){const L=C.filter(LIVE),G={};L.forEach(c=>(G[c.i]=G[c.i]|
 if(CARDS_ONLY){renderWallet=renderWalletSimple;VIEWS.wallet=renderWalletSimple}
 /* Spending (Andrew 2026-10-29): the monthly spend inputs, split out of Accounts. Same store (W.spend, saved by the shared data-sp input handler), same calculations. */
 function spendingView(){$('#view').innerHTML=`<div class="prof pstack wsimple"><div class=vhead><h2>Spending</h2></div><p class=lead>What you spend each month. Used to value your cards in <button type=button class=lnk data-s=wallet>Accounts</button>. It stays on this device. Leave blank for $0.</p>
- <section class=psec id=pw-spend><h3>Monthly spend</h3>${CARDS_ONLY?`<div class=wsp>${WSP.map(([k,n])=>`<label><span>${n}</span><input class=amt type=number min=0 step=10 inputmode=numeric data-sp=${k} value="${W.spend[k]||''}" placeholder="0" aria-label="${n}, dollars a month"></label>`).join('')}</div>`:spendHTML()}</section></div>`}
+ <section class=psec id=pw-spend><h3>Monthly spend</h3>${CARDS_ONLY?`<div class=wsp>${[...WSP,...spxOn().map(k=>[k,CN[k]])].map(([k,n])=>`<label><span>${esc(n)}</span><input class=amt type=number min=0 step=10 inputmode=numeric data-sp=${k} value="${W.spend[k]||''}" placeholder="0" aria-label="${esc(n)}, dollars a month"></label>`).join('')}</div><div id=pw-more>${spxHTML()}</div>`:spendHTML()}</section></div>`}
+/* Everything else breakdown (Andrew 2026-10-29): when Everything else is over 30% of the monthly total, offer the three other categories with the most cards on record (D.meta.catcount) as tiles; a tapped tile adds its input (STO.wallet.spx). */
+const SPX_LIM=.3,spxOn=()=>(STO.wallet.spx||[]).filter(k=>CN[k]&&!WSP.some(w=>w[0]==k)),SPX=()=>Object.keys(CN).filter(k=>!WSP.some(w=>w[0]==k)).sort((a,b)=>(CC[b]||0)-(CC[a]||0)).slice(0,3);
+function spxHTML(){const tot=Object.keys(CN).reduce((t,k)=>t+(+W.spend[k]||0),0),o=+W.spend.other||0,on=spxOn(),show=(tot>0&&o/tot>SPX_LIM)||on.length;if(!show)return '';const L=[...new Set([...SPX(),...on])];
+ return `<h4 class=ipk>Break down Everything else</h4><p class=mute>${tot>0&&o/tot>SPX_LIM?`Everything else is ${Math.round(o/tot*100)}% of your monthly total. Tap a category to add it, then move that part of your spend out of Everything else.`:'Tap a category again to remove it.'}</p><div class="tiles ptiles">${L.map(k=>{const sel=on.includes(k);return ctile({a:'#334155',b:'#0f172a',on:sel,attrs:`data-spx="${k}" aria-pressed=${sel}`,top:'Category',name:CN[k],foot:(CC[k]||0)+' cards on record have a rate for it',mark:sel?'✓ Added':''})}).join('')}</div>`}
+{const act=t=>{const k=t.dataset.spx,S2=new Set(STO.wallet.spx||[]);if(S2.has(k)){S2.delete(k);W.spend[k]=0}else S2.add(k);STO.wallet.spx=[...S2];saveS();const y=scrollY;render();scrollTo(0,y);(S2.has(k)?document.querySelector(`[data-sp="${k}"]`):document.querySelector(`[data-spx="${k}"]`))?.focus()};
+ document.addEventListener('click',e=>{const t=e.target.closest('[data-spx]');if(t){e.stopImmediatePropagation();act(t)}},true);
+ document.addEventListener('keydown',e=>{const t=e.target.closest?.('[data-spx]');if(t&&(e.key=='Enter'||e.key==' ')){e.preventDefault();e.stopImmediatePropagation();act(t)}},true);
+ document.addEventListener('input',e=>{if(e.target.dataset?.sp&&st.s=='spending'){const m=document.querySelector('#pw-more');if(m)m.innerHTML=spxHTML()}})}
 VIEWS.spending=spendingView;
 /* Subscriptions, cards-only (Andrew 2026-10-29): a tile picker over the services on record (D.subs + D.subcat). Tap a tile to mark it as one you have; same store as the full build (STO.wallet.services). */
 const subPickTile=s=>{const[a,b]=SUBSOL[s.k]||['#6d28d9','#3b0764'],on=(STO.wallet.services||[]).includes(s.k),p=subPrice(s.k);return ctile({a,b,on,attrs:`data-subpick="${s.k}" aria-pressed=${on}`,top:'Subscription',name:s.n,foot:p?'$'+p.v.toFixed(2)+'/mo':'Price —',mark:on?'✓ You have it':''})};
