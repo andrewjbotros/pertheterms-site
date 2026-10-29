@@ -513,7 +513,3 @@ header>#pl button:focus-visible,#nav3 nav button:focus-visible,#logo:focus-visib
 #nav3 #grp button{font-family:inherit;font-weight:500;font-size:13px;line-height:1;padding:7px 14px;margin:0;border:1px solid var(--line);border-radius:999px;background:var(--card);box-shadow:none}
 #nav3 #grp button.on{color:var(--ink);border-color:var(--acc);box-shadow:inset 0 0 0 1px var(--acc)}
 
-/* Home story: data connections list (open beat) */
-.hero2 .slinks{list-style:none;margin:18px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,auto);gap:8px 22px;justify-content:start}
-.hero2 .slinks li{font-size:15px;color:rgba(255,255,255,.78);white-space:nowrap}
-.hero2 .slinks b{font-size:22px;color:#fff;font-weight:800;margin-right:4px}
