@@ -988,6 +988,71 @@
     960,
     197
    ]
+  },
+  "marriott-bonvoy": {
+   "file": "marriott-bonvoy.png",
+   "source_url": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/16/ee/36/16ee3614-fd33-2aba-d0c9-4febd99af62a/Bonvoy-0-0-1x_U007epad-0-0-0-1-0-0-sRGB-0-85-220.png/512x512bb.png",
+   "official_page": "https://apps.apple.com/ca/app/marriott-bonvoy/id455004730",
+   "publisher": "Marriott International",
+   "note": "Official App Store icon (Canada storefront, seller Marriott International), via the iTunes Search API",
+   "fetched": "2026-10-30",
+   "format": "PNG",
+   "px": [
+    512,
+    512
+   ]
+  },
+  "hilton-honors": {
+   "file": "hilton-honors.png",
+   "source_url": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/87/d6/c2/87d6c2ec-105e-8c3d-0363-edebb47c750e/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/512x512bb.png",
+   "official_page": "https://apps.apple.com/ca/app/hilton-honors-book-hotels/id635150066",
+   "publisher": "Hilton Worldwide Holdings Inc.",
+   "note": "Official App Store icon (Canada storefront, seller Hilton Worldwide Holdings Inc.), via the iTunes Search API",
+   "fetched": "2026-10-30",
+   "format": "PNG",
+   "px": [
+    512,
+    512
+   ]
+  },
+  "triangle": {
+   "file": "triangle.png",
+   "source_url": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/e4/66/b4/e466b458-8585-bd64-0c21-2a32e23fb8d3/AppIcon-0-0-1x_U007ephone-0-11-0-85-220.png/512x512bb.png",
+   "official_page": "https://apps.apple.com/ca/app/triangle/id1343453471",
+   "publisher": "Canadian Tire Corporation",
+   "note": "Official App Store icon (Canada storefront, seller Canadian Tire Corporation), via the iTunes Search API",
+   "fetched": "2026-10-30",
+   "format": "PNG",
+   "px": [
+    512,
+    512
+   ]
+  },
+  "headspace": {
+   "file": "headspace.png",
+   "source_url": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/ec/20/88/ec208862-22e5-ef28-fd52-eff6151054fe/AppIcon-0-0-1x_U007epad-0-1-85-220.png/512x512bb.png",
+   "official_page": "https://apps.apple.com/ca/app/headspace-sleep-meditation/id493145008",
+   "publisher": "Headspace Inc.",
+   "note": "Official App Store icon (Canada storefront, seller Headspace Inc.), via the iTunes Search API",
+   "fetched": "2026-10-30",
+   "format": "PNG",
+   "px": [
+    512,
+    512
+   ]
+  },
+  "pcexpress": {
+   "file": "pcexpress.png",
+   "source_url": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/f9/9a/8f/f99a8f19-a25d-1227-1c33-0908d27fab51/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/512x512bb.png",
+   "official_page": "https://apps.apple.com/ca/app/pc-express/id1194066746",
+   "publisher": "Loblaw Companies Limited",
+   "note": "Official App Store icon (Canada storefront, seller Loblaw Companies Limited), via the iTunes Search API",
+   "fetched": "2026-10-30",
+   "format": "PNG",
+   "px": [
+    512,
+    512
+   ]
   }
  },
  "missing": {
