@@ -724,6 +724,10 @@ function rail(){const el=$('#urail');if(!el)return;document.documentElement.styl
  el.innerHTML=`<div class=rh>You</div>`+UNAV.map(([k,n,sub])=>{const on=st.s==k&&!st.card,pm=PREM.has(k);return `<button type=button data-s=${k} class="ri${on?' on':''}${pm?' prem':''}"${on?' aria-current=page':''}><span class=ril>${n}${pm?'<span class=premg role=img aria-label=Premium title=Premium>◆</span>':''}${sub?`<small>${sub}</small>`:''}</span></button>`}).join('');
  el.classList.toggle('open',o);document.body.classList.toggle('rail',o&&!CARDS_ONLY);const t=$('#rtog');if(t)t.setAttribute('aria-expanded',String(o));el.inert=!o}
 if(CARDS_ONLY)document.body.classList.add('co');/* cards-only: no side column and no header Wallet button; Wallet is the first item of the Profile menu */
+/* left sidebar (Andrew 2026-10-29): the logo/name opens it; Home then the product lines; closes on outside tap, Esc or a pick */
+function snavSet(o){const n=$('#snav'),b=$('#snbg'),l=$('#logo');if(!n)return;n.hidden=!o;if(b)b.hidden=!o;if(l)l.setAttribute('aria-expanded',String(!!o));if(o)(n.querySelector('button.on')||n.querySelector('button'))?.focus()}
+document.addEventListener('click',e=>{if(!$('#snav')||$('#snav').hidden)return;if(e.target.closest('#snav,#logo'))return;snavSet(false)},true);
+document.addEventListener('keydown',e=>{if(e.key=='Escape'&&$('#snav')&&!$('#snav').hidden){snavSet(false);$('#logo')?.focus()}});
 function togRail(){if(CARDS_ONLY){$('#logo')?.click();return}STO.ui={...(STO.ui||{}),rail:!railOpen()};saveS();rail()}
 function render(){const fh0=$('#fhead');if(fh0)fh0.innerHTML='';/* a search always lives inside Credit Cards (Home never shows a results table without its tabs) */if(st.q&&st.pl=='home'){st.pl='cards';st.s=st.s||'ov'}render0();{/* Filters / Suggested / Reset sit above the panel and follow its visibility */const fh=$('#fhead'),f=$('#filters');if(fh)fh.hidden=!fh.innerHTML||f.hidden||f.style.display=='none';const ct=$('#ctl');if(ct)ct.hidden=st.pl=='home'||st.pl=='info'||!!st.card||USR.has(st.s)}rail();hero();vpSet()}
 /* Home story hero: four beats, a close, insurance tiles and the numbers that come from the database at build time (build_screener.py HERO_SQL → D.meta.hero). No number is typed here; the build fails if this block carries a digit. */
@@ -775,7 +779,7 @@ const INFOP={about:['About',`<p>Reading the fine print on account documents is b
 const INFOK=Object.keys(INFOP),TITLE0=document.title;
 function renderInfo(){const[t,b]=INFOP[st.s]||INFOP.about;['#pre','#page','.wrap','#bar','#filters','#fhead','#grp','#vh'].forEach(q=>{const e=$(q);if(e)e.hidden=true});$('#tabs').innerHTML='';const v=$('#view');v.hidden=false;v.innerHTML=`<article class=infopg aria-labelledby=infoh><h1 id=infoh>${t}</h1>${b}</article>`;document.title=t+' · PerTheTerms'}
 document.addEventListener('click',e=>{const a=e.target.closest('[data-info]');if(a){e.preventDefault();st.pl='info';st.s=a.dataset.info;st.card=null;render();scrollTo(0,0)}});
-function render0(){if(st.pl=='info'){if(!INFOK.includes(st.s))st.s='about';$('#grp').hidden=true;syncLabels();save();return renderInfo()}if(document.title!==TITLE0)document.title=TITLE0;$('#grp').hidden=true;$('#grp').innerHTML='';if(st.s=='trv'||st.s=='prot'){st.g={...(st.g||{}),ins:st.s};st.s='ins'}if(!PL.has(st.pl))st.pl='cards';if(!USR.has(st.s)&&!(S.some(s=>s.id==st.s)&&!HIDE.has(st.s)&&!SUBONLY.has(st.s)&&(!CTV()||CTV().includes(st.s)||st.s=='wfolder')))st.s='ov';syncLabels();save();BANK.bar();
+function render0(){if(st.pl=='info'){if(!INFOK.includes(st.s))st.s='about';$('#grp').hidden=true;syncLabels();save();BANK.bar();return renderInfo()}if(document.title!==TITLE0)document.title=TITLE0;$('#grp').hidden=true;$('#grp').innerHTML='';if(st.s=='trv'||st.s=='prot'){st.g={...(st.g||{}),ins:st.s};st.s='ins'}if(!PL.has(st.pl))st.pl='cards';if(!USR.has(st.s)&&!(S.some(s=>s.id==st.s)&&!HIDE.has(st.s)&&!SUBONLY.has(st.s)&&(!CTV()||CTV().includes(st.s)||st.s=='wfolder')))st.s='ov';syncLabels();save();BANK.bar();
  if(st.card&&st.pl=='home')st.pl='cards';
  if(st.pl=='home'&&!st.card&&!USR.has(st.s)){['#pre','#page','.wrap','#bar','#filters','#view'].forEach(q=>{const e=$(q);if(e)e.hidden=true});$('#tabs').innerHTML='';return}
  if(!st.card&&!USR.has(st.s)&&(st.pl=='broker'||st.pl=='tel')){['#pre','#page','.wrap','#bar','#filters'].forEach(q=>{const e=$(q);if(e)e.hidden=true});$('#view').hidden=false;$('#tabs').innerHTML=LTABS(st.pl);return renderLine(st.pl)}
@@ -928,7 +932,7 @@ document.addEventListener('click',e=>{
  if(e.target.closest('[data-back]')){st.card=null;go(hashOf());return}
  if(e.target.closest('#modal'))return;
  const m=e.target.closest('[data-m]');if(m){e.stopPropagation();openM(C[m.dataset.m]);return}
- if(e.target.closest('#logo')){st.pl='home';st.s='ov';st.card=null;st.q='';if($('#q'))$('#q').value='';render();window.scrollTo(0,0);return}
+ if(e.target.closest('#logo')){snavSet($('#snav').hidden);return}
  {const im=e.target.closest('[data-im]');if(im){st.im=im.dataset.im;render();return}}
  const t=e.target.closest('[data-s],[data-x],[data-k],tr[data-i]');if(!t)return;const KP=t.closest('#tabs')&&t.dataset.s?posGet():null;
  if(t.dataset.s){st.s=t.dataset.s;st.card=null;if(st.pl=='info'&&USR.has(st.s))st.pl='cards'/* About / legal pages: a Profile item leaves the info view (else render0 resets st.s to about) */}else if(t.dataset.x){const x=t.dataset.x;if(x=='__all'){st.f={};st.q='';$('#q').value=''}else if(x=='__f'){st.f={}}else if(x=='__sort'){st.sort=null;st.dir=-1}else if(x=='__q'){st.q='';$('#q').value=''}else delete st.f[x]}

@@ -553,7 +553,7 @@ header>#pl button.on{color:var(--ink);border-bottom-color:var(--acc)!important}
 #nav3 #tabs button:first-child,#nav3 #grp button:first-child{padding-left:0!important}
 /* Push B (2026-10-29): Credit Cards right-aligned beside the profile button; later nav items stack to its left */
 header>#pl{position:static!important;transform:none!important;display:inline-grid!important;grid-auto-flow:column;grid-auto-columns:1fr;direction:rtl;margin-left:auto!important;margin-right:0!important}
-header #pm{margin-left:0!important}
+header #pm{margin-left:auto!important}
 header>#pl button{direction:ltr}
 header>#pl button.on:hover{color:var(--ink)!important;border-bottom-color:color-mix(in srgb,var(--acc) 45%,#fff)!important}
 header>#pl button{transition:color .15s,border-color .25s ease!important}
@@ -624,3 +624,14 @@ td .cond{display:block;white-space:normal;min-width:120px;text-align:left;font-s
 .tpop .tpr:hover,.tpop .tpr:focus-visible{border-color:var(--sublt);outline:none}.tpop .tpr.on{border-color:var(--subdk);background:var(--accl)}
 .tpop .tpn{flex:1;font-weight:600}.tpop .tpp{font-variant-numeric:tabular-nums;white-space:nowrap;font-size:12px}
 .tpop .tpnote,.tpop .tpsrc{font-size:11px;color:var(--mute,#64748b);margin:6px 6px 2px;line-height:1.35}
+
+/* Andrew 2026-10-29: left sidebar opened from the logo/name; Home then the product lines (no product links in the top bar) */
+#snav{position:fixed;left:0;top:0;bottom:0;width:240px;z-index:90;background:var(--card);border-right:1px solid var(--line);box-shadow:4px 0 24px rgba(15,23,42,.18);padding:64px 12px 12px;box-sizing:border-box}
+#snav[hidden],#snbg[hidden]{display:none}
+#snbg{position:fixed;inset:0;z-index:89;background:rgba(15,23,42,.25)}
+#snav #pl{display:flex;flex-direction:column;gap:4px;margin:0!important;padding:0;max-width:none!important;justify-content:flex-start}
+#snav #pl button{flex:none;width:100%;min-width:0;text-align:left;border:1px solid transparent;border-radius:8px;padding:10px 12px;font:700 15px/1.2 inherit;font-family:inherit;color:var(--ink);background:transparent;box-shadow:none;cursor:pointer}
+#snav #pl button:hover{background:var(--bg)}#snav #pl button.on{background:var(--accl);border-color:var(--acc);box-shadow:none}
+#snav #pl button:focus-visible{outline:2px solid var(--acc);outline-offset:-2px}
+#logo{cursor:pointer}
+
