@@ -46,7 +46,7 @@ th.s{color:var(--acc)}th.s:after{content:" ▾"}th.s.asc:after{content:" ▴"}
 td.l,th.l{text-align:left}td.nm,th.nm{position:sticky;left:0;background:var(--card);z-index:1;max-width:260px;overflow:hidden;text-overflow:ellipsis}th.nm{z-index:3;background:var(--hd)}
 td.nm b{font-weight:600}td.nm a.cl{color:inherit;text-decoration:none}td.nm a.cl:hover b{color:var(--acc);text-decoration:underline}td.nm small{display:block;color:var(--mute);font-size:11px}
 tr:hover td{background:var(--accl)}tr.op td{background:var(--accl)}
-.y{color:var(--good);font-weight:700}.n{color:var(--mute)}.u{color:var(--mute)}
+/* X marks red sitewide (Andrew 2026-10-29); checks stay green; --bad is set for light and dark */.y{color:var(--good);font-weight:700}.n{color:var(--bad);font-weight:700}.u{color:var(--mute)}
 .hi{font-weight:700}.mute{color:var(--mute)}.wrapt{white-space:normal;min-width:220px;max-width:360px;text-align:left}
 .t{font-size:11px;padding:1px 4px;border-radius:4px;border:1px solid var(--line);color:var(--mute);margin-left:4px}
 .det td{background:var(--bg)!important;text-align:left;white-space:normal;font-size:12.5px;color:var(--mute)}.det a{color:var(--acc)}
@@ -400,7 +400,7 @@ tbody td{font-size:14px}
 /* ---- Phones (<=640px). Every phone-only rule lives in this one block. ---- */
 
 /* Brokers sub-tabs (Fees / Accounts / Features / Promotions) */
-.brtab td{font-size:13px;vertical-align:top}.brtab td.l{max-width:240px}.brtab[data-brtab=braccts] td{text-align:center}.bryes{color:var(--ok,#1a7f37);font-weight:700}.brno{color:var(--mute)}
+.brtab td{font-size:13px;vertical-align:top}.brtab td.l{max-width:240px}.brtab[data-brtab=braccts] td{text-align:center}.bryes{color:var(--ok,#1a7f37);font-weight:700}.brno{color:var(--bad);font-weight:700}
 /* left column: Profile / Wallet / Subscriptions / Points, a line space, then Per Your Terms (the one premium view) */
 #urail [data-s=pyt]{margin-top:16px;position:relative}#urail [data-s=pyt]::before{content:'';position:absolute;left:10px;right:10px;top:-9px;border-top:1px solid var(--line)}
 .pelig{display:inline-flex;gap:8px;align-items:center;margin:4px 0 10px;font-weight:600}
@@ -488,7 +488,7 @@ header>#pl button:focus-visible,#nav3 nav button:focus-visible,#logo:focus-visib
 /* Site footer: on every page and tab. Small and muted; follows the theme. */
 .sitefoot{border-top:1px solid var(--line);margin-top:48px;padding:28px 24px 36px;font-size:13px;color:var(--mute)}
 .sitefoot .sfwrap{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:32px}
-.sitefoot .sflogo{display:flex;align-items:center;gap:8px;font-size:15px;color:var(--ink)}.sitefoot .sflogo b{font-weight:700}
+.sitefoot .sflogo{display:flex;align-items:center;gap:8px;font-size:15px;color:var(--ink)}.sitefoot .sflogo b{font-weight:700;color:var(--acc)}
 .sitefoot p{margin:8px 0 0;line-height:1.5}.sitefoot .sfcopy{margin-top:14px}
 .sitefoot h2{font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;margin:0 0 10px;color:var(--mute)}
 .sitefoot .sfcol{display:flex;flex-direction:column;gap:7px}.sitefoot a{color:inherit;text-decoration:none}.sitefoot a:hover,.sitefoot a:focus-visible{color:var(--ink);text-decoration:underline}
