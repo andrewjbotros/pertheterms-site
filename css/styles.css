@@ -710,3 +710,25 @@ body.wzopen{overflow:hidden}
 #snav #pl button:focus:not(:focus-visible),#pml button:focus:not(:focus-visible){background:none}
 #snav #pl button.on:focus:not(:focus-visible){background:var(--accl)}
 @media (prefers-reduced-motion:reduce){#snav #pl button,#pml button{transition:none}}
+.btile.spadd{border-style:dashed;opacity:.8;cursor:pointer}.btile.spadd:hover{opacity:1}
+.btile.sptile{position:relative}.sptile .sprm{position:absolute;top:6px;right:6px;width:24px;height:24px;border:0;border-radius:12px;background:transparent;color:var(--mute);font-size:16px;line-height:1;cursor:pointer}.sptile .sprm:hover{background:var(--bg);color:var(--ink)}
+.wrap td span.u{white-space:normal}
+/* PUSH 14 frozen header stack on table views (tops set by JS from each piece's natural offset) */
+html.tblv #nav3,html.tblv #ctl,html.tblv #pre,html.tblv #bar{position:sticky;z-index:5;background:var(--bg)}
+html.tblv .wrap thead th{top:var(--stk)!important;z-index:4}
+html.stkm #nav3,html.stkm #ctl,html.stkm #pre,html.stkm #bar,html.stkm .wrap thead th{position:static!important}
+#stkbg{position:fixed;left:0;right:0;top:0;height:var(--stk);background:var(--bg);z-index:3;pointer-events:none}html:not(.tblv) #stkbg{display:none}
+/* Insurance Conditions: two lines max, full text on hover / tap */
+.wrap td .cond{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-width:0;white-space:normal;font-size:inherit;cursor:pointer}.wrap td .cond.open{display:block;-webkit-line-clamp:unset;overflow:visible}
+.wrap td .cond:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+.wrap table.fx{table-layout:fixed;max-width:none}.wrap table.fx th,.wrap table.fx td{min-width:0!important;max-width:none!important;white-space:normal;overflow-wrap:break-word;overflow:hidden}.wrap table.fx td.nm{width:auto}
+/* integer line boxes in the fixed tables so every row top lands on a whole pixel: a view switch then moves the anchored card by exactly 0px */
+.wrap table.fx td{line-height:18px}.wrap table.fx td small{line-height:14px}.wrap table.fx th{line-height:14px}
+/* PUSH 14: on table views the open Filters panel floats over the rows (a dropdown under Filters / search) instead of pushing the table down, so the frozen header is the same compact height in every sub-tab and a view switch never moves the rows */
+html.tblv #filters{position:fixed!important;top:var(--ftop);left:var(--fl);width:var(--fw);margin:0!important;z-index:6;max-height:min(60vh,520px);overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 28px rgba(0,0,0,.18);padding:10px 12px}
+/* PUSH 14: same-height frozen pieces in every sub-tab (count line 42px, column-header row 56px, fits the tallest (Rewards) label), so the first row starts at the same pixel in every view */
+html.tblv #bar{height:42px;box-sizing:border-box;overflow:hidden}html.tblv .wrap table.fx thead th{height:56px;box-sizing:border-box;vertical-align:bottom}
+/* PUSH 14: one row height for every card in every view (three 18px lines); longer cells clip with an ellipsis, full text on hover (title) and tap */
+.wrap table.fx #tb td{height:70px;box-sizing:border-box}.wrap table.fx #tb td>.cx{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;max-height:54px}.wrap table.fx #tb td>.cx.clip{cursor:pointer}.wrap table.fx #tb td>.cx.open{display:block;-webkit-line-clamp:unset;max-height:none}
+.wrap table.fx #tb td>.cx:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+.wrap table.fx #tb td.nm>.cx{display:block;-webkit-line-clamp:unset;max-height:none;overflow:visible}.wrap table.fx #tb td.nm .nmb b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.wrap table.fx #tb td.nm>.cx>small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
