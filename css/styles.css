@@ -805,3 +805,4 @@ html.fsopen{overflow:hidden}
 .infopg .soon .soonart{width:min(520px,100%);border-radius:18px;box-shadow:0 10px 30px rgba(10,16,32,.18)}
 .soon .sanim{transform-box:fill-box;transform-origin:center}.soon .sfloat{animation:sfl 9s ease-in-out infinite}.soon .sfall{animation:sfa 4.8s ease-in infinite}.soon .sbob{animation:sbo 6s ease-in-out infinite}
 @media(prefers-reduced-motion:reduce){.soon .sanim{animation:none}}
+.wrap table.fx th,.wrap table.fx td{min-width:0!important;max-width:none!important}/* PUSH 6: colW sets every width */
