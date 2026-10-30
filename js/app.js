@@ -35,7 +35,7 @@ const RTO=['Points','Cash back','Travel/airline miles','Store dollars','No rewar
 const ALLF={fee:['fee','Cost',()=>FEEO],add:['add','Additional card',()=>[['$0',c=>c.add===0],['≤ $50',c=>c.add!=null&&c.add<=50]]],other:['other','Base earn %',()=>ge('other',[0.5,1,1.25,1.5,2])],pcn:['npc','Premium Categories',()=>ge('npc',[1,2,3,4,5],'')],best:['best','Best earn %',()=>ge('best',RATES)],nins:['nins','Covers',()=>[2,4,6,8,10,12,13].map(v=>['Covers ≥ '+v,c=>c.nins>=v])],
  kind:['rt','Reward type',()=>eq('rt',RTO)],offer:['offer','Welcome offer',()=>OFFO],ofc:['ofl','Welcome offer',()=>[['Yes',OFLIVE],['No',c=>!OFLIVE(c)]]],
  i:['issuer','Issuer',()=>eq('i',uniq(c=>c.i))],cur:['cur','Currency',()=>eq('cur',['CAD','USD'])],acct:['acct','Account type',()=>eq('acct',['Personal','Business'])],nw:['net','Network',()=>eq('nw',uniq(c=>c.nw))],
- pt:['pt','Fee',()=>eq('pt',['Fee','No fee','Prepaid','Secured'])],tier:['tier','Tier',()=>eq('tier',uniq(c=>c.tier))],it:['itype','Issuer type',()=>eq('it',uniq(c=>c.it))],st:['status','Status',()=>eq('st',uniq(c=>c.st))]};
+ pt:['pt','Fee',()=>eq('pt',['Fee','No fee','Secured'])],tier:['tier','Tier',()=>eq('tier',uniq(c=>c.tier))],it:['itype','Issuer type',()=>eq('it',uniq(c=>c.it))],st:['status','Status',()=>eq('st',uniq(c=>c.st))]};
 const OV_LIST=['fee','add','other','pcn','best','nins','kind','ofc'];/* Andrew's Overview list, in order */
 const FIELDS={ov:OV_LIST,dtl:Object.keys(ALLF).filter(k=>!OV_LIST.includes(k))},FDEF={ov:ALLF,dtl:ALLF};
 const fcols=id=>FIELDS[id],ffilt=id=>FIELDS[id].map(k=>{const[i,l,o]=FDEF[id][k];return[i,l,o()]});
