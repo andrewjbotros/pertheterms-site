@@ -701,3 +701,10 @@ body.wzopen{overflow:hidden}
 #rtog.snon .rham{opacity:1;transform:scale(1.06);box-shadow:0 0 0 4px color-mix(in srgb,var(--acc) 22%,transparent),0 0 14px color-mix(in srgb,var(--acc) 45%,transparent)}#rtog.snon .lmark{opacity:0;transform:scale(.7)}
 @media (hover:hover){#rtog:hover .rham,#rtog:focus-visible .rham{opacity:1;transform:scale(1.06);box-shadow:0 0 0 4px color-mix(in srgb,var(--acc) 22%,transparent),0 0 14px color-mix(in srgb,var(--acc) 45%,transparent)}#rtog:hover .lmark,#rtog:focus-visible .lmark{opacity:0;transform:scale(.7) rotate(-10deg)}}
 @media (prefers-reduced-motion:reduce){#rtog .rham,#rtog .lmark{transition:none}#rtog .rham,#rtog .lmark,#rtog:hover .lmark,#rtog:focus-visible .lmark{rotate:none}#rtog .rham{transform:none}#rtog:hover .lmark,#rtog:focus-visible .lmark,#rtog.snon .lmark{transform:none}}
+/* menu hover/focus (Andrew 2026-10-30): drawer and Profile menu items get a clear, matching state in both themes: nav blue at low alpha + blue text/icon */
+#snav #pl button,#pml button{transition:background-color .15s ease,color .15s ease}
+#snav #pl button:hover,#snav #pl button:focus-visible,#pml button:hover,#pml button:focus-visible{background:color-mix(in srgb,var(--acc) 14%,transparent);color:var(--acc)}
+#snav #pl button:hover .ti,#snav #pl button:focus-visible .ti,#pml button:hover .ti,#pml button:focus-visible .ti{color:var(--acc)}
+#snav #pl button:focus:not(:focus-visible),#pml button:focus:not(:focus-visible){background:none}
+#snav #pl button.on:focus:not(:focus-visible){background:var(--accl)}
+@media (prefers-reduced-motion:reduce){#snav #pl button,#pml button{transition:none}}
