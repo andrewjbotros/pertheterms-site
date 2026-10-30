@@ -771,3 +771,17 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 #pml #pl button:hover,#pml #pl button:focus{background:var(--bg)!important}#pml #pl button.on{color:var(--acc)}
 #pml #pl .ti{width:18px;height:18px;flex:none;display:inline-flex;align-items:center;justify-content:center}#pml #pl .ti svg{width:16px;height:16px}
 #pml #pl small{margin-left:auto;font-size:10.5px;font-weight:700;color:var(--mute);text-transform:uppercase;letter-spacing:.04em}
+/* One tile size (Andrew 2026-10-30): every selection tile on Accounts (cards), Spending, Subscriptions and Loyalty is the Wallet card size (aspect 1.586 in the shared .ptiles grid) and one centred layout: logo/icon, name, then the footer anchored to the bottom. Scoped to the page grids, so the Accounts + wizard institution tiles keep their own size. */
+#view .psec>.ptiles>.btile,#view .psec>.ptiles>.btile.bbrand{aspect-ratio:1.586;align-items:center;text-align:center;justify-content:center;gap:4px;padding:8px 10px 30px}
+#view .psec>.ptiles>.btile.on{padding:7px 9px 29px}
+#view .psec>.ptiles>.btile .blogo{width:56%;height:auto;max-height:none;aspect-ratio:2.4;flex:none;border-radius:8px}
+#view .psec>.ptiles>.btile.bbrand .blogo{border:0;background:none;border-radius:0}
+#view .psec>.ptiles>.btile .blogo.bico{width:auto;height:36%;aspect-ratio:1}
+#view .psec>.ptiles>.btile .bn{font-size:14px;line-height:1.2;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#view .psec>.ptiles>.btile .bf{position:absolute;left:0;right:0;bottom:7px;margin:0;padding:0 44px;min-height:20px;display:flex;align-items:center;justify-content:center;gap:4px}
+#view .psec>.ptiles>.btile.sptile .bf{padding:0 10px}
+#view .psec>.ptiles>.btile .binc{position:absolute;left:10px;right:10px;bottom:28px;-webkit-line-clamp:1}
+#view .psec>.ptiles>.btile:has(.binc){padding-bottom:44px}
+/* one tile size: the Spending, Subscriptions and Loyalty grids use the Wallet card grid (220px columns; one full-width column on responsive phones), so every selection tile is the card size */
+#view .psec>.tiles.ptiles:has(>.btile){grid-template-columns:repeat(auto-fill,220px);justify-content:start;gap:12px}
+@media(max-width:899px){html.resp #view .psec>.tiles.ptiles:has(>.btile){grid-template-columns:calc(100vw - 72px)!important;gap:10px}}
