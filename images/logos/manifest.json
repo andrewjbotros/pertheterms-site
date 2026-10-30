@@ -3,13 +3,13 @@
  "logos": {
   "dashpass": {
    "file": "dashpass.png",
-   "source_url": "https://cdn.doordash.com/static/img/favicon@2x.ico",
-   "official_page": "https://www.doordash.com/en-CA/dashpass/",
-   "fetched": "2026-10-29",
-   "format": "PNG",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/DoorDash%20Logo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:DoorDash_Logo.svg",
+   "fetched": "2026-10-30",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
    "px": [
-    32,
-    32
+    960,
+    113
    ]
   },
   "skip": {
@@ -24,47 +24,47 @@
    ]
   },
   "uberone": {
-   "file": "uberone.ico",
-   "source_url": "https://www.uber.com/favicon.ico",
-   "official_page": "https://www.uber.com/ca/en/u/uber-one/",
-   "fetched": "2026-10-29",
-   "format": "ICO",
+   "file": "uberone.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Uber%20logo%202018.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Uber_logo_2018.svg",
+   "fetched": "2026-10-30",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
    "px": [
-    48,
-    48
+    960,
+    334
    ]
   },
   "prime": {
-   "file": "prime.ico",
-   "source_url": "https://www.amazon.ca/favicon.ico",
-   "official_page": "https://www.amazon.ca/amazonprime",
-   "fetched": "2026-10-29",
-   "format": "ICO",
+   "file": "prime.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Amazon%20Prime%20logo%20%282024%29.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Amazon_Prime_logo_%282024%29.svg",
+   "fetched": "2026-10-30",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
    "px": [
-    48,
-    48
+    960,
+    568
    ]
   },
   "walmart": {
-   "file": "walmart.ico",
-   "source_url": "https://www.walmart.ca/favicon.ico",
-   "official_page": "https://www.walmart.ca/",
-   "fetched": "2026-10-29",
-   "format": "ICO",
+   "file": "walmart.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Walmart%2B%20logo%20%282025%29.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Walmart%2B_logo_%282025%29.svg",
+   "fetched": "2026-10-30",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
    "px": [
-    16,
-    16
+    960,
+    321
    ]
   },
   "netflix": {
    "file": "netflix.png",
-   "source_url": "https://assets.nflxext.com/us/ffe/siteui/common/icons/nficon2016.png",
-   "official_page": "https://www.netflix.com/ca/",
-   "fetched": "2026-10-29",
-   "format": "PNG",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Netflix%202015%20logo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Netflix_2015_logo.svg",
+   "fetched": "2026-10-30",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
    "px": [
-    64,
-    64
+    960,
+    260
    ]
   },
   "disney": {
@@ -80,13 +80,13 @@
   },
   "crave": {
    "file": "crave.png",
-   "source_url": "https://www.crave.ca/9683/assets/logos/craveLogo.png",
-   "official_page": "https://www.crave.ca/",
-   "fetched": "2026-10-29",
-   "format": "PNG",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Crave%202018%20logo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Crave_2018_logo.svg",
+   "fetched": "2026-10-30",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
    "px": [
-    120,
-    120
+    960,
+    170
    ]
   },
   "appletv": {
@@ -168,13 +168,13 @@
   },
   "caa": {
    "file": "caa.png",
-   "source_url": "https://www.caa.ca/app/themes/caa-national/dist/images/favicon-96x96.82c512be7e.png",
-   "official_page": "https://www.caa.ca/",
-   "fetched": "2026-10-29",
-   "format": "PNG",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/CAA%20logo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:CAA_logo.svg",
+   "fetched": "2026-10-30",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
    "px": [
-    96,
-    96
+    960,
+    656
    ]
   },
   "streamplus": {
@@ -866,6 +866,127 @@
    "px": [
     512,
     512
+   ]
+  },
+  "aeroplan": {
+   "file": "aeroplan.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Aeroplan%202020%20Logo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Aeroplan_2020_Logo.svg",
+   "fetched": "2026-10-30",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
+   "px": [
+    960,
+    130
+   ]
+  },
+  "air-miles": {
+   "file": "air-miles.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Air%20Miles.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Air_Miles.svg",
+   "fetched": "2026-10-30",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
+   "px": [
+    960,
+    174
+   ]
+  },
+  "westjet-rewards": {
+   "file": "westjet-rewards.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/WestJetLogo2018.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:WestJetLogo2018.svg",
+   "fetched": "2026-10-30",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
+   "px": [
+    960,
+    193
+   ]
+  },
+  "world-of-hyatt": {
+   "file": "world-of-hyatt.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Hyatt%20Logo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Hyatt_Logo.svg",
+   "fetched": "2026-10-30",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
+   "px": [
+    960,
+    233
+   ]
+  },
+  "ihg-one": {
+   "file": "ihg-one.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/IHG%20Hotels%20%26%20Resorts%20logo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:IHG_Hotels_%26_Resorts_logo.svg",
+   "fetched": "2026-10-30",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
+   "px": [
+    960,
+    159
+   ]
+  },
+  "tims-rewards": {
+   "file": "tims-rewards.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Tim%20Hortons%20Logo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Tim_Hortons_Logo.svg",
+   "fetched": "2026-10-30",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
+   "px": [
+    960,
+    184
+   ]
+  },
+  "petro-points": {
+   "file": "petro-points.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Petro-Canada%20logo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Petro-Canada_logo.svg",
+   "fetched": "2026-10-30",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
+   "px": [
+    960,
+    727
+   ]
+  },
+  "prioritypass": {
+   "file": "prioritypass.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Priority%20Pass%20logo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Priority_Pass_logo.svg",
+   "fetched": "2026-10-30",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
+   "px": [
+    960,
+    411
+   ]
+  },
+  "tsn": {
+   "file": "tsn.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/TSN%20Logo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:TSN_Logo.svg",
+   "fetched": "2026-10-30",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
+   "px": [
+    960,
+    233
+   ]
+  },
+  "sportsnetplus": {
+   "file": "sportsnetplus.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Logo%20Sportsnet%202011.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Logo_Sportsnet_2011.svg",
+   "fetched": "2026-10-30",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
+   "px": [
+    960,
+    143
+   ]
+  },
+  "telusstreamplus": {
+   "file": "telusstreamplus.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Telus-Logo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Telus-Logo.svg",
+   "fetched": "2026-10-30",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
+   "px": [
+    960,
+    197
    ]
   }
  },
