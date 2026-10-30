@@ -746,6 +746,127 @@
     512,
     512
    ]
+  },
+  "m-amazon": {
+   "file": "m-amazon.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Amazon%20logo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Amazon_logo.svg",
+   "fetched": "2026-10-30",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
+   "px": [
+    960,
+    290
+   ]
+  },
+  "m-walmart": {
+   "file": "m-walmart.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Walmart%20logo%20%282025%29.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Walmart_logo_%282025%29.svg",
+   "fetched": "2026-10-30",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
+   "px": [
+    960,
+    183
+   ]
+  },
+  "m-petrocanada": {
+   "file": "m-petrocanada.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Petro-Canada%20logo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Petro-Canada_logo.svg",
+   "fetched": "2026-10-30",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
+   "px": [
+    960,
+    727
+   ]
+  },
+  "m-loblaws": {
+   "file": "m-loblaws.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Loblaw%20Companies%20Limited%20logo%20EN.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Loblaw_Companies_Limited_logo_EN.svg",
+   "fetched": "2026-10-30",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
+   "px": [
+    960,
+    451
+   ]
+  },
+  "m-shoppers": {
+   "file": "m-shoppers.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Shoppers-Drug-Mart-Logo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Shoppers-Drug-Mart-Logo.svg",
+   "fetched": "2026-10-30",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
+   "px": [
+    960,
+    214
+   ]
+  },
+  "m-esso": {
+   "file": "m-esso.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Esso%20textlogo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Esso_textlogo.svg",
+   "fetched": "2026-10-30",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
+   "px": [
+    960,
+    681
+   ]
+  },
+  "m-sobeys": {
+   "file": "m-sobeys.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Sobeys%20logo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Sobeys_logo.svg",
+   "fetched": "2026-10-30",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
+   "px": [
+    960,
+    240
+   ]
+  },
+  "m-rogers": {
+   "file": "m-rogers.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Rogers%20logo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Rogers_logo.svg",
+   "fetched": "2026-10-30",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
+   "px": [
+    960,
+    168
+   ]
+  },
+  "m-canadiantire": {
+   "file": "m-canadiantire.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Canadian%20Tire%20logo%202022%20horizontal.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Canadian_Tire_logo_2022_horizontal.svg",
+   "fetched": "2026-10-30",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
+   "px": [
+    960,
+    358
+   ]
+  },
+  "m-joefresh": {
+   "file": "m-joefresh.png",
+   "source_url": "https://joefresh-resource-prod.joefresh.com/ContentMedia/icons/android-icon-192x192.png",
+   "official_page": "https://www.joefresh.com/ca",
+   "fetched": "2026-10-30",
+   "format": "PNG",
+   "px": [
+    192,
+    192
+   ]
+  },
+  "m-homehardware": {
+   "file": "m-homehardware.png",
+   "source_url": "https://www.homehardware.ca/google-touch-icon.png?hh-storefront-production-01022-jg9",
+   "official_page": "https://www.homehardware.ca/",
+   "fetched": "2026-10-30",
+   "format": "PNG",
+   "px": [
+    512,
+    512
+   ]
   }
  },
  "missing": {
