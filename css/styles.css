@@ -710,8 +710,7 @@ body.wzopen{overflow:hidden}
 #snav #pl button:focus:not(:focus-visible),#pml button:focus:not(:focus-visible){background:none}
 #snav #pl button.on:focus:not(:focus-visible){background:var(--accl)}
 @media (prefers-reduced-motion:reduce){#snav #pl button,#pml button{transition:none}}
-.btile.spadd{border-style:dashed;opacity:.8;cursor:pointer}.btile.spadd:hover{opacity:1}
-.btile.sptile{position:relative}.sptile .sprm{position:absolute;top:6px;right:6px;width:24px;height:24px;border:0;border-radius:12px;background:transparent;color:var(--mute);font-size:16px;line-height:1;cursor:pointer}.sptile .sprm:hover{background:var(--bg);color:var(--ink)}
+.btile.sptile{position:relative}
 .wrap td span.u{white-space:normal}
 /* PUSH 14 frozen header stack on table views (tops set by JS from each piece's natural offset) */
 html.tblv #nav3,html.tblv #ctl,html.tblv #pre,html.tblv #bar{position:sticky;z-index:5;background:var(--bg)}
@@ -732,3 +731,10 @@ html.tblv #bar{height:42px;box-sizing:border-box;overflow:hidden}html.tblv .wrap
 .wrap table.fx #tb td{height:70px;box-sizing:border-box}.wrap table.fx #tb td>.cx{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;max-height:54px}.wrap table.fx #tb td>.cx.clip{cursor:pointer}.wrap table.fx #tb td>.cx.open{display:block;-webkit-line-clamp:unset;max-height:none}
 .wrap table.fx #tb td>.cx:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
 .wrap table.fx #tb td.nm>.cx{display:block;-webkit-line-clamp:unset;max-height:none;overflow:visible}.wrap table.fx #tb td.nm .nmb b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.wrap table.fx #tb td.nm>.cx>small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* 2026-10-30 (Andrew): the count/sort line sits identically on every sub-tab: one flex row, vertically centred in the 42px bar (Insurance used flex-end + no bottom padding for its level toggle, so its count sat ~12px lower) */
+html.tblv #bar,html.tblv #bar:has(#imode){display:flex;align-items:center;flex-wrap:nowrap;gap:6px;padding-top:0;padding-bottom:0}
+
+/* Spending + tile and added-tile X (2026-10-30) */
+.btile.sptile{position:relative}.btile.spplus{border-style:dashed;cursor:pointer;font:inherit;color:inherit;text-align:inherit}.btile.spplus:hover{border-color:var(--acc)}.btile.spplus .wplus{color:var(--acc)}
+.sptile .sprm{position:absolute;top:6px;right:6px;width:26px;height:26px;border:0;border-radius:13px;background:transparent;color:var(--mute);font-size:14px;line-height:1;cursor:pointer}.sptile .sprm:hover{background:var(--bg);color:var(--ink)}.sptile .sprm:focus-visible{outline:2px solid var(--acc)}
+#spww [data-spwk][aria-disabled=true]{opacity:.6;cursor:default}#spww .wzbd .tiles.ptiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
