@@ -18,8 +18,8 @@ nav button{border:0;background:none;color:var(--mute);font-family:inherit;font-s
 
 tr.tot th{border-top:2px solid var(--ink);font-weight:700;text-align:right}tr.tot th.l{text-align:left}
 nav button.on{color:var(--ink);border-color:var(--acc)}nav button[data-s=wallet]{margin-left:13px;position:relative}nav button[data-s=wallet]::before{content:'';position:absolute;left:-8px;top:10px;bottom:10px;width:1px;background:var(--line)}nav button[data-s=wallet],nav button[data-s=match]{color:var(--teal)}nav button[data-s=wallet].on,nav button[data-s=match].on{color:var(--teal);border-color:var(--teal)}nav button[data-s=wallet] .dot,nav button[data-s=match] .dot{background:var(--tealbg);color:#fff}nav button .dot{display:inline-block;min-width:16px;padding:1px 4px;margin-left:5px;border-radius:8px;background:var(--acc);color:var(--onacc);font-size:11px}
-#filters{display:grid;grid-template-columns:repeat(auto-fill,minmax(188px,1fr));gap:6px 12px;padding:6px 12px 8px;background:var(--card);border-bottom:1px solid var(--line)}
-#filters label{display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:11px;color:var(--mute)}
+#filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))/* Andrew 2026-10-30: at most 3 filters per row; the panel grows downward */;gap:8px 18px;padding:6px 12px 8px;background:var(--card);border-bottom:1px solid var(--line)}
+#filters label{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:14px;color:var(--mute)}
 #filters label:has(.set){color:var(--ink);font-weight:600}
 /* filter panel header (finviz-style, sober): collapse toggle, active count, one-click reset; the count stays visible when collapsed */
 #fhead{display:flex;align-items:center;justify-content:flex-start;gap:8px;min-height:30px;margin-top:8px;margin-bottom:8px;padding:0;background:none;border:0;font-size:12px}#fhead[hidden]{display:none}
@@ -30,8 +30,8 @@ nav button.on{color:var(--ink);border-color:var(--acc)}nav button[data-s=wallet]
 #freset:disabled{opacity:.45;cursor:default}
 #fcol:focus-visible,#pcol:focus-visible,#freset:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
 #filters.fcol{display:none!important}#pre.pcol{display:none!important}
-/* every filter row: one box width (118px); flex:none so long labels wrap instead of shrinking the box */
-#filters select{width:118px;flex:none;height:24px;padding:2px 4px;border:1px solid var(--line);border-radius:3px;background:var(--bg);color:var(--ink);font:12px inherit}
+/* every filter row: one box width (148px); flex:none so long labels wrap instead of shrinking the box */
+#filters select{width:148px;flex:none;height:30px;padding:3px 6px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--ink);font:15px inherit}/* inputs 25% bigger (Andrew 2026-10-30): 118→148px, 24→30px, 12→15px */
 #filters select.set{border-color:var(--acc);background:var(--accl);color:var(--ink);font-weight:600}
 .bar{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:10px 16px}
 .count{font-weight:700;margin-right:6px}.count span{color:var(--mute);font-weight:400}
@@ -87,7 +87,7 @@ tr:hover td{background:var(--accl)}tr.op td{background:var(--accl)}
 tr.sub td.nm{text-align:right}tr.sub td{font-size:11.5px;padding:4px 10px;background:var(--bg)!important;text-align:center;color:var(--ink)}tr.sub td{vertical-align:top}tr.sub td.cond{white-space:normal;min-width:140px;text-align:center;color:var(--mute);position:static}
 .z{color:var(--ink);font-weight:600}.q{display:inline-block;min-width:16px;padding:0 4px;border:1px dashed var(--mute);border-radius:4px;color:var(--mute);font-size:12px;text-align:center}
 #modal h4,#page h4{font-size:11px;color:var(--mute);margin:12px 0 4px;font-weight:600}table.one th{width:130px;text-align:left;font-size:11px;text-transform:uppercase;color:var(--mute)}
-details.ms{position:relative;width:118px;flex:none}details.ms summary{list-style:none;box-sizing:border-box;height:24px;padding:3px 4px;border:1px solid var(--line);border-radius:3px;background:var(--bg);color:var(--ink);font-size:12px;cursor:pointer}
+details.ms{position:relative;width:148px;flex:none}details.ms summary{list-style:none;box-sizing:border-box;height:30px;padding:5px 6px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--ink);font-size:15px;cursor:pointer}
 details.ms.set summary{border-color:var(--acc);background:var(--accl);font-weight:600}details.ms>div{position:absolute;right:0;z-index:12;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:6px;box-shadow:0 6px 20px rgba(0,0,0,.15);min-width:240px;max-height:300px;overflow:auto}
 label.ck{display:flex!important;justify-content:flex-start!important;gap:6px;padding:4px 2px;color:var(--ink)!important;min-height:28px;align-items:center}
 
@@ -724,7 +724,7 @@ html.stkm #nav3,html.stkm #ctl,html.stkm #pre,html.stkm #bar,html.stkm .wrap the
 /* integer line boxes in the fixed tables so every row top lands on a whole pixel: a view switch then moves the anchored card by exactly 0px */
 .wrap table.fx td{line-height:18px}.wrap table.fx td small{line-height:14px}.wrap table.fx th{line-height:14px}
 /* PUSH 14: on table views the open Filters panel floats over the rows (a dropdown under Filters / search) instead of pushing the table down, so the frozen header is the same compact height in every sub-tab and a view switch never moves the rows */
-html.tblv #filters{position:fixed!important;top:var(--ftop);left:var(--fl);width:var(--fw);margin:0!important;z-index:6;max-height:min(60vh,520px);overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 28px rgba(0,0,0,.18);padding:10px 12px}
+html.tblv #filters{position:fixed!important;top:var(--ftop);left:var(--fl);width:var(--fw);margin:0!important;z-index:6;max-height:calc(100vh - var(--ftop,0px) - 16px);overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 28px rgba(0,0,0,.18);padding:10px 12px}
 /* PUSH 14: same-height frozen pieces in every sub-tab (count line 42px, column-header row 56px, fits the tallest (Rewards) label), so the first row starts at the same pixel in every view */
 html.tblv #bar{height:42px;box-sizing:border-box;overflow:hidden}html.tblv .wrap table.fx thead th{height:56px;box-sizing:border-box;vertical-align:bottom}
 /* PUSH 14: one row height for every card in every view (three 18px lines); longer cells clip with an ellipsis, full text on hover (title) and tap */
@@ -785,3 +785,19 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 /* one tile size: the Spending, Subscriptions and Loyalty grids use the Wallet card grid (220px columns; one full-width column on responsive phones), so every selection tile is the card size */
 #view .psec>.tiles.ptiles:has(>.btile){grid-template-columns:repeat(auto-fill,220px);justify-content:start;gap:12px}
 @media(max-width:899px){html.resp #view .psec>.tiles.ptiles:has(>.btile){grid-template-columns:calc(100vw - 72px)!important;gap:10px}}
+/* Phone Filters sheet (2026-10-30): html.tz = touch phone. Desktop keeps the dropdown; the sheet head is hidden there. The sheet is counter-zoomed (1 / --tz), so its px are phone px. */
+#filters .fsh{display:none}
+html.tz.tblv #filters:not(.fcol){zoom:calc(1 / var(--tz));position:fixed!important;top:auto!important;bottom:0;left:0!important;right:0;width:auto!important;max-height:86vh;z-index:40;border-radius:16px 16px 0 0;border:0;box-shadow:0 -8px 30px rgba(0,0,0,.3);padding:0 16px 16px;grid-template-columns:1fr;gap:4px 0;overscroll-behavior:contain}
+html.tz.tblv #filters:not(.fcol) .fsh{display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:2;background:var(--card);margin:0 -16px;padding:12px 16px;border-bottom:1px solid var(--line)}
+html.tz.tblv #filters .fsh b{flex:1;font-size:18px;color:var(--ink)}
+html.tz.tblv #filters .fsh button{min-height:44px;min-width:88px;padding:0 16px;border-radius:10px;font:600 16px inherit;cursor:pointer;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+html.tz.tblv #filters .fsh .fshd{background:var(--acc);border-color:var(--acc);color:#fff}html.tz.tblv #filters .fsh .fshr:disabled{opacity:.45;cursor:default}
+html.tz.tblv #filters:not(.fcol)>label{min-height:52px;font-size:15px;gap:12px;border-bottom:1px solid var(--line);padding:4px 0}
+html.tz.tblv #filters:not(.fcol) select,html.tz.tblv #filters:not(.fcol) details.ms{width:46%;flex:none}
+html.tz.tblv #filters:not(.fcol) select,html.tz.tblv #filters:not(.fcol) details.ms summary{height:44px;font-size:15px;padding:0 8px;border-radius:8px}
+html.tz.tblv #filters:not(.fcol) details.ms summary{display:flex;align-items:center}
+html.tz.tblv #filters:not(.fcol) details.ms>div{position:static;min-width:0;max-height:none;box-shadow:none;margin-top:4px}
+html.tz.tblv #filters:not(.fcol) details.ms label.ck{min-height:44px;font-size:15px;gap:10px}
+html.tz.tblv #filters:not(.fcol) input[type=checkbox]{width:22px;height:22px}
+#fsbg{zoom:calc(1 / var(--tz,1));position:fixed;inset:0;z-index:39;background:rgba(15,23,42,.45)}#fsbg[hidden]{display:none}
+html.fsopen{overflow:hidden}
