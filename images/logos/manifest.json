@@ -91,13 +91,13 @@
   },
   "appletv": {
    "file": "appletv.png",
-   "source_url": "https://tv.apple.com/favicon.ico",
-   "official_page": "https://tv.apple.com/",
+   "source_url": "https://tv.apple.com/assets/app-icons/pwa-manifest/tv-icon_1024.png",
+   "official_page": "https://tv.apple.com/ca",
    "fetched": "2026-10-29",
    "format": "PNG",
    "px": [
-    16,
-    16
+    1024,
+    1024
    ]
   },
   "costco": {
@@ -156,14 +156,14 @@
    ]
   },
   "applemusic": {
-   "file": "applemusic.ico",
-   "source_url": "https://music.apple.com/favicon.ico",
-   "official_page": "https://music.apple.com/",
+   "file": "applemusic.png",
+   "source_url": "https://music.apple.com/assets/app-icons/pwa-manifest/music-icon_1024.png",
+   "official_page": "https://music.apple.com/ca",
    "fetched": "2026-10-29",
-   "format": "ICO",
+   "format": "PNG",
    "px": [
-    48,
-    48
+    1024,
+    1024
    ]
   },
   "caa": {
@@ -178,14 +178,14 @@
    ]
   },
   "streamplus": {
-   "file": "streamplus.ico",
-   "source_url": "https://www.koodomobile.com/favicon.ico",
-   "official_page": "https://www.koodomobile.com/en/shop/entertainment/subscriptions/stream-plus",
+   "file": "streamplus.png",
+   "source_url": "https://www.koodomobile.com/apple-touch-icon-180x180.png",
+   "official_page": "https://www.koodomobile.com/",
    "fetched": "2026-10-29",
-   "format": "ICO",
+   "format": "PNG",
    "px": [
-    48,
-    48
+    180,
+    180
    ]
   },
   "Alterna Savings": {
@@ -559,6 +559,17 @@
    ],
    "fetched": "2026-10-29",
    "kind": "institution"
+  },
+  "appleone": {
+   "file": "appleone.png",
+   "source_url": "https://www.apple.com/apple-touch-icon.png",
+   "official_page": "https://www.apple.com/ca/apple-one/",
+   "fetched": "2026-10-29",
+   "format": "PNG",
+   "px": [
+    152,
+    152
+   ]
   }
  },
  "missing": {

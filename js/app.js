@@ -172,13 +172,17 @@ const AMT=(c,k)=>{const v=AMV(c,k),f=AMC[k][0];if(v===0)return '<span class=z ti
 Object.keys(AMC).forEach(k=>{COL[k]=[COL[k][0],'',c=>AMV(c,k),c=>AMT(c,k)];const fl=S.filter(x=>SUBONLY.has(x.id)).flatMap(x=>x.f).find(x=>x[0]==k);if(fl)fl[2].push(['$0 (not included)',c=>AMV(c,k)===0],['? (not stated)',c=>AMV(c,k)==null])});
 // ---- Wallet ----
 const LS=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},LSW=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
-const SK='ptt.state',SV=2,NOW=()=>new Date().toISOString(),OLDK=['ptt.st','ptt.wallet','ptt.match'];let PERSIST=true;
+const SK='ptt.state',SV=3,NOW=()=>new Date().toISOString(),OLDK=['ptt.st','ptt.wallet','ptt.match'];let PERSIST=true;
 try{localStorage.setItem('ptt.t','1');localStorage.removeItem('ptt.t')}catch(e){PERSIST=false}
 const blankS=()=>({schema_version:SV,app:'PerTheTerms',app_version:D.ver||null,created_at:NOW(),updated_at:NOW(),
- wallet:{cards:[],banks:[],brokerage:[],tel:[],ins:[],points:[],services:[],spend:{groc:600,dine:300,gas:200,trav:150,bills:150,other:800},updated_at:NOW()},
+ wallet:{cards:[],banks:[],brokerage:[],tel:[],ins:[],points:[],services:[],subtiers:{},spend:{groc:600,dine:300,gas:200,trav:150,bills:150,other:800},updated_at:NOW()},
  screen:{},saved_screens:[],ui:{}});
+const svcTierDef=k=>{const s=(D.subsvc||[]).find(s=>s.k==k),T=s?s.tiers:[];return T.find(t=>t.dflt)||T[0]||null};
 function migS(o){if(!o||typeof o!='object')return blankS();const b=blankS();o={...b,...o,wallet:{...b.wallet,...(o.wallet||{})}};delete o.matchup;/* retired Compare store */
- const fix=a=>(a||[]).map(x=>typeof x=='string'?{id:x,added_at:NOW()}:x).filter(x=>x&&C.some(c=>c.id==x.id));o.wallet.cards=fix(o.wallet.cards);['banks','brokerage','tel','ins','points','services'].forEach(k=>{if(!Array.isArray(o.wallet[k]))o.wallet[k]=[]});Object.keys(o.wallet).forEach(k=>{if(Array.isArray(o.wallet[k])&&!['cards','banks','brokerage','tel','ins','points','services','archive','history_log'].includes(k))delete o.wallet[k]});o.schema_version=SV;return o}
+ const fix=a=>(a||[]).map(x=>typeof x=='string'?{id:x,added_at:NOW()}:x).filter(x=>x&&C.some(c=>c.id==x.id));o.wallet.cards=fix(o.wallet.cards);['banks','brokerage','tel','ins','points','services'].forEach(k=>{if(!Array.isArray(o.wallet[k]))o.wallet[k]=[]});Object.keys(o.wallet).forEach(k=>{if(Array.isArray(o.wallet[k])&&!['cards','banks','brokerage','tel','ins','points','services','archive','history_log'].includes(k))delete o.wallet[k]});/* v3 (2026-10-29): one active tier per subscription in wallet.subtiers {service: tier} (wallet.tiers stays the provider relationship-tier map); a v2 service without a tier gets the tier the old
+  catalogue priced (the default: Koodo Stream+ Basic, Netflix Standard with ads…). Nothing is dropped: services and unknown tiers stay. */
+ const TR=o.wallet.subtiers;o.wallet.subtiers=TR&&typeof TR=='object'&&!Array.isArray(TR)?TR:{};o.wallet.services.forEach(k=>{if(!o.wallet.subtiers[k]){const d=svcTierDef(k);if(d)o.wallet.subtiers[k]=d.k}});
+ o.schema_version=SV;return o}
 function loadS(){if(!PERSIST)return blankS();try{const o=JSON.parse(localStorage.getItem(SK));if(o){const id=x=>typeof x=='string'?x:x&&x.id,w=JSON.parse(localStorage.getItem('ptt.wallet')||'null'),m=JSON.parse(localStorage.getItem('ptt.match')||'null');
   /* a leftover pre-v2 key next to ptt.state used to be ignored, then deleted by saveS (data loss): merge it first */
   if(w&&Array.isArray(w.cards)){o.wallet=o.wallet||{};const h=new Set((o.wallet.cards||[]).map(id));o.wallet.cards=[...(o.wallet.cards||[]),...w.cards.filter(x=>!h.has(id(x)))]}
@@ -1130,10 +1134,12 @@ function provTables(){const P=[...new Set((D.cmod||[]).filter(r=>r.provider&&r.e
  W.cards.map(i=>C[BYID0[i]]).filter(Boolean).forEach(c=>cmods(c).filter(r=>r.effect=='fee_add'&&r.value<0&&(r.when||[]).some(w=>w.f=='tier')).forEach(r=>L.push({amt:-r.value,txt:`${c.n} fee waived via ${c.i} ${provTier(c.i)}`,rule:'tier rule, '+(r.tag=='CITED'?'cited':'estimate'),src:r.source})))}catch(e){}return L}}
 /* v3.9.0 Subscriptions (top nav, st.s='subscriptions'): perks ARE subscriptions. One list of every sub you have, paid or included (card/plan/tier/sub chain).
    Two folders: 'You have' (paying-twice, could-be-free flags) and 'You could use' (marked Would use + where to get them free/cheaper). State per sub in wallet.substate (exported). */
-const SUBCAT=D.subcat||{prices:[],add:[]};
-SUBCAT.add.forEach(a=>{if(!SUBS.some(s=>s.k==a.k))SUBS.push({k:a.k,n:a.n,rows:[],cat:1})});
-const subName=k=>(SUBS.find(s=>s.k==k)||{}).n||k;
-function subPrice(k){const p=SUBCAT.prices.find(x=>x.k==k)||SUBCAT.add.find(x=>x.k==k);if(p&&p.price_mo!=null)return{v:p.price_mo,tag:p.tag,src:p.source};const s=SUBS.find(s=>s.k==k),lp=s&&s.rows&&subsPrice(s);if(lp){const m=lp.p.match(/\$([\d.]+)\/(mo|yr)/);if(m)return{v:(+m[1])/(m[2]=='yr'?12:1),tag:lp.r.ev,src:lp.r.src}}return null}
+/* schema v33: services and their tiers (Database subscription_services / subscription_tiers); the service name on record names the tile */
+const SUBSVC=D.subsvc||[],SVCBY=Object.fromEntries(SUBSVC.map(s=>[s.k,s]));
+SUBSVC.forEach(a=>{const s=SUBS.find(s=>s.k==a.k);if(s)s.n=a.n;else SUBS.push({k:a.k,n:a.n,rows:[],cat:1})});
+const subTiers=k=>(SVCBY[k]||{}).tiers||[],subTier=k=>{const w=(STO.wallet.subtiers||{})[k];return subTiers(k).find(t=>t.k==w)||svcTierDef(k)};
+const subName=k=>(SUBS.find(s=>s.k==k)||{}).n||k,tierName=t=>{for(const s of SUBSVC){const x=s.tiers.find(x=>x.k==t);if(x)return x.n}return t||''};
+function subPrice(k,t){t=t||subTier(k);if(t&&t.mo!=null)return{v:t.mo,tag:t.tag,src:t.src,t};const s=SUBS.find(s=>s.k==k),lp=s&&s.rows&&subsPrice(s);if(lp){const m=lp.p.match(/\$([\d.]+)\/(mo|yr)/);if(m)return{v:(+m[1])/(m[2]=='yr'?12:1),tag:lp.r.ev,src:lp.r.src}}return null}
 const TODAYS=()=>new Date().toISOString().slice(0,10);
 const ruleLive=r=>{const d=r.dur;return !(d&&d.type=='promo_until'&&d.end_date&&TODAYS()>d.end_date)};
 const durFrac=r=>{const d=r.dur;if(!d||d.type=='permanent'||d.type=='reported_unverified')return 1;if(d.type=='promo_until'&&d.end_date){const m=(new Date(d.end_date)-new Date())/2629800000;return Math.max(0,Math.min(12,m))/12}if(d.type=='intro_months')return Math.min(12,+d.months||0)/12;return 1};
@@ -1145,7 +1151,7 @@ const SUBST=()=>STO.wallet.substate||(STO.wallet.substate={});
 const subHave=k=>(STO.wallet.services||[]).includes(k)||SUBST()[k]=='have';
 /* what's included for you, with the chain that grants it: held products (card/plan rows), provider tiers, and sub→sub rules (closure, depth 3) */
 function subIncluded(){const inc={};SUBS.forEach(s=>{if(!s.rows||!s.rows.length)return;const st=subsStatus(s);if(st.k=='cov')inc[s.k]={via:[st.t.replace(/^Covered by /,'')],row:st.r,dur:rowDur(st.r)}});
- const live=(D.cmod||[]).filter(r=>r.effect=='grant_sub'&&ruleLive(r));for(let d=0;d<3;d++)live.forEach(r=>{if(inc[r.sub])return;if(r.from_sub){if(subHave(r.from_sub)||inc[r.from_sub])inc[r.sub]={via:[...(inc[r.from_sub]?inc[r.from_sub].via:[]),subName(r.from_sub)],rule:r}}else if(r.provider&&tel_held(r.provider))inc[r.sub]={via:[r.provider],rule:r}});return inc}
+ const live=(D.cmod||[]).filter(r=>r.effect=='grant_sub'&&ruleLive(r));for(let d=0;d<3;d++)live.forEach(r=>{if(inc[r.sub])return;if(r.from_sub){const f=r.from_sub,at=subHave(f)?(subTier(f)||{}).k:inc[f]?inc[f].tier:null;if((subHave(f)||inc[f])&&(!r.tiers||at in r.tiers))inc[r.sub]={via:[...(inc[f]?inc[f].via:[]),subName(f)+(at&&subTiers(f).length>1?' '+tierName(at):'')],rule:r,tier:r.tiers?r.tiers[at]||null:null}}else if(r.provider&&tel_held(r.provider))inc[r.sub]={via:[r.provider],rule:r}});return inc}
 const tel_held=p=>(STO.wallet.tel||[]).some(x=>x&&String(x.i||'').toLowerCase().startsWith(p.toLowerCase()));
 const eligCard=c=>{const P=PRF();return !(c.inc&&P.inc!=null&&P.inc<c.inc&&!(c.hinc&&P.hinc!=null&&P.hinc>=c.hinc))};
 /* ways to get sub k free/cheaper with something you don't hold yet (cards via perk rows; bundles via offer_sub rules on a provider you hold) */
@@ -1171,7 +1177,7 @@ const subTile=x=>{const[a,b]=SUBSOL[x.k]||['#6d28d9','#3b0764'],pr=x.p?'$'+x.p.v
  ${x.twice?`<p class="sflag tw">Paying twice: already included via ${esc(x.inc.via.join(' → '))}. Cancel to save ${$$(x.save)}/yr.</p>`:''}
  ${(()=>{const S=SUBS.find(z=>z.k==x.k),c=S&&S.rows&&S.rows.length&&subsStatus(S);return c&&c.k=='cond'?`<p class="sflag cd">${esc(c.t)}: targeted, not counted as included.</p>`:''})()}
  ${x.ways.length?`<p class="sflag cf">${x.have?'Could be free/cheaper':'Get it'}: ${esc(x.ways[0].how)}${x.ways[0].fee?` (fee $${x.ways[0].fee}/yr)`:''} · net ${$$(x.ways[0].net)}/yr${durWord(x.ways[0])?' · '+esc(durWord(x.ways[0])):''}</p>`:''}
- <div class=subst role=group aria-label="${esc(x.n)}">${[['have','Have'],['would','Would use if discounted'],['no','Not interested']].map(([v,l])=>`<button type=button class="chip${x.st==v?' on':''}" data-subst="${x.k}" data-v=${v}>${l}</button>`).join('')}</div></div>`};
+ <div class=subst role=group aria-label="${esc(x.n)}">${subTiers(x.k).length>1?`<button type=button class="chip tierb" data-subpick="${x.k}" aria-haspopup=dialog>${x.have?esc((subTier(x.k)||{}).n||'Tier'):'Tier'} ▾</button>`:''}${[['have','Have'],['would','Would use if discounted'],['no','Not interested']].map(([v,l])=>`<button type=button class="chip${x.st==v?' on':''}" data-subst="${x.k}" data-v=${v}>${l}</button>`).join('')}</div></div>`};
 function renderSubscriptions(){const v=$('#view'),R=subRows(),tab=st.subt||'have',H=R.filter(x=>x.have||(x.inc&&x.st!='no'&&x.st!='would')).sort((a,b)=>(b.twice-a.twice)||(!!b.inc-!!a.inc)),U=R.filter(x=>!x.have&&!x.inc&&x.st!='no'&&(x.st=='would'||x.q.length)).sort((a,b)=>Math.max(0,...b.q.map(w=>w.net),...b.ways.map(w=>w.net))-Math.max(0,...a.q.map(w=>w.net),...a.ways.map(w=>w.net))||b.q.length-a.q.length);
  const paid=H.filter(x=>x.have&&x.p).reduce((t,x)=>t+x.p.v,0),net=H.filter(x=>x.have&&!x.twice&&x.p).reduce((t,x)=>t+x.p.v,0);
  v.innerHTML=`<div class="prof pstack"><div class=vhead><h2>Subscriptions</h2></div><p class=lead>Every subscription you have, paid or included with a card, plan or tier. What you pay, what you shouldn’t, and where to get the rest cheaper.</p>
@@ -1274,17 +1280,37 @@ VIEWS.spending=spendingView;
 /* Subscriptions, cards-only (Andrew 2026-10-29): a tile picker over the services on record (D.subs + D.subcat). Tap a tile to mark it as one you have; same store as the full build (STO.wallet.services). */
 /* G3 (Andrew 2026-10-29): brand tiles for Subscriptions and institutions. Neutral tile, same footprint as a card tile but no card cues (no gradient, chip or art). Logo = unaltered official icon from images/logos (manifest.json records source URL + fetch date); monogram when none is on file. */
 const LOGOS=D.logos||{},logoImg=(k,n)=>IMGB&&LOGOS[k]?`<img src="${IMGB}logos/${LOGOS[k]}" alt="${esc(n)} logo" width=40 height=40 loading=lazy>`:`<b aria-hidden=true>${esc((n||'?').replace(/[^A-Za-z0-9]/g,'').slice(0,2).toUpperCase())}</b>`;
-const btile=o=>`<div class="btile${o.on?' on':''}" tabindex=0 ${o.attrs}>${o.ico?`<span class="blogo bico">${cico(o.ico)}</span>`:`<span class=blogo>${logoImg(o.k,o.name)}</span>`}<span class=bn>${esc(o.name)}</span>${o.inc?`<span class=binc>Includes ${esc(o.inc)}</span>`:''}<span class=bf>${o.foot}</span>${o.sw?`<span class="bsw${o.on?' on':''}" aria-hidden=true><i></i></span>`:o.mark?`<span class=bmk>${esc(o.mark)}</span>`:''}</div>`;
-const subIncl=k=>[...new Set((D.cmod||[]).filter(r=>r.effect=='grant_sub'&&r.from_sub==k&&r.sub).map(r=>subName(r.sub)))].join(', ');
-const subPickTile=s=>{const on=(STO.wallet.services||[]).includes(s.k),p=subPrice(s.k);return btile({k:s.k,on,sw:1,attrs:`data-subpick="${s.k}" role=switch aria-checked=${on} aria-label="${esc(s.n)}"`,name:s.n,inc:subIncl(s.k),foot:(p?'$'+p.v.toFixed(2)+'/mo':'—')+(on?' · Active':'')})};
+const btile=o=>`<div class="btile${o.ico?'':' bbrand'}${o.on?' on':''}" tabindex=0 ${o.attrs}>${o.ico?`<span class="blogo bico">${cico(o.ico)}</span>`:`<span class=blogo>${logoImg(o.k,o.name)}</span>`}<span class=bn>${esc(o.name)}</span>${o.inc?`<span class=binc>Includes ${esc(o.inc)}</span>`:''}<span class=bf>${o.foot}</span>${o.sw?`<span class="bsw${o.on?' on':''}" aria-hidden=true><i></i></span>`:o.mark?`<span class=bmk>${esc(o.mark)}</span>`:''}</div>`;
+/* bundle contents follow the tier: Stream+ Premium lists Netflix Premium; a rule scoped to other tiers (Prime Student: no DashPass) is left out */
+const subIncl=k=>{const t=(subTier(k)||{}).k;return [...new Set((D.cmod||[]).filter(r=>r.effect=='grant_sub'&&r.from_sub==k&&r.sub&&(!r.tiers||t in r.tiers)).map(r=>{const g=r.tiers&&r.tiers[t];return g&&subTiers(r.sub).length>1?subName(r.sub)+' '+tierName(g):subName(r.sub)}))].join(', ')};
+/* Tier picker (Andrew 2026-10-29): one tile per service; tap opens a small popup of its tiers (price as sold: /mo, or /yr with the /mo equivalent) and Off.
+   Picking a tier makes it the one active tier (wallet.subtiers[k]); the tile shows it. One tier per service by construction. */
+const m2=v=>'$'+(Number.isInteger(v)?v:v.toFixed(2));
+const tierPrice=t=>t.p==null?'—':t.per=='year'?`${m2(t.p)}/yr · $${t.mo.toFixed(2)}/mo`:`$${t.p.toFixed(2)}/mo`;
+const subPickTile=s=>{const on=(STO.wallet.services||[]).includes(s.k),T=subTiers(s.k),t=subTier(s.k),lo=T.filter(x=>x.mo!=null).sort((a,b)=>a.mo-b.mo)[0];
+ const foot=on?(t?(T.length>1?esc(t.n)+' · ':'')+tierPrice(t):'Active'):(!lo?'—':T.filter(x=>x.mo!=null).length>1?'from $'+lo.mo.toFixed(2)+'/mo':tierPrice(lo));
+ return btile({k:s.k,on,sw:1,attrs:`data-subpick="${s.k}" role=button aria-haspopup=dialog aria-pressed=${on} aria-label="${esc(s.n)}${on&&t?', '+esc(t.n):''}"`,name:s.n,inc:subIncl(s.k),foot})};
+function tierPop(k,anchor){closeTierPop();const S=SVCBY[k]||{},T=subTiers(k),on=(STO.wallet.services||[]).includes(k),cur=on?(subTier(k)||{}).k||'*':'',n=subName(k);
+ const row=(v,name,price,tag,title)=>`<button type=button class="tpr${cur==v?' on':''}" role=menuitemradio aria-checked=${cur==v} data-tierpick="${k}|${v}"${title?` title="${esc(title)}"`:''}><span class=tpn>${esc(name)}</span><span class=tpp>${price}</span>${tag&&tag!='CITED'?`<span class=t>${esc(tag)}</span>`:''}</button>`;
+ const d=document.createElement('div');d.id='tpop';d.className='tpop';d.setAttribute('role','dialog');d.setAttribute('aria-label',n+' tiers');
+ d.innerHTML=`<div class=tph>${esc(n)}</div><div role=menu>${T.length?T.map(t=>row(t.k,t.n,tierPrice(t),t.tag,[t.quote,t.note].filter(Boolean).join(' · '))).join(''):row('*','Have it','—','')}${row('','Off','','')}</div>${T.flatMap(t=>(t.ties||[]).map(x=>`<p class=tpnote data-tie="${esc(x.c)}">${esc(x.c=='rogers'?'Rogers':x.c=='bell'?'Bell':x.c)} ${esc(x.plans)}: ${esc(x.b)} · <a href="${esc(x.src)}" target=_blank rel=noopener>Source</a></p>`)).join('')}${S.note?`<p class=tpnote>${esc(S.note)}</p>`:''}${S.src?`<p class=tpsrc><a href="${esc(S.src)}" target=_blank rel=noopener>Source</a>${T[0]?' · read '+esc(T[0].asof):''}</p>`:''}`;
+ document.body.append(d);const r=anchor.getBoundingClientRect(),w=d.offsetWidth;
+ if(innerWidth>640){d.style.left=Math.max(8,Math.min(innerWidth-w-8,r.left+r.width/2-w/2))+scrollX+'px';d.style.top=r.bottom+6+scrollY+'px'}else d.classList.add('sheet');
+ (d.querySelector('.tpr.on')||d.querySelector('.tpr')).focus();tierPop.from=k}
+function closeTierPop(){const d=document.getElementById('tpop');if(d)d.remove()}
+function tierSet(k,v){const S2=new Set(STO.wallet.services||[]),SS=STO.wallet.substate;STO.wallet.subtiers=STO.wallet.subtiers||{};
+ if(v){S2.add(k);if(v!='*')STO.wallet.subtiers[k]=v;if(!CARDS_ONLY)SUBST()[k]='have'}else{S2.delete(k);if(SS&&SS[k]=='have')delete SS[k]}
+ STO.wallet.services=[...S2];STO.wallet.updated_at=NOW();closeTierPop();saveS();const y=scrollY;render();scrollTo(0,y);document.querySelector(`[data-subpick="${k}"]`)?.focus()}
 function subsPickView(){const L=SUBS.slice().sort((x,y)=>x.n.localeCompare(y.n)),n=L.filter(s=>(STO.wallet.services||[]).includes(s.k)).length;
  $('#view').innerHTML=`<div class="prof pstack wsimple"><div class=vhead><h2>Subscriptions</h2></div><p class=lead>Tap the subscriptions you have. Tap again to remove one. It stays on this device.</p>
  <section class=psec id=pw-subs><h3>Your subscriptions <span class=mute>(${n})</span></h3><div class="tiles ptiles">${L.map(subPickTile).join('')}</div></section></div>`}
 function pointCardsView(){$('#view').innerHTML=`<div class="prof pstack wsimple"><div class=vhead><h2>Points Cards</h2></div><section class=psec id=pw-ptcards><h3>Coming soon</h3><p class=lead>Points Cards is not available yet. It will hold the loyalty programs you collect points with.</p></section></div>`}
 if(CARDS_ONLY){VIEWS.subscriptions=subsPickView;VIEWS.pointcards=pointCardsView}
-{const tog=t=>{const k=t.dataset.subpick,S2=new Set(STO.wallet.services||[]);S2.has(k)?S2.delete(k):S2.add(k);STO.wallet.services=[...S2];saveS();const y=scrollY;render();scrollTo(0,y);document.querySelector(`[data-subpick="${k}"]`)?.focus()};
- document.addEventListener('click',e=>{const t=e.target.closest('[data-subpick]');if(t){e.stopImmediatePropagation();tog(t)}},true);
- document.addEventListener('keydown',e=>{const t=e.target.closest?.('[data-subpick]');if(t&&(e.key=='Enter'||e.key==' ')){e.preventDefault();e.stopImmediatePropagation();tog(t)}},true)}
+{document.addEventListener('click',e=>{const p=e.target.closest('[data-tierpick]');if(p){e.stopImmediatePropagation();const[k,v]=p.dataset.tierpick.split('|');tierSet(k,v);return}
+  const t=e.target.closest('[data-subpick]');if(t){e.stopImmediatePropagation();document.getElementById('tpop')&&tierPop.from==t.dataset.subpick?closeTierPop():tierPop(t.dataset.subpick,t);return}
+  if(!e.target.closest('#tpop'))closeTierPop()},true);
+ document.addEventListener('keydown',e=>{if(e.key=='Escape'&&document.getElementById('tpop')){const k=tierPop.from;closeTierPop();document.querySelector(`[data-subpick="${k}"]`)?.focus();return}
+  const t=e.target.closest?.('[data-subpick]');if(t&&(e.key=='Enter'||e.key==' ')){e.preventDefault();e.stopImmediatePropagation();tierPop(t.dataset.subpick,t)}},true)}
 
 /* boot last, so every view helper above (Per Your Terms, rules, invites) is initialized before the first render */
 BANK.init();render();

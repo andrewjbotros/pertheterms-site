@@ -608,3 +608,19 @@ td .cond{display:block;white-space:normal;min-width:120px;text-align:left;font-s
 .btile .bico{color:var(--subdk);background:var(--accl)}.sptile{cursor:default}.sptile .bf{display:flex;align-items:center;gap:4px}.sptile .amt{width:100%;max-width:140px}
 .tiles.ptiles.wsp{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}.wsp label.btile{color:var(--ink);font-size:inherit;gap:4px}
 .onpay{font-size:10px;color:var(--subdk);white-space:nowrap}.upto{display:block;font-size:10px}
+/* Andrew 2026-10-29: brand logo tiles (Subscriptions, Accounts institutions): logo grayscale by CSS only (image files unaltered), ~30% bigger at one size, centered with the name centered beneath; monograms match in gray; card-tile footprint kept; price and toggle in a tidy row below */
+.btile.bbrand{align-items:center;text-align:center;justify-content:flex-start;gap:3px;padding-top:10px;padding-bottom:8px}.btile.bbrand.on{padding-top:9px;padding-bottom:7px}
+/* Andrew 2026-10-29: no grey frame around brand logos; the logo sits bare on the tile */
+.btile.bbrand .blogo{width:48px;height:48px;border-radius:10px;border:0;background:none}
+.btile.bbrand .blogo img{width:40px;height:40px;filter:grayscale(1)}
+.btile.bbrand .blogo b{font:700 18px/1 inherit;color:#64748b}
+.btile.bbrand .bn{font-size:14px}.btile.bbrand .binc{max-width:100%;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.btile.bbrand .bf{align-self:stretch;text-align:center;padding:0 44px;min-height:20px;display:flex;align-items:center;justify-content:center}
+/* Andrew 2026-10-29: subscription tier picker: a small popup under the tile (bottom sheet on a phone); one row per tier, price as sold, Off last */
+.tpop{position:absolute;z-index:60;width:280px;max-width:calc(100vw - 16px);background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(15,23,42,.18);padding:8px}
+.tpop.sheet{position:fixed;left:8px;right:8px;bottom:8px;width:auto}
+.tpop .tph{font-weight:700;font-size:14px;padding:4px 6px 6px;text-align:center}
+.tpop .tpr{display:flex;align-items:center;gap:6px;width:100%;text-align:left;background:none;border:1px solid transparent;border-radius:8px;padding:7px 8px;font:inherit;font-size:13px;color:inherit;cursor:pointer}
+.tpop .tpr:hover,.tpop .tpr:focus-visible{border-color:var(--sublt);outline:none}.tpop .tpr.on{border-color:var(--subdk);background:var(--accl)}
+.tpop .tpn{flex:1;font-weight:600}.tpop .tpp{font-variant-numeric:tabular-nums;white-space:nowrap;font-size:12px}
+.tpop .tpnote,.tpop .tpsrc{font-size:11px;color:var(--mute,#64748b);margin:6px 6px 2px;line-height:1.35}
