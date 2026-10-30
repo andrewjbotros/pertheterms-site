@@ -57,6 +57,8 @@ const pkCols=['pk_n','pk_perk','pk_cat','pk_val','pk_rec','pk_en','pk_rg','pk_ex
 FIELDS.perk=pkCols;FDEF.perk=PKF;
 const pkFilt=()=>[...FIELDS.perk,'pk_i','pk_st'].filter(k=>PKF[k][2]).map(k=>{const[i,l,o,m]=PKF[k];return m?[i,l,o(),1]:[i,l,o()]});
 /* Rewards fits one window: the six most-carried categories and the base rate get their own column; every other category is merged into one 'More categories' cell (its filters stay) */
+/* Store (Andrew backlog, 2026-10-30): single-store rates the card has its own earn row for (build 'own' st_* keys), e.g. Canadian Tire 4%; column + multi-select filter, in header order after Best earn % */
+const stOf=c=>(c.own||[]).filter(k=>k.startsWith('st_')&&c['r_'+k]!=null).sort((a,b)=>c['r_'+b]-c['r_'+a]),STKS=Object.keys(CN).filter(k=>k.startsWith('st_')&&C.some(c=>stOf(c).includes(k))).sort((a,b)=>CN[a].localeCompare(CN[b]));
 const RWTOP=RC.filter(k=>k!='other').slice(0,6),RWMORE=RC.filter(k=>k!='other'&&!RWTOP.includes(k));
 const S=[
  {id:'ov',name:'Overview',cols:fcols('ov'),f:ffilt('ov')},
@@ -68,8 +70,9 @@ const S=[
   ['fx','FX fee',[['None (0%)',c=>c.fx===0],['< 2.5%',c=>c.fx!=null&&c.fx<2.5],['≥ 2.5%',c=>c.fx>=2.5]]],
   ['apr','Purchase APR',le('apr',[12.99,15,19.99,20.99])],
   ['inc','Income required',[['None stated',c=>!c.inc],...le('inc',[15000,40000,60000,80000],'$')]]]},
- {id:'rw',name:'Rewards',cols:['kind','cpp',...RWTOP.map(k=>'r_'+k),'r_other','best','rmore'],f:[
+ {id:'rw',name:'Rewards',cols:['kind','cpp',...RWTOP.map(k=>'r_'+k),'r_other','best','store','rmore'],f:[
   ...RC.map(k=>['r_'+k,CN[k],ge('r_'+k,k=='other'?[0.5,1,1.25,1.5,2]:RATES)]),['best','Best earn %',ge('best',RATES)],
+  ['store','Store',[['Any store',c=>stOf(c).length>0],...STKS.map(k=>[CN[k],c=>stOf(c).includes(k)])],1],
   ['rt2','Reward type',eq('rt',['Points','Cash back','Travel/airline miles','Store dollars','No rewards','Unconfirmed'])],['prog','Program',eq('prog',uniq(c=>c.kind=='Points'?c.prog:null))],
   ['tag','¢/pt tag',eq('tag',['CITED','ESTIMATE','REPORTED'])]]},
  {id:'ins',name:'Insurance',cols:[],f:[]},/* nav entry: the views are the third-level rows trv (Travel) and prot (Protection), see GROUPS */
@@ -112,6 +115,7 @@ const COL={i:['Issuer','l',c=>c.i,c=>esc(c.i)],nw:['Network','ic',c=>c.nw,c=>ico
  perks:['Partner perks','wrapt',c=>-c.perks.length,c=>c.perks.length?esc(c.perks.join(' · ')):'<span class=u>—</span>'],
  exp:['Expiry','l',c=>c.exp||'z',c=>c.exp?esc(c.exp):'<span class=u>—</span>']};
 const rmoreOf=c=>RWMORE.filter(k=>c['r_'+k]!=null&&c['r_'+k]>(c.other??0)).sort((a,b)=>c['r_'+b]-c['r_'+a]);
+COL.store=['Store','l',c=>Math.max(0,...stOf(c).map(k=>c['r_'+k])),c=>{const L=stOf(c);return L.length?L.map(k=>`<span title="${esc(CN[k])}">${esc(CN[k])} ${c['r_'+k].toFixed(1)}%</span>`).join(', '):'<span class=u>—</span>'}];
 COL.rmore=['More categories','l',c=>Math.max(0,...rmoreOf(c).map(k=>c['r_'+k])),c=>{const L=rmoreOf(c);return L.length?L.map(k=>`<span title="${esc(CN[k])}">${esc(CN[k].replace(/ \(.*/,''))} ${fhi('r_'+k)!=null&&c['r_'+k]>=fhi('r_'+k)?`<b>${c['r_'+k].toFixed(1)}%</b>`:c['r_'+k].toFixed(1)+'%'}</span>`).join(', '):'<span class=u>—</span>'}];
 RC.forEach(k=>COL['r_'+k]=[CN[k]+(k=='other'?'':` <span class=mute>(${CC[k]})</span>`),'',c=>c['r_'+k],c=>rwNull(c,c['r_'+k])??pct(c['r_'+k],fhi('r_'+k))+(k=='other'?onPay(c):'')]);
 /* G4 (Andrew 2026-10-29) Rewards cells never show the dash: a category with no rate of its own already carries the base rate (build); 'No rewards' cards show 0%; a card with no base rate on record says so. Payment-based earn gets an "on payments" marker; higher routes are a secondary "Up to" note, never the headline. */
