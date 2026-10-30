@@ -626,12 +626,22 @@ td .cond{display:block;white-space:normal;min-width:120px;text-align:left;font-s
 .tpop .tpnote,.tpop .tpsrc{font-size:11px;color:var(--mute,#64748b);margin:6px 6px 2px;line-height:1.35}
 
 /* Andrew 2026-10-29: left sidebar opened from the logo/name; Home then the product lines (no product links in the top bar) */
-#snav{position:fixed;left:0;top:0;bottom:0;width:240px;z-index:90;background:var(--card);border-right:1px solid var(--line);box-shadow:4px 0 24px rgba(15,23,42,.18);padding:64px 12px 12px;box-sizing:border-box}
+#snav{position:fixed;left:0;top:61px;bottom:0;width:260px;z-index:55;background:var(--card);border-right:1px solid var(--line);box-shadow:4px 0 24px rgba(15,23,42,.18);padding:8px 12px 12px;box-sizing:border-box;animation:snin .22s ease-out}@keyframes snin{from{transform:translateX(-100%)}to{transform:none}}@keyframes snout{from{transform:none}to{transform:translateX(-100%)}}@keyframes bgin{from{opacity:0}to{opacity:1}}@keyframes bgout{from{opacity:1}to{opacity:0}}
 #snav[hidden],#snbg[hidden]{display:none}
-#snbg{position:fixed;inset:0;z-index:89;background:rgba(15,23,42,.25)}
+#snbg{position:fixed;left:0;right:0;bottom:0;top:61px;z-index:54;background:rgba(15,23,42,.25)}
 #snav #pl{display:flex;flex-direction:column;gap:4px;margin:0!important;padding:0;max-width:none!important;justify-content:flex-start}
 #snav #pl button{flex:none;width:100%;min-width:0;text-align:left;border:1px solid transparent;border-radius:8px;padding:10px 12px;font:700 15px/1.2 inherit;font-family:inherit;color:var(--ink);background:transparent;box-shadow:none;cursor:pointer}
 #snav #pl button:hover{background:var(--bg)}#snav #pl button.on{background:var(--accl);border-color:var(--acc);box-shadow:none}
 #snav #pl button:focus-visible{outline:2px solid var(--acc);outline-offset:-2px}
 #logo{cursor:pointer}
 
+
+/* hotfix 2026-10-29: standard drawer. Header (logo, hamburger, Profile) always on top; the drawer slides in below it */
+header{z-index:60}
+#hamb{flex:none;display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border:0;border-radius:8px;background:transparent;color:var(--ink);cursor:pointer;padding:0}
+#hamb:hover{background:var(--bg)}#hamb:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+#snav .snh{display:flex;align-items:center;justify-content:space-between;padding:4px 4px 10px;margin-bottom:6px;border-bottom:1px solid var(--line)}
+#snav .snlogo{font-weight:800;font-size:16px;line-height:1;color:var(--ink)}#snav .snlogo b{color:var(--acc)}
+#snx{border:0;background:transparent;color:var(--mute);font-size:18px;line-height:1;width:32px;height:32px;border-radius:8px;cursor:pointer}#snx:hover{background:var(--bg);color:var(--ink)}
+#snbg{animation:bgin .22s ease}#snav.out{animation:snout .22s ease-in forwards;pointer-events:none}#snbg.out{animation:bgout .22s ease forwards;pointer-events:none}
+@media (prefers-reduced-motion:reduce){#snav,#snbg,#snav.out,#snbg.out{animation:none}}
