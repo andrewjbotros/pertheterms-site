@@ -806,3 +806,16 @@ html.fsopen{overflow:hidden}
 .soon .sanim{transform-box:fill-box;transform-origin:center}.soon .sfloat{animation:sfl 9s ease-in-out infinite}.soon .sfall{animation:sfa 4.8s ease-in infinite}.soon .sbob{animation:sbo 6s ease-in-out infinite}
 @media(prefers-reduced-motion:reduce){.soon .sanim{animation:none}}
 .wrap table.fx th,.wrap table.fx td{min-width:0!important;max-width:none!important}/* PUSH 6: colW sets every width */
+/* PUSH 19 (Andrew 2026-10-30): logo mark = site menu button (left, menu drops under it); permanent profile icon (right) opens the Profile drawer from the right. No hover morph. */
+body.co header #pm{margin-left:0!important;order:0}
+body.co #pbtn{border:0;background:none;border-radius:50%}
+body.co #pbtn:hover .lmark,body.co #pbtn[aria-expanded=true] .lmark{transform:rotate(-12deg)}
+body.co #pml{left:0;right:auto}
+body.co header>#rtog{all:unset;box-sizing:border-box;margin-left:auto!important;display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border:1px solid var(--line);border-radius:50%;background:var(--bg);color:var(--ink);cursor:pointer;flex:none}
+body.co header>#rtog:hover,body.co header>#rtog[aria-expanded=true]{border-color:var(--acc)}
+body.co header>#rtog:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+body.co #snav{left:auto;right:0;border-right:0;border-left:1px solid var(--line);box-shadow:-4px 0 24px rgba(15,23,42,.18);animation-name:snrin}
+body.co #snav.out{animation-name:snrout}
+@keyframes snrin{from{transform:translateX(100%)}to{transform:none}}@keyframes snrout{from{transform:none}to{transform:translateX(100%)}}
+@media(max-width:640px){body.co header>#rtog{width:44px;height:44px}}
+@media(prefers-reduced-motion:reduce){body.co #snav,body.co #snav.out{animation:none}}
