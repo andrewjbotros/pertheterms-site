@@ -1053,6 +1053,72 @@
     512,
     512
    ]
+  },
+  "Servus Credit Union": {
+   "file": "servus.png",
+   "source_url": "https://www.servus.ca/media/ihwf0qof/favicon.png",
+   "official_page": "https://www.servus.ca/",
+   "fetched": "2026-10-30",
+   "format": "PNG",
+   "px": [
+    194,
+    194
+   ]
+  },
+  "Affinity Credit Union": {
+   "file": "affinity-cu.ico",
+   "source_url": "https://www.affinitycu.ca/favicon.ico",
+   "official_page": "https://www.affinitycu.ca/",
+   "fetched": "2026-10-30",
+   "format": "ICO",
+   "px": [
+    16,
+    16
+   ]
+  },
+  "Citi Cards Canada": {
+   "file": "citi.ico",
+   "source_url": "https://www.citi.com/cbol-hp-static-assets/assets/favicon.ico",
+   "official_page": "https://www.citi.com/",
+   "fetched": "2026-10-30",
+   "format": "ICO",
+   "px": [
+    367,
+    367
+   ]
+  },
+  "ATB Financial": {
+   "file": "atb.ico",
+   "source_url": "https://www.atb.com/static/img/favicon.ico",
+   "official_page": "https://www.atb.com/",
+   "fetched": "2026-10-30",
+   "format": "ICO",
+   "px": [
+    256,
+    256
+   ]
+  },
+  "Steinbach Credit Union": {
+   "file": "steinbach-cu.png",
+   "source_url": "https://www.scu.mb.ca/getContentAsset/fe2b794e-3779-4199-839e-c1c500e5fd30/dfc3d011-8f63-43f6-9ed8-4b444333a1d0/favicon-32x32.png?language=en-CA",
+   "official_page": "https://www.scu.mb.ca/",
+   "fetched": "2026-10-30",
+   "format": "PNG",
+   "px": [
+    32,
+    32
+   ]
+  },
+  "Laurentian Bank": {
+   "file": "laurentian-bank.png",
+   "source_url": "https://www.laurentianbank.ca/favicon/lbc-32.png",
+   "official_page": "https://www.laurentianbank.ca/en",
+   "fetched": "2026-10-30",
+   "format": "PNG",
+   "px": [
+    32,
+    32
+   ]
   }
  },
  "missing": {
