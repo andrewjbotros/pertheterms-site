@@ -801,3 +801,7 @@ html.tz.tblv #filters:not(.fcol) details.ms label.ck{min-height:44px;font-size:1
 html.tz.tblv #filters:not(.fcol) input[type=checkbox]{width:22px;height:22px}
 #fsbg{zoom:calc(1 / var(--tz,1));position:fixed;inset:0;z-index:39;background:rgba(15,23,42,.45)}#fsbg[hidden]{display:none}
 html.fsopen{overflow:hidden}
+/* Coming soon art (Banking, Brokers, Investments; Andrew 2026-10-30): the home story art style (navy panel, flat #1b2a52 shapes, white hairlines, blue/orange/green/yellow accents, soft shadow) and its motion (sfl float, sfa fall, sbo bob). Fixed colours, so light and dark read the same, as on Home. */
+.infopg .soon .soonart{width:min(520px,100%);border-radius:18px;box-shadow:0 10px 30px rgba(10,16,32,.18)}
+.soon .sanim{transform-box:fill-box;transform-origin:center}.soon .sfloat{animation:sfl 9s ease-in-out infinite}.soon .sfall{animation:sfa 4.8s ease-in infinite}.soon .sbob{animation:sbo 6s ease-in-out infinite}
+@media(prefers-reduced-motion:reduce){.soon .sanim{animation:none}}
