@@ -749,3 +749,10 @@ header>#pl button{padding:10px 12px;font-size:14px;min-height:44px}
 /* Banking / Brokers coming-soon pages: centred heading, art and the Coming soon line only */
 .infopg:has(.soon) h1{text-align:center}.infopg .soon{text-align:center}.infopg .soon .soonart{display:block;margin:0 auto}
 @media(max-width:899px){html.resp .tiles.ptiles{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px}html.resp .prof .psec{padding-left:12px;padding-right:12px}html.resp .btile .amt{width:100%;max-width:110px}html.resp .ptiles .btile{aspect-ratio:auto;min-height:118px}}
+/* PUSH 17 Accounts wizard: dialog grows up to the viewport and scrolls inside; step 2 uses the Wallet card grid (same ctile, same 260-320px tiles), grouped by institution */
+#wiz.wz2{width:min(1100px,calc(100vw - 32px));height:calc(100vh - 48px)}
+/* one Wallet card size: 220px tiles at desktop (Wallet and the wizard), and at phone widths the Wallet's two columns, (100vw - 82px)/2 */
+.psec .tiles.ptiles:has(>.ctile[data-wtile]),#wiz .wzbd .tiles.ptiles.wzc{grid-template-columns:repeat(auto-fill,220px);justify-content:start;gap:12px}#wiz .wzbd .tiles.ptiles.wzc{margin-bottom:6px}
+#wiz .wzgrp+.wzgrp{margin-top:18px}#wiz .wzgh{margin:0 0 10px;font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--mute)}
+#wiz [data-wzinst].on{outline:2px solid var(--acc);outline-offset:1px}
+@media(max-width:899px){html.resp .psec .tiles.ptiles:has(>.ctile[data-wtile]),html.resp #wiz .wzbd .tiles.ptiles.wzc{grid-template-columns:repeat(2,calc((100vw - 82px)/2))!important;gap:10px}#wiz.wz2{width:calc(100vw - 16px);height:calc(100vh - 24px)}#wiz .wzbd{padding:12px}}

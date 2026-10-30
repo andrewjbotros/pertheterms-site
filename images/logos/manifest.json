@@ -189,15 +189,15 @@
    ]
   },
   "Alterna Savings": {
-   "file": "alterna-savings.ico",
-   "source_url": "https://www.alterna.ca/media/gdap0p3d/favicon.ico",
-   "official_page": "https://www.alterna.ca/",
-   "format": "ICO",
+   "file": "alterna-savings.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Alterna%20Savings%20logo.svg?width=512",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Alterna_Savings_logo.svg",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
    "px": [
-    48,
-    48
+    960,
+    300
    ],
-   "fetched": "2026-10-29",
+   "fetched": "2026-10-30",
    "kind": "institution"
   },
   "American Express Canada": {
@@ -213,15 +213,15 @@
    "kind": "institution"
   },
   "BMO": {
-   "file": "bmo.ico",
-   "source_url": "https://www.bmo.com/favicon.ico",
-   "official_page": "https://www.bmo.com/en-ca/main/personal/",
-   "format": "ICO",
+   "file": "bmo.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/BMO%20Logo.svg?width=512",
+   "official_page": "https://commons.wikimedia.org/wiki/File:BMO_Logo.svg",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
    "px": [
-    48,
-    48
+    960,
+    334
    ],
-   "fetched": "2026-10-29",
+   "fetched": "2026-10-30",
    "kind": "institution"
   },
   "Brim Financial": {
@@ -261,27 +261,27 @@
    "kind": "institution"
   },
   "Capital One Canada": {
-   "file": "capital-one-canada.ico",
-   "source_url": "https://www.capitalone.ca/favicon.ico",
-   "official_page": "https://www.capitalone.ca/",
-   "format": "ICO",
+   "file": "capital-one-canada.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Capital%20One%20logo.svg?width=512",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Capital_One_logo.svg",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
    "px": [
-    48,
-    48
+    960,
+    345
    ],
-   "fetched": "2026-10-29",
+   "fetched": "2026-10-30",
    "kind": "institution"
   },
   "Coast Capital Savings": {
-   "file": "coast-capital-savings.ico",
-   "source_url": "https://www.coastcapitalsavings.com/favicon.ico",
-   "official_page": "https://www.coastcapitalsavings.com/",
-   "format": "ICO",
+   "file": "coast-capital-savings.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Coast%20Capital%20Savings%20logo.svg?width=512",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Coast_Capital_Savings_logo.svg",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
    "px": [
-    16,
-    16
+    960,
+    293
    ],
-   "fetched": "2026-10-29",
+   "fetched": "2026-10-30",
    "kind": "institution"
   },
   "Conexus Credit Union": {
@@ -309,15 +309,15 @@
    "kind": "institution"
   },
   "Desjardins": {
-   "file": "desjardins.ico",
-   "source_url": "https://www.desjardins.com/etc.clientlibs/dcom/clientlibs/clientlib-base/resources/favicon.ico",
-   "official_page": "https://www.desjardins.com/en",
-   "format": "ICO",
+   "file": "desjardins.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Desjardins%20Group%20logo.svg?width=512",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Desjardins_Group_logo.svg",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
    "px": [
-    48,
-    48
+    960,
+    205
    ],
-   "fetched": "2026-10-29",
+   "fetched": "2026-10-30",
    "kind": "institution"
   },
   "EQ Bank": {
@@ -381,27 +381,27 @@
    "kind": "institution"
   },
   "MBNA": {
-   "file": "mbna.ico",
-   "source_url": "https://www.mbna.ca/etc.clientlibs/tdsite/clientlibs/clientlib-sapphire/resources/images/mbna-favicon.ico",
-   "official_page": "https://www.mbna.ca/en",
-   "format": "ICO",
+   "file": "mbna.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/MBNA%20logo.svg?width=512",
+   "official_page": "https://commons.wikimedia.org/wiki/File:MBNA_logo.svg",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
    "px": [
-    16,
-    16
+    960,
+    324
    ],
-   "fetched": "2026-10-29",
+   "fetched": "2026-10-30",
    "kind": "institution"
   },
   "Meridian Credit Union": {
-   "file": "meridian-credit-union.ico",
-   "source_url": "https://www.meridiancu.ca/build/images/favicon.ico?v=3",
-   "official_page": "https://www.meridiancu.ca/",
-   "format": "ICO",
+   "file": "meridian-credit-union.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Meridian%20Credit%20Union%20logo.svg?width=512",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Meridian_Credit_Union_logo.svg",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
    "px": [
-    64,
-    64
+    960,
+    243
    ],
-   "fetched": "2026-10-29",
+   "fetched": "2026-10-30",
    "kind": "institution"
   },
   "National Bank of Canada": {
@@ -430,14 +430,14 @@
   },
   "PC Financial": {
    "file": "pc-financial.png",
-   "source_url": "https://www.pcfinancial.ca/favicon.ico?favicon.2-ns6y5crl603.ico",
-   "official_page": "https://www.pcfinancial.ca/en/",
-   "format": "PNG",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/President%27s%20Choice%20Financial%20logo.svg?width=512",
+   "official_page": "https://commons.wikimedia.org/wiki/File:President's_Choice_Financial_logo.svg",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
    "px": [
-    64,
-    64
+    960,
+    384
    ],
-   "fetched": "2026-10-29",
+   "fetched": "2026-10-30",
    "kind": "institution"
   },
   "RBC Royal Bank": {
@@ -453,27 +453,27 @@
    "kind": "institution"
   },
   "Rogers Bank": {
-   "file": "rogers-bank.ico",
-   "source_url": "https://www.rogersbank.com/favicon.ico",
-   "official_page": "https://www.rogersbank.com/en/",
-   "format": "ICO",
+   "file": "rogers-bank.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Rogers%20logo.svg?width=512",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Rogers_logo.svg",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
    "px": [
-    32,
-    32
+    960,
+    168
    ],
-   "fetched": "2026-10-29",
+   "fetched": "2026-10-30",
    "kind": "institution"
   },
   "Scotiabank": {
-   "file": "scotiabank.ico",
-   "source_url": "https://www.scotiabank.com/content/dam/scotiabank/enterprise/images/logos/favicon.ico",
-   "official_page": "https://www.scotiabank.com/ca/en/personal.html",
-   "format": "ICO",
+   "file": "scotiabank.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Scotiabank%20logo.svg?width=512",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Scotiabank_logo.svg",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
    "px": [
-    48,
-    48
+    960,
+    140
    ],
-   "fetched": "2026-10-29",
+   "fetched": "2026-10-30",
    "kind": "institution"
   },
   "Shakepay": {
@@ -501,15 +501,15 @@
    "kind": "institution"
   },
   "TD Bank": {
-   "file": "td-bank.ico",
-   "source_url": "https://www.td.com/etc.clientlibs/tdsite/clientlibs/clientlib-wealth/resources/images/favicon.ico",
-   "official_page": "https://www.td.com/ca/en/personal-banking",
-   "format": "ICO",
+   "file": "td-bank.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Toronto-Dominion%20Bank%20logo.svg?width=512",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Toronto-Dominion_Bank_logo.svg",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
    "px": [
-    96,
-    96
+    960,
+    859
    ],
-   "fetched": "2026-10-29",
+   "fetched": "2026-10-30",
    "kind": "institution"
   },
   "Tangerine": {
@@ -1066,14 +1066,14 @@
    ]
   },
   "Affinity Credit Union": {
-   "file": "affinity-cu.ico",
-   "source_url": "https://www.affinitycu.ca/favicon.ico",
+   "file": "affinity-cu.png",
+   "source_url": "https://www.affinitycu.ca/frontend/assets/img/icon-512.png",
    "official_page": "https://www.affinitycu.ca/",
    "fetched": "2026-10-30",
-   "format": "ICO",
+   "format": "PNG",
    "px": [
-    16,
-    16
+    512,
+    512
    ]
   },
   "Citi Cards Canada": {
@@ -1100,24 +1100,24 @@
   },
   "Steinbach Credit Union": {
    "file": "steinbach-cu.png",
-   "source_url": "https://www.scu.mb.ca/getContentAsset/fe2b794e-3779-4199-839e-c1c500e5fd30/dfc3d011-8f63-43f6-9ed8-4b444333a1d0/favicon-32x32.png?language=en-CA",
-   "official_page": "https://www.scu.mb.ca/",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Steinbach%20Credit%20Union%20logo.svg?width=512",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Steinbach_Credit_Union_logo.svg",
    "fetched": "2026-10-30",
-   "format": "PNG",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
    "px": [
-    32,
-    32
+    960,
+    291
    ]
   },
   "Laurentian Bank": {
    "file": "laurentian-bank.png",
-   "source_url": "https://www.laurentianbank.ca/favicon/lbc-32.png",
+   "source_url": "https://www.laurentianbank.ca/favicon/lbc-270.png",
    "official_page": "https://www.laurentianbank.ca/en",
    "fetched": "2026-10-30",
    "format": "PNG",
    "px": [
-    32,
-    32
+    270,
+    270
    ]
   }
  },
