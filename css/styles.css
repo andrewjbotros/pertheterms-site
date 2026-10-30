@@ -819,3 +819,22 @@ body.co #snav.out{animation-name:snrout}
 @keyframes snrin{from{transform:translateX(100%)}to{transform:none}}@keyframes snrout{from{transform:none}to{transform:translateX(100%)}}
 @media(max-width:640px){body.co header>#rtog{width:44px;height:44px}}
 @media(prefers-reduced-motion:reduce){body.co #snav,body.co #snav.out{animation:none}}
+/* PUSH 4 (Andrew 2026-10-30): Banking and Brokers account tiles. Same box as a card tile (.ctile: Wallet size, aspect 1.586, same grid); their own face: light card, institution logo, colour band (bank) or growth line (broker) */
+.ctile.atile{background:var(--card)!important;color:var(--ink);text-shadow:none;border:1px solid var(--line);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.ctile.atile::before,.ctile.atile::after{display:none}
+.ctile.atile .ahd{display:flex;align-items:center;gap:8px;min-width:0;padding-right:30px;margin-bottom:6px;flex:none}
+.ctile.atile .alg{flex:none;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:7px;background:#fff;border:1px solid var(--line);overflow:hidden}
+.ctile.atile .alg img{width:24px;height:24px;object-fit:contain}.ctile.atile .alg b{font-size:10.5px;color:#1f2937}
+.ctile.atile .ti{color:var(--mute);font-size:11.5px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-transform:uppercase;letter-spacing:.03em}
+.ctile.atile .tn{font-weight:700;font-size:14px;line-height:1.25;flex:none;color:var(--ink);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ctile.atile .tf{color:var(--mute)}.ctile.atile .tw{color:var(--a1);font-style:normal}
+.ctile.abank .aband{display:block;flex:none;margin-top:auto;margin-bottom:6px;height:5px;border-radius:3px;background:linear-gradient(90deg,var(--a1),var(--a2))}
+.ctile.abrk .aspark{display:block;flex:none;margin-top:auto;margin-bottom:4px;width:100%;height:20px;color:var(--a1)}
+.ctile.abrk .tn{font-size:19px;letter-spacing:.01em}
+.ctile.atile .trm{background:color-mix(in srgb,var(--ink) 10%,transparent);color:var(--ink);text-shadow:none}
+.ctile.atile.on{outline:3px solid var(--teal);outline-offset:2px}
+#wiz .wzi .btile .bn{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#wiz .wzi .btile .bf{white-space:nowrap}/* PUSH 4: long institution names stay on one line (full name in the title) */
+/* PUSH 4: step 3 (products) is the big dialog; Banking and Brokers groups on Accounts use the Wallet card grid (220px desktop, one full-width column on phones) */
+#wiz.wz3{width:min(1100px,calc(100vw - 32px));height:calc(100vh - 48px)}
+.psec .tiles.ptiles:has(>.ctile.atile){grid-template-columns:repeat(auto-fill,220px);justify-content:start;gap:12px}
+@media(max-width:899px){#wiz.wz3{width:calc(100vw - 16px);height:calc(100vh - 24px)}html.resp .psec .tiles.ptiles:has(>.ctile.atile){grid-template-columns:calc(100vw - 72px)!important;gap:10px}}
