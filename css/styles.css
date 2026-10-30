@@ -6,7 +6,7 @@ header{display:flex;align-items:center;gap:12px;padding:10px 16px;background:var
 .logo{font-weight:800;letter-spacing:-.02em;font-size:17px}.logo b{color:var(--acc)}
 #q{flex:1;max-width:320px;margin-left:auto;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
 nav{display:flex;gap:2px;padding:0 12px;background:var(--card);border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
-nav button{border:0;background:none;color:var(--mute);font:600 13px/1 inherit;padding:12px 12px 10px;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap}
+nav button{border:0;background:none;color:var(--mute);font-family:inherit;font-size:13px;font-weight:600;font-style:normal;line-height:1;padding:12px 12px 10px;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap}
 #pnote{position:fixed;left:12px;bottom:12px;max-width:420px;background:var(--notebg);border:1px solid var(--notebd);color:var(--ink);padding:8px 12px;border-radius:6px;font-size:12px;z-index:50}.wlay{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:24px;align-items:start}.wside{position:sticky;top:12px}.wside .tiles{max-height:calc(100vh - 150px);overflow-y:auto;padding:4px}.tiles{display:flex;flex-direction:column;gap:12px}
 .ctile{position:relative;aspect-ratio:1.586;border-radius:12px;color:#fff;padding:14px 16px;display:flex;flex-direction:column;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18);overflow:hidden;text-align:left}
 .ctile:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,0,0,.25)}.ctile.on{outline:3px solid var(--teal);outline-offset:2px}.ctile:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
@@ -130,7 +130,7 @@ table.kv{width:100%;border-collapse:collapse;font-size:13px}table.kv th{width:34
 #pm{position:relative;flex:0 0 auto}#pbtn{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;padding:0;border:1px solid var(--line);border-radius:50%;background:var(--bg);color:var(--ink);cursor:pointer}
 #pbtn:hover,#pbtn[aria-expanded=true]{border-color:var(--acc)}#pbtn:focus-visible,#pml button:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
 #pml{position:absolute;right:0;top:calc(100% + 6px);z-index:60;min-width:168px;padding:4px;border:1px solid var(--line);border-radius:10px;background:var(--card);box-shadow:0 8px 28px rgba(20,23,28,.18)}#pml[hidden]{display:none}
-#pml button{display:flex;align-items:center;gap:8px;width:100%;box-sizing:border-box;min-height:36px;padding:7px 10px;border:0;border-radius:7px;background:none;color:var(--ink);font:600 13px/1 inherit;text-align:left;cursor:pointer}#pml button:hover,#pml button:focus{background:var(--bg)}#pml #theme{border-top:1px solid var(--line);border-radius:0 0 7px 7px;margin-top:4px;padding-top:9px}#pml .ti{width:18px;height:18px;flex:none;display:inline-flex;align-items:center;justify-content:center;color:var(--ink)}#pml .ti svg{display:block}
+#pml button{display:flex;align-items:center;gap:8px;width:100%;box-sizing:border-box;min-height:36px;padding:7px 10px;border:0;border-radius:7px;background:none;color:var(--ink);font-family:inherit;font-size:13px;font-weight:600;font-style:normal;line-height:1;text-align:left;cursor:pointer}#pml button:hover,#pml button:focus{background:var(--bg)}#pml #theme{border-top:1px solid var(--line);border-radius:0 0 7px 7px;margin-top:4px;padding-top:9px}#pml .ti{width:18px;height:18px;flex:none;display:inline-flex;align-items:center;justify-content:center;color:var(--ink)}#pml .ti svg{display:block}
 
 /* v3.4.0 My Offers */
 .offers{margin-top:18px;border:1px solid var(--acc);border-left:4px solid var(--acc);border-radius:12px;padding:12px 14px;background:color-mix(in srgb,var(--acc) 8%,var(--card))}
@@ -613,6 +613,12 @@ td .cond{display:block;white-space:normal;min-width:120px;text-align:left;font-s
 /* Andrew 2026-10-29: no grey frame around brand logos; the logo sits bare on the tile */
 .btile.bbrand .blogo{width:48px;height:48px;border-radius:10px;border:0;background:none}
 .btile.bbrand .blogo img{width:40px;height:40px;filter:grayscale(1)}
+/* uniform grey logos (Andrew 2026-10-29): one grey tone per theme, CSS only. a = transparent logo: its shape in the grey; l/d = solid app icons: thresholded to glyph-on-paper, the paper blended away (multiply in light, screen in dark), glyph in the same grey */
+:root{--lgo:.55;--lga:brightness(0);--lgd:invert(0);--lgl:invert(1);--lgb:multiply}
+[data-theme=dark]{--lgo:.62;--lga:brightness(0) invert(1);--lgd:invert(1);--lgl:invert(0);--lgb:screen}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--lgo:.62;--lga:brightness(0) invert(1);--lgd:invert(1);--lgl:invert(0);--lgb:screen}}
+.btile.bbrand .blogo img.lg{opacity:var(--lgo)}.btile.bbrand .blogo img.lg-a{filter:var(--lga)}.btile.bbrand .blogo img.lg-d{filter:grayscale(1) brightness(var(--lgk,1)) contrast(12) var(--lgd);mix-blend-mode:var(--lgb)}.btile.bbrand .blogo img.lg-l{filter:grayscale(1) brightness(var(--lgk,1)) contrast(12) var(--lgl);mix-blend-mode:var(--lgb)}
+.btile.bbrand.on .blogo img.lg{opacity:calc(var(--lgo) + .2)}
 .btile.bbrand .blogo b{font:700 18px/1 inherit;color:#64748b}
 .btile.bbrand .bn{font-size:14px}.btile.bbrand .binc{max-width:100%;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .btile.bbrand .bf{align-self:stretch;text-align:center;padding:0 44px;min-height:20px;display:flex;align-items:center;justify-content:center}
@@ -645,3 +651,53 @@ header{z-index:60}
 #snx{border:0;background:transparent;color:var(--mute);font-size:18px;line-height:1;width:32px;height:32px;border-radius:8px;cursor:pointer}#snx:hover{background:var(--bg);color:var(--ink)}
 #snbg{animation:bgin .22s ease}#snav.out{animation:snout .22s ease-in forwards;pointer-events:none}#snbg.out{animation:bgout .22s ease forwards;pointer-events:none}
 @media (prefers-reduced-motion:reduce){#snav,#snbg,#snav.out,#snbg.out{animation:none}}
+/* PUSH 4 sticky table chrome */
+:root{--hh:61px;--bh:0px}
+.wrap{overflow:visible!important;max-height:none!important}
+#bar.bar{position:sticky;top:var(--hh);z-index:4;background:var(--bg)}
+.wrap thead th{position:sticky!important;top:calc(var(--hh) + var(--bh))!important;z-index:3}
+td.nm{position:static!important}.wrap thead th.nm{left:auto}
+/* tiles (Andrew 2026-10-29): the logo dominates (about 56% of tile width, one uniform box for every logo), logo + name centred both ways; price / switch / count anchored to the bottom so they never push the logo off-centre */
+.btile.bbrand{aspect-ratio:1.2;justify-content:center;gap:6px;padding:10px 12px 30px}
+.btile.bbrand.on{padding:9px 11px 29px}
+.btile.bbrand .blogo{width:56%;height:auto;aspect-ratio:1.5;max-height:56%;border-radius:0}
+.btile.bbrand .blogo img{width:100%;height:100%;object-fit:contain}
+.btile.bbrand .blogo b{font-size:26px;color:var(--ink);opacity:var(--lgo)}
+.btile.bbrand .bf{position:absolute;left:0;right:0;bottom:7px;margin:0}
+.btile.bbrand .bmk,.btile.bbrand .bsw{bottom:8px}
+.btile.bbrand .binc{position:absolute;left:10px;right:10px;bottom:28px;-webkit-line-clamp:1}
+.btile.bbrand:has(.binc){padding-bottom:46px}
+
+/* PUSH 5 Accounts wizard */
+.vhead h2 .wplus{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;margin-left:8px;vertical-align:middle;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--acc);cursor:pointer;padding:0}
+.vhead h2 .wplus:hover{background:var(--accl);border-color:var(--acc)}.vhead h2 .wplus:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+body.wzopen{overflow:hidden}
+#wzbg{position:fixed;inset:0;z-index:80;background:rgba(15,23,42,.45);animation:bgin .2s ease}
+#wiz{position:fixed;z-index:81;left:50%;top:50%;transform:translate(-50%,-50%);width:min(880px,calc(100vw - 32px));max-height:calc(100vh - 48px);display:flex;flex-direction:column;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+#wiz .wzhd{position:relative;padding:16px 56px 10px 20px;border-bottom:1px solid var(--line)}#wiz .wzst{font-size:12px;color:var(--mute);font-weight:600}#wiz h3{margin:2px 0 0;font-size:18px}
+#wiz .wzx{position:absolute;right:12px;top:12px;width:34px;height:34px;border:0;border-radius:8px;background:transparent;color:var(--mute);font-size:18px;cursor:pointer}#wiz .wzx:hover{background:var(--bg);color:var(--ink)}
+#wiz .wzbd{overflow:auto;padding:16px 20px;flex:1}
+#wiz .wzbd .tiles.ptiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+#wiz .wzft{display:flex;justify-content:flex-end;gap:10px;padding:12px 20px;border-top:1px solid var(--line)}
+#wiz .wzft .btn2{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:8px 16px;font:inherit;font-weight:600;cursor:pointer}
+#wiz .wzft .btn{padding:8px 18px}#wiz .wzft .btn[disabled]{opacity:.45;cursor:not-allowed}
+#wiz [data-wzcard][aria-disabled=true]{opacity:.6;cursor:default}
+
+/* sidebar items match the Profile menu exactly (Andrew 2026-10-29), with an icon each */
+#snav #pl button{display:flex;align-items:center;gap:8px;width:100%;box-sizing:border-box;min-height:36px;padding:7px 10px;border:0;border-radius:7px;background:none;color:var(--ink);font-family:inherit;font-size:13px;font-weight:600;font-style:normal;line-height:1;text-align:left;cursor:pointer;box-shadow:none;margin:0}
+#snav #pl button:hover,#snav #pl button:focus{background:var(--bg)}
+#snav #pl button.on{background:var(--accl);border:0}
+#snav #pl .ti{width:18px;height:18px;flex:none;display:inline-flex;align-items:center;justify-content:center;color:var(--ink)}#snav #pl .ti svg{display:block}
+#snav #pl button small{margin-left:auto;font-size:11px;font-weight:600;color:var(--mute);border:1px solid var(--line);border-radius:999px;padding:2px 7px}
+#snav .snh{justify-content:flex-end;border:0;padding:0 0 4px;margin:0}
+.infopg .soon{text-align:center;max-width:560px;margin:0 auto}
+.infopg .soonart{width:min(420px,100%);height:auto;display:block;margin:8px auto 18px}
+.infopg .soonk{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--acc);background:var(--accl);border-radius:999px;padding:4px 12px;margin:0 0 10px}
+
+/* logo icon -> menu affordance (Andrew 2026-10-29): on hover/focus (hover-capable pointers only) the mark crossfades into a white three-line icon in a blue circle, same footprint; it stays while the drawer is open */
+#rtog{position:relative}
+#rtog .rham{position:absolute;left:50%;top:50%;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;background:var(--acc);display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(.7) rotate(-10deg);box-shadow:0 0 0 0 transparent;transition:opacity .2s ease,transform .2s ease,box-shadow .2s ease;pointer-events:none}
+#rtog .lmark{transition:opacity .2s ease,transform .2s ease}
+#rtog.snon .rham{opacity:1;transform:scale(1.06);box-shadow:0 0 0 4px color-mix(in srgb,var(--acc) 22%,transparent),0 0 14px color-mix(in srgb,var(--acc) 45%,transparent)}#rtog.snon .lmark{opacity:0;transform:scale(.7)}
+@media (hover:hover){#rtog:hover .rham,#rtog:focus-visible .rham{opacity:1;transform:scale(1.06);box-shadow:0 0 0 4px color-mix(in srgb,var(--acc) 22%,transparent),0 0 14px color-mix(in srgb,var(--acc) 45%,transparent)}#rtog:hover .lmark,#rtog:focus-visible .lmark{opacity:0;transform:scale(.7) rotate(-10deg)}}
+@media (prefers-reduced-motion:reduce){#rtog .rham,#rtog .lmark{transition:none}#rtog .rham,#rtog .lmark,#rtog:hover .lmark,#rtog:focus-visible .lmark{rotate:none}#rtog .rham{transform:none}#rtog:hover .lmark,#rtog:focus-visible .lmark,#rtog.snon .lmark{transform:none}}

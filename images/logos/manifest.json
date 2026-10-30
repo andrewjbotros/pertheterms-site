@@ -570,6 +570,182 @@
     152,
     152
    ]
+  },
+  "instacart": {
+   "file": "instacart.png",
+   "source_url": "https://d2guulkeunn7d8.cloudfront.net/assets/Icon-60@3x-73f80604373da67ef3fadbc54f4548b1.png",
+   "official_page": "https://www.instacart.ca/",
+   "fetched": "2026-10-29",
+   "format": "PNG",
+   "px": [
+    180,
+    180
+   ]
+  },
+  "maple": {
+   "file": "maple.png",
+   "source_url": "https://www.getmaple.ca/assets/favicon/favicon-192x192.png",
+   "official_page": "https://www.getmaple.ca/",
+   "fetched": "2026-10-29",
+   "format": "PNG",
+   "px": [
+    192,
+    192
+   ]
+  },
+  "strava": {
+   "file": "strava.png",
+   "source_url": "https://d3nn82uaxijpm6.cloudfront.net/apple-touch-icon-180x180.png?v=dLlWydWlG8",
+   "official_page": "https://www.strava.com/",
+   "fetched": "2026-10-29",
+   "format": "PNG",
+   "px": [
+    180,
+    180
+   ]
+  },
+  "pc-optimum": {
+   "file": "pc-optimum.png",
+   "source_url": "https://www.pcoptimum.ca/static/favicon/apple-touch-icon-180x180.png",
+   "official_page": "https://www.pcoptimum.ca/",
+   "fetched": "2026-10-29",
+   "format": "PNG",
+   "px": [
+    180,
+    180
+   ]
+  },
+  "scene-plus": {
+   "file": "scene-plus.png",
+   "source_url": "https://cdn-ca.aglty.io/project-harmony/icons/web-assets/apple-touch-icon.png",
+   "official_page": "https://www.sceneplus.ca/",
+   "fetched": "2026-10-29",
+   "format": "PNG",
+   "px": [
+    180,
+    180
+   ]
+  },
+  "starbucks-rewards": {
+   "file": "starbucks-rewards.png",
+   "source_url": "https://www.starbucks.ca/weblx/images/icons/pwa-icon.png",
+   "official_page": "https://www.starbucks.ca/rewards",
+   "fetched": "2026-10-29",
+   "format": "PNG",
+   "px": [
+    512,
+    512
+   ]
+  },
+  "accor-all": {
+   "file": "accor-all.png",
+   "source_url": "https://static-p46175-e229011.adobeaemcloud.com/a94cb9eb1ff932579db94bde99e19e82c898161919aceb909d9250d5401e2cf6/resources/images/android-chrome-512x512.png",
+   "official_page": "https://all.accor.com/",
+   "fetched": "2026-10-29",
+   "format": "PNG",
+   "px": [
+    512,
+    512
+   ]
+  },
+  "shell-go-plus": {
+   "file": "shell-go-plus.png",
+   "source_url": "https://www.shell.ca/etc.clientlibs/amidala/clientlibs/theme-base/resources/favicon/apple-touch-icon.png",
+   "official_page": "https://www.shell.ca/",
+   "fetched": "2026-10-29",
+   "format": "PNG",
+   "px": [
+    180,
+    180
+   ]
+  },
+  "rakuten-ca": {
+   "file": "rakuten-ca.png",
+   "source_url": "https://static.rakuten.ca/static/images/favicons/apple-touch-icon.2.0.3-192x192.png",
+   "official_page": "https://www.rakuten.ca/",
+   "fetched": "2026-10-29",
+   "format": "PNG",
+   "px": [
+    192,
+    192
+   ]
+  },
+  "circle-k-inner-circle": {
+   "file": "circle-k-inner-circle.ico",
+   "source_url": "https://www.circlek.com/profiles/custom/ck/themes/circlek/favicon.ico",
+   "official_page": "https://www.circlek.com/",
+   "fetched": "2026-10-29",
+   "format": "ICO",
+   "px": [
+    144,
+    144
+   ]
+  },
+  "costco-exec": {
+   "file": "costco-exec.png",
+   "source_url": "https://www.costco.ca/apple-touch-icon.png",
+   "official_page": "https://www.costco.ca/",
+   "fetched": "2026-10-29",
+   "format": "PNG",
+   "px": [
+    152,
+    152
+   ]
+  },
+  "irving-rewards": {
+   "file": "irving-rewards.png",
+   "source_url": "https://www.irvingoil.com/themes/custom/irvingoil/touch-icons/apple-touch-icon.png",
+   "official_page": "https://www.irvingoil.com/",
+   "fetched": "2026-10-29",
+   "format": "PNG",
+   "px": [
+    180,
+    180
+   ]
+  },
+  "club-transat": {
+   "file": "club-transat.ico",
+   "source_url": "https://airtransatcommedia.blob.core.windows.net/tswcm/media/tsca/skin/img/favicon.ico",
+   "official_page": "https://www.airtransat.com/",
+   "fetched": "2026-10-29",
+   "format": "ICO",
+   "px": [
+    256,
+    256
+   ]
+  },
+  "paymi": {
+   "file": "paymi.png",
+   "source_url": "https://cdn.prod.website-files.com/6526f44b0e95c2374549661a/682796159347fbb8742378f7_Web%20Clip.png",
+   "official_page": "https://www.paymi.com/",
+   "fetched": "2026-10-29",
+   "format": "PNG",
+   "px": [
+    256,
+    256
+   ]
+  },
+  "caddle": {
+   "file": "caddle.png",
+   "source_url": "https://getcaddle.com/media/2021/02/cropped-Caddle_ColourLogo_Vertical_PNG_Transparent-192x192.png",
+   "official_page": "https://www.caddle.ca/",
+   "fetched": "2026-10-29",
+   "format": "PNG",
+   "px": [
+    192,
+    192
+   ]
+  },
+  "chexy": {
+   "file": "chexy.png",
+   "source_url": "https://www.chexy.co/icon.png?icon.1_r4i9mnj5f91.png",
+   "official_page": "https://www.chexy.co/",
+   "fetched": "2026-10-29",
+   "format": "PNG",
+   "px": [
+    512,
+    512
+   ]
   }
  },
  "missing": {
