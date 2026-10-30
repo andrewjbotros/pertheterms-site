@@ -465,7 +465,7 @@ function renderTel(kind){const L=(D.telplans||[]).filter(p=>p.kind==kind).sort((
 const LSUB={broker:[BRS,'brs'],tel:[TS,'ts']};
 const LTABS=k=>{const[L,key]=LSUB[k],cur=L.find(x=>x.id==st[key])||L[0];st[key]=cur.id;return L.map(x=>`<button data-${key}=${x.id} class="${x.id==cur.id?'on':''}">${x.name}</button>`).join('')};
 function renderLine(k){const[L,key]=LSUB[k];return (L.find(x=>x.id==st[key])||L[0]).r()}
-document.addEventListener('click',e=>{const t=e.target.closest('#tabs [data-brs],#tabs [data-ts]');if(!t)return;e.stopPropagation();if(t.dataset.brs)st.brs=t.dataset.brs;else st.ts=t.dataset.ts;render();scrollTo(0,0)},true);
+document.addEventListener('click',e=>{const t=e.target.closest('#tabs [data-brs],#tabs [data-ts]');if(!t)return;e.stopPropagation();const KP=posGet();if(t.dataset.brs)st.brs=t.dataset.brs;else st.ts=t.dataset.ts;render();posSet(KP)},true);
 /* v3.5.4 My Services: status of each service the user pays for, from their held products across all sections. Sourced subsidies only. */
 function subsHeld(r){const cs=W.cards.map(i=>C[BYID0[i]]).filter(Boolean),who=(r.who||'').toLowerCase();
  if(r.pid)return cs.find(c=>c.id==r.pid)||null;
@@ -918,9 +918,11 @@ function openM(c,full){$('#mc').innerHTML=cardHTML(c,0,full?null:st.s)+acts(c);
  $('#mbg').classList.add('on');$('#mbg').setAttribute('aria-hidden','false');$('#mx').focus()}
 const closeM=()=>{$('#mbg').classList.remove('on');$('#mbg').setAttribute('aria-hidden','true')};
 /* Push C (2026-10-29): switching views keeps the table where it was: page scroll, horizontal scroll, and the same card row at the top of the view */
-const posTop=()=>Math.max(($('#th th')||$('#th'))?.getBoundingClientRect().bottom||0,$('header')?.getBoundingClientRect().bottom||0);
-const posGet=()=>{const w=$('.wrap');if(!w||w.hidden||!w.offsetParent)return null;const y=posTop();let a=null,o=0,h=0;for(const r of w.querySelectorAll('#tb tr[data-i]')){const q=r.getBoundingClientRect();if(q.bottom>y+1){a=r.dataset.i;o=q.top-y;h=q.height;break}}return {y:scrollY,l:w.scrollLeft,t:w.scrollTop,a,o,h}};
-const posSet=p=>{const w=$('.wrap');if(!p||!w||w.hidden||!w.offsetParent)return;scrollTo(scrollX,p.y);w.scrollLeft=p.l;const r=p.a!=null&&w.querySelector(`#tb tr[data-i="${p.a}"]`);if(!r){w.scrollTop=p.t;return}const rh=r.getBoundingClientRect().height,po=p.h&&p.o<0?p.o*rh/p.h:p.o,d=r.getBoundingClientRect().top-posTop()-po,b0=w.scrollTop;w.scrollTop=b0+d;const rem=d-(w.scrollTop-b0);if(Math.abs(rem)>1)scrollBy(0,rem)};
+/* view switches (sub-tabs, sub-sub-tabs, table/view toggles; Andrew 2026-10-30): no jump. If the sticky stack (#bar + column header row) is stuck, land at the top of the new table just under it; otherwise do not move. The page is the scroller (PUSH 4), so we never anchor to a row: the old row-anchor kept the same card in view and threw the page thousands of px into the new table. */
+const posNat=b=>{const p=b.style.position;b.style.position='static';const t=b.getBoundingClientRect().top+scrollY;b.style.position=p;return t};
+const posHH=()=>parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hh'))||0;
+const posGet=()=>{const b=$('#bar');if(!b||b.hidden||!b.offsetParent)return {y:scrollY,stuck:false};return {y:scrollY,stuck:scrollY>0&&posNat(b)-scrollY<=posHH()+1}};
+const posSet=p=>{if(!p)return;const b=$('#bar');if(p.stuck&&b&&!b.hidden&&b.offsetParent)scrollTo(scrollX,Math.max(0,Math.round(posNat(b)-posHH())));else scrollTo(scrollX,p.y)};
 document.addEventListener('click',e=>{const b=e.target.closest('#grp [data-g]');if(!b)return;e.stopImmediatePropagation();st.g={...(st.g||{}),[st.s]:b.dataset.g};st.sort=null;const KP=posGet();render();const n=$('#grp [data-g].on');if(n)n.focus({preventScroll:true});posSet(KP)},true);
 document.addEventListener('keydown',e=>{const b=e.target.closest?.('#nav3 nav button');if(b&&['ArrowRight','ArrowLeft','Home','End'].includes(e.key)){const L=[...b.closest('nav').querySelectorAll('button')],i=L.indexOf(b),n=e.key=='Home'?0:e.key=='End'?L.length-1:(i+(e.key=='ArrowRight'?1:-1)+L.length)%L.length;e.preventDefault();L[n].focus()}});
 document.addEventListener('keydown',e=>{if(e.key=='Escape')closeM();if((e.key=='Enter'||e.key==' ')&&e.target.dataset?.mf){e.preventDefault();e.target.click()}if((e.key=='Enter'||e.key==' ')&&e.target.dataset?.wtile!=null){e.preventDefault();openM(C[+e.target.dataset.wtile])}if((e.key=='Enter'||e.key==' ')&&e.target.classList?.contains('prow')){e.preventDefault();e.target.click()}if(e.key=='Enter'&&e.target.id=='logo'){e.target.click()}});
@@ -948,7 +950,7 @@ document.addEventListener('click',e=>{
  if(e.target.closest('#modal'))return;
  const m=e.target.closest('[data-m]');if(m){e.stopPropagation();openM(C[m.dataset.m]);return}
  if(e.target.closest('#logo')){if(!CARDS_ONLY){snavSet($('#snav').hidden);return}snavSet(false);const h=document.querySelector('#pl [data-pl=home]');if(h)h.click();return}
- {const im=e.target.closest('[data-im]');if(im){st.im=im.dataset.im;render();return}}
+ {const im=e.target.closest('[data-im]');if(im){const KP=posGet();st.im=im.dataset.im;render();posSet(KP);return}}
  const t=e.target.closest('[data-s],[data-x],[data-k],tr[data-i]');if(!t)return;const KP=t.closest('#tabs')&&t.dataset.s?posGet():null;
  if(t.dataset.s){st.s=t.dataset.s;st.card=null;if(st.pl=='info'&&USR.has(st.s))st.pl='cards'/* About / legal pages: a Profile item leaves the info view (else render0 resets st.s to about) */}else if(t.dataset.x){const x=t.dataset.x;if(x=='__all'){st.f={};st.q='';$('#q').value=''}else if(x=='__f'){st.f={}}else if(x=='__sort'){st.sort=null;st.dir=-1}else if(x=='__q'){st.q='';$('#q').value=''}else delete st.f[x]}
  else if(t.dataset.k){const k=t.dataset.k;if(st.sort==k)st.dir=-st.dir;else{st.sort=k;st.dir=(k=='n'||k=='fee'||k=='apr'||k=='fx'||COL[k]?.[1]=='l')?1:-1}}

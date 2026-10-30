@@ -145,7 +145,7 @@ const BANK=(()=>{
    const bm=t.closest('[data-bm]');if(bm){e.stopPropagation();openB(BI[bm.dataset.bm]);return}
    if(t.closest('#modal'))return;
    const bi=t.closest('[data-binst]');if(bi){e.stopPropagation();const ix=[...new Set(A().map(o=>o.i))].sort().indexOf(bi.dataset.binst);st.bf={inst:ix};st.bs='bov';render();return}
-   if(on()&&!st.card){const bs=t.closest('[data-bs]');if(bs){e.stopPropagation();st.bs=bs.dataset.bs;if(st.s=='wfolder')st.s='ov';render();scrollTo(0,0);return}}
+   if(on()&&!st.card){const bs=t.closest('[data-bs]');if(bs){e.stopPropagation();const KP=posGet();st.bs=bs.dataset.bs;if(st.s=='wfolder')st.s='ov';render();posSet(KP);return}}
    if(!on()||st.card||st.s=='wfolder')return;
    const bk=t.closest('[data-bk]');if(bk){e.stopPropagation();const k=bk.dataset.bk;if(st.bsort==k)st.bdir=-(st.bdir||1);else{st.bsort=k;st.bdir=(k=='n'||BCOL[k][1]!='')||['fee','feey','mb'].includes(k)?1:-1}render();return}
    const bx=t.closest('[data-bx]');if(bx){e.stopPropagation();const x=bx.dataset.bx;if(x=='__all'){st.bf={};st.q='';$('#q').value=''}else if(x=='__sort'){st.bsort=null;st.bdir=1}else{const f={...(st.bf||{})};delete f[x];st.bf=f}render();return}
