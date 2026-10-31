@@ -718,7 +718,7 @@ html.tblv .wrap thead th{top:var(--stk)!important;z-index:4}
 html.stkm #nav3,html.stkm #ctl,html.stkm #pre,html.stkm #bar,html.stkm .wrap thead th{position:static!important}
 #stkbg{position:fixed;left:0;right:0;top:0;height:var(--stk);background:var(--bg);z-index:3;pointer-events:none}html:not(.tblv) #stkbg{display:none}
 /* Insurance Conditions: two lines max, full text on hover / tap */
-.wrap td .cond{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-width:0;white-space:normal;font-size:inherit;cursor:pointer}.wrap td .cond.open{display:block;-webkit-line-clamp:unset;overflow:visible}
+.wrap td .cond{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;min-width:0;white-space:normal;font-size:inherit;cursor:pointer}.wrap td .cond.open{display:block;-webkit-line-clamp:unset;overflow:visible}
 .wrap td .cond:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
 .wrap table.fx{table-layout:fixed;max-width:none}.wrap table.fx th,.wrap table.fx td{min-width:0!important;max-width:none!important;white-space:normal;overflow-wrap:break-word;overflow:hidden}.wrap table.fx td.nm{width:auto}
 /* integer line boxes in the fixed tables so every row top lands on a whole pixel: a view switch then moves the anchored card by exactly 0px */
