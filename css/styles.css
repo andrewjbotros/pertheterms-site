@@ -458,7 +458,7 @@ th.ic,td.ic{text-align:center;width:1%;padding-left:4px;padding-right:4px}th.ic{
 .nb{display:inline-block;min-width:20px;padding:1px 3px;border:1px solid var(--line);border-radius:3px;background:var(--bg);color:var(--ink);font:700 10px/1.3 inherit;letter-spacing:.02em;text-align:center}
 /* Home: hero art and the story body (theme variables only, so light and dark both work) */
 /* tables fit one window (about 1280px): tighter padding, header and text cells wrap, long text columns are capped */
-.wrap th{white-space:normal;line-height:1.15;vertical-align:bottom}.wrap th,.wrap td{padding:6px 7px}
+.wrap th{white-space:normal;line-height:1.15;vertical-align:middle}.wrap th,.wrap td{padding:6px 7px}
 .wrap td.nm,.wrap th.nm{white-space:normal;min-width:150px;max-width:220px}
 .wrap td.l,.wrap td.wrapt{white-space:normal;max-width:150px;min-width:0}.wrap th.wrapt{min-width:0;max-width:150px}
 .wrap td.ctr,.wrap th.ctr{padding-left:4px;padding-right:4px}
@@ -544,6 +544,8 @@ html.resp:not(.tab) #view,html.resp:not(.tab) #page{margin-left:0!important;marg
 header{position:sticky!important;top:0;z-index:60!important;background:var(--card)}
 .hero2 .sbeat,#sitefoot,#view,#page{scroll-margin-top:var(--hh,60px)}
 html.resp body{min-width:0}
+/* 2026-10-31 (Andrew, iPad Sidecar portrait = a 1024px-wide Mac display with a mouse): macOS then shows classic scrollbars, so the page is ~1009px wide; a 1024px body overflowed by the scrollbar width, the page panned sideways and the sticky header slid/clipped under the pointer. Desktop windows now never exceed the visible width (phones keep the tz canvas, the iPad tier its viewport canvas) */
+html:not(.tab):not(.tz) body{min-width:min(1024px,100%);width:fit-content}html:not(.tab):not(.tz) body>header{left:0;width:var(--cw,100%);box-sizing:border-box}/* a wide table that pans the page sideways no longer drags the header with it */
 /* Andrew 2026-10-29: header line tabs and sub-tabs are plain text on the page background: no pill, box or white panel (light and dark); muted inactive text, a thin accent underline on the active one, a subtle hover; sub-tabs stay left-aligned with room between them */
 header>#pl button{background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;border-bottom:2px solid transparent!important;padding:10px 4px 8px!important;margin:0 10px;color:var(--mute);transition:color .15s,border-color .15s}
 header>#pl button:hover{color:var(--ink);border-bottom-color:var(--line)!important}
@@ -727,9 +729,11 @@ html.stkm #nav3,html.stkm #ctl,html.stkm #pre,html.stkm #bar,html.stkm .wrap the
 /* PUSH 14: on table views the open Filters panel floats over the rows (a dropdown under Filters / search) instead of pushing the table down, so the frozen header is the same compact height in every sub-tab and a view switch never moves the rows */
 html.tblv #filters{position:fixed!important;top:var(--ftop);left:var(--fl);width:var(--fw);margin:0!important;z-index:6;max-height:calc(100vh - var(--ftop,0px) - 16px);overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 28px rgba(0,0,0,.18);padding:10px 12px}
 /* PUSH 14: same-height frozen pieces in every sub-tab (count line 42px, column-header row 56px, fits the tallest (Rewards) label), so the first row starts at the same pixel in every view */
-html.tblv #bar{height:42px;box-sizing:border-box;overflow:hidden}html.tblv .wrap table.fx thead th{height:56px;box-sizing:border-box;vertical-align:bottom}
+html.tblv #bar{height:42px;box-sizing:border-box;overflow:hidden}html.tblv .wrap table.fx thead th{height:56px;box-sizing:border-box;vertical-align:middle}
 /* every Credit Cards view has the same header height (Andrew 2026-10-30): colW wraps each header label in .thx, clamped to three 13px lines, so a long label (Rewards on a phone) never grows the header row past 56px and shifts the anchored card; the full label is the title */
 html.tblv .wrap table.fx thead th .thx{max-height:39px;line-height:13px;overflow:hidden}
+/* 2026-10-31 (Andrew): header labels wrap only between words (never mid-word, no hyphenation), at most 2 lines, vertically centred, sitewide */
+th,th .thx{overflow-wrap:normal!important;word-break:keep-all!important;hyphens:manual!important;-webkit-hyphens:manual!important}thead th,tr>th,.pytt th{vertical-align:middle}
 /* PUSH 14: one row height for every card in every view (three 18px lines); longer cells clip with an ellipsis, full text on hover (title) and tap */
 .wrap table.fx #tb td{height:70px;box-sizing:border-box}.wrap table.fx #tb td>.cx{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;max-height:54px}.wrap table.fx #tb td>.cx.clip{cursor:pointer}.wrap table.fx #tb td>.cx.open{display:block;-webkit-line-clamp:unset;max-height:none}
 .wrap table.fx #tb td>.cx:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
