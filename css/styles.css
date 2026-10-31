@@ -936,3 +936,9 @@ html:not(.tz).tblv #filters:not(.fcol)>label>*{width:148px;max-width:148px}
 #cset .cswho{display:grid;grid-template-columns:1fr 1fr;width:100%}#cset .csnote{margin:0 0 6px;font-size:12.5px}#cset .cslinks{margin:12px 0 0}
 html.tz #csw{zoom:calc(1 / var(--tz))}
 @media(max-width:640px){#cset{width:calc(100vw - 16px)}#cset .wzft{flex-wrap:wrap}#cset .wzft .csrm{order:3;width:100%}#cset .csgap{display:none}#cset .wzft .btn,#cset .wzft [data-csx]{flex:1}}
+/* PerYourTerms in the Accounts / Subscriptions pattern (Andrew 2026-10-30): no Soon, psec panels, h3 headings, lead line */
+#pyt-page .vhead h2 .pytw{font-weight:800}#pyt-page .pytpage{text-align:left}
+#pyt-page .pytsec{margin:0 0 16px}#pyt-page .pytsec>p{margin:0 0 10px}#pyt-page .pytask{text-align:left;margin:0 0 10px}
+#pyt-page .pytwrap{background:none;border:1px solid var(--line);border-radius:10px}
+#pyt-page .pytt thead th{background:none}#pyt-page .pytt tfoot>tr>*{background:none}
+@media(max-width:900px){#pyt-page .pytwrap{border:0}#pyt-page .pytt tr{background:var(--bg)}}
