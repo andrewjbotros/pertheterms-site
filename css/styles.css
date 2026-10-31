@@ -52,6 +52,7 @@ tr:hover td{background:var(--accl)}tr.op td{background:var(--accl)}
 .det td{background:var(--bg)!important;text-align:left;white-space:normal;font-size:12.5px;color:var(--mute)}.det a{color:var(--acc)}
 /* Perks sub-tab (one row per card perk) */
 .wrap table td.pkn,.wrap table th.pkn{white-space:normal;text-align:left;min-width:200px;max-width:340px}.wrap table td.pkc,.wrap table th.pkc{max-width:210px}
+.wrap table td.pt,.wrap table th.pt{text-align:center}/* Perks perk-type columns: centred like the Insurance marks, but they share the spare width evenly */
 .pkb{font:inherit;color:inherit;background:none;border:0;padding:0;text-align:left;cursor:pointer}.pkb:hover{text-decoration:underline}
 .t.unv{color:var(--warnbg);border-color:var(--warnbg)}
 .pkd .pkq{margin:0 0 6px;color:var(--ink);font-style:italic}.pkd .pkm{display:flex;flex-wrap:wrap;gap:4px 18px}.pkd .pkm b{color:var(--ink);font-weight:600;margin-right:4px}.pkd code{font-size:11.5px;word-break:break-all}
