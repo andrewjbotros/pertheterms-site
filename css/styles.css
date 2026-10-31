@@ -954,3 +954,14 @@ html.tz #csw{zoom:calc(1 / var(--tz))}
 #view #pw-merch>.ptiles>.btile,#view #pw-subs>.ptiles>.btile,#view #pw-loy>.ptiles>.btile{position:relative}
 #pw-spend .btile .sprm,#pw-merch .btile .sprm,#pw-subs .btile .sprm,#pw-loy .btile .sprm{position:absolute;top:6px;right:6px;width:26px;height:26px;border:0;border-radius:13px;background:transparent;color:var(--mute);font-size:14px;line-height:1;cursor:pointer;z-index:1}
 #pw-spend .btile .sprm:hover,#pw-merch .btile .sprm:hover,#pw-subs .btile .sprm:hover,#pw-loy .btile .sprm:hover{background:var(--bg);color:var(--ink)}#pw-merch .btile .sprm:focus-visible,#pw-subs .btile .sprm:focus-visible,#pw-loy .btile .sprm:focus-visible{outline:2px solid var(--acc)}
+
+/* 2026-10-31 partner icons in the Welcome offer cell: small neutral monograms, one per third-party site; expired = greyed */
+:root{--ptobg:#f4f6f9;--ptoink:#4b5563}[data-theme=dark]{--ptobg:#1c232d;--ptoink:#c3cad6}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--ptobg:#1c232d;--ptoink:#c3cad6}}
+.ptos{display:inline-flex;flex-wrap:wrap;justify-content:center;gap:3px;margin-left:6px;vertical-align:middle;max-width:calc(100% - 6px)}/* wraps to a second row of icons only when the column is at its minimum (e.g. 125% zoom); rows have room, so row height never changes */
+.pto{display:inline-flex;width:18px;height:18px;color:var(--ptoink);cursor:help;border-radius:5px;outline-offset:1px;flex:none}
+.pto svg{display:block}.pto:focus-visible{outline:2px solid var(--acc)}
+.pto.px{opacity:.38;filter:grayscale(1)}.pto.px svg rect{stroke-dasharray:2 1.6}
+.pxb{color:var(--mute);font-weight:700;font-size:11px}
+#ofp tr.psep td{padding:0;border-top:1px solid var(--line);height:4px}
+.wrap td.ic:has(.ptos){max-width:none;overflow-wrap:normal}
