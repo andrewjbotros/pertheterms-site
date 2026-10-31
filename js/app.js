@@ -1,6 +1,6 @@
 const D=window.__PTT_DATA, C=D.cards, IMGB=window.__PTT_IMG||null;
 const PLINES=PLINES_ALL.filter(p=>p[0]=='home'||(D.meta.lines||['cards','bank','broker','tel']).includes(p[0])),PRODUCT=PLINES.filter(p=>p[0]!='home');/* enabled product lines (build flag PTT_LINES, default cards) */
-const CARDS_ONLY=PRODUCT.length==1&&PRODUCT[0][0]=='cards',CT_ALL=CARDS_ONLY?['ov','dtl','fees','rw','prom','ins','perk']:null,SUBONLY=new Set(['trv','prot','pkT','pkE']),HIDE=new Set(['dtl','prom']),CTV=()=>CT_ALL&&CT_ALL.filter(i=>!HIDE.has(i));/* Credit Cards sub-tabs: Overview, Fees, Rewards, Insurance, Perks (this order). HIDE is the per-line config of hidden sub-tabs (Full Detail, Promotions): code and data stay, nav and routes skip them, a hidden id in a link or hash falls back to Overview. Cards-only release: the other Cards views and the user pages stay in the code, off the nav */
+const CARDS_ONLY=PRODUCT.length==1&&PRODUCT[0][0]=='cards',CT_ALL=CARDS_ONLY?['ov','dtl','fees','rw','prom','ins','perk']:null,SUBONLY=new Set(['trv','prot','pkT','pkE','rwS','rwL','rwF']),HIDE=new Set(['dtl','prom']),CTV=()=>CT_ALL&&CT_ALL.filter(i=>!HIDE.has(i));/* Credit Cards sub-tabs: Overview, Fees, Rewards, Insurance, Perks (this order). HIDE is the per-line config of hidden sub-tabs (Full Detail, Promotions): code and data stay, nav and routes skip them, a hidden id in a link or hash falls back to Overview. Cards-only release: the other Cards views and the user pages stay in the code, off the nav */
 if(!CARDS_ONLY)SUBONLY.add('perk');/* the per-card Perks sub-tab (PKF, renderPerks) belongs to the cards-only release; the all-lines build keeps its own Perks view (id perks) */
 const $=s=>document.querySelector(s), esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const money=v=>v==null?'<span class=u>—</span>':v==0?'<span class=y>$0</span>':'$'+v.toLocaleString();
@@ -12,7 +12,7 @@ const INS_TK=['emergency_medical','trip_cancellation','trip_interruption','fligh
 const insN=(c,L)=>L.filter(([k])=>c.ins[k]===1).length,insU=(c,L)=>L.filter(([k])=>c.ins[k]==null).length;
 /* third-level row (one reusable component, keyed per sub-tab): GROUPS[sub-tab id] = [[screen id, label], ...]; st.g[sub-tab id] is the chosen one. A group's screen is an entry of S with that id, off the nav (SUBONLY). */
 const GROUPS={ins:[['trv','Travel'],['prot','Protection']]},GKEY=()=>GROUPS[st.s]?((st.g||{})[st.s]&&GROUPS[st.s].some(x=>x[0]==st.g[st.s])?st.g[st.s]:GROUPS[st.s][0][0]):st.s;
-GROUPS.perk=[['pkT','Travel'],['pkE','Everyday']];/* Perks = Travel | Everyday, keyed to perk_group (PKG) */
+GROUPS.perk=[['pkT','Travel'],['pkE','Everyday']];GROUPS.rw=[['rwS','Summary'],['rwL','Living'],['rwF','Lifestyle']];/* Rewards = Summary | Living | Lifestyle (Andrew 2026-10-30), see RWLIV *//* Perks = Travel | Everyday, keyed to perk_group (PKG) */
 // filter option builders
 const ge=(f,vals,u='%')=>vals.map(v=>[`≥ ${u=='$'?'$'+v.toLocaleString():v+u}`,c=>c[f]!=null&&c[f]>=v,v]);
 /* bold earn cells derive only from the active filters: a cell is bold when its own column has an active ≥ filter and the value meets it; no filter, no bold */
@@ -61,6 +61,13 @@ const pkFilt=()=>[...FIELDS.perk,'pk_i','pk_st'].filter(k=>PKF[k][2]).map(k=>{co
 /* Store (Andrew backlog, 2026-10-30): single-store rates the card has its own earn row for (build 'own' st_* keys), e.g. Canadian Tire 4%; column + multi-select filter, in header order after Best earn % */
 const stOf=c=>(c.own||[]).filter(k=>k.startsWith('st_')&&c['r_'+k]!=null).sort((a,b)=>c['r_'+b]-c['r_'+a]),STKS=Object.keys(CN).filter(k=>k.startsWith('st_')&&C.some(c=>stOf(c).includes(k))).sort((a,b)=>CN[a].localeCompare(CN[b]));
 const RWTOP=RC.filter(k=>k!='other').slice(0,6),RWMORE=RC.filter(k=>k!='other'&&!RWTOP.includes(k));
+/* Rewards split (Andrew 2026-10-30): Living = everyday essentials (food, getting around, the household's bills and pharmacy), Lifestyle = discretionary and travel spend. Only categories with >= 2 cards on record (RC) get a column; the rest stay in the database and the card detail */
+const RWLIV=['groc','dine','deliv','gas','ev','transit','bills','util','drug'].filter(k=>RC.includes(k)),RWLIF=RC.filter(k=>k!='other'&&!RWLIV.includes(k));
+/* Rewards filters (Andrew 2026-10-30): each third-level view lists the filters for its own columns, in column order, then the type filters; st.f is shared, so a filter set on one view keeps narrowing the one row set on all three */
+const RWE=k=>['r_'+k,CN[k],ge('r_'+k,k=='other'?[0.5,1,1.25,1.5,2]:RATES)],RWSTORE=['store','Store',[['Any store',c=>stOf(c).length>0],...STKS.map(k=>[CN[k],c=>stOf(c).includes(k)])],1];
+const RWF={rwS:[['prog','Program',eq('prog',uniq(c=>c.kind=='Points'?c.prog:null))],['other','Base earn %',ge('other',[0.5,1,1.25,1.5,2])],['best','Best earn %',ge('best',RATES)],
+  ['rt2','Reward type',eq('rt',['Points','Cash back','Travel/airline miles','Store dollars','No rewards','Unconfirmed'])],['tag','¢/pt tag',eq('tag',['CITED','ESTIMATE','REPORTED'])]],
+ rwL:[...RWLIV.map(RWE),RWSTORE],rwF:RWLIF.map(RWE)};
 const S=[
  {id:'ov',name:'Overview',cols:fcols('ov'),f:ffilt('ov')},
  {id:'dtl',name:'Full Detail',cols:fcols('dtl'),f:ffilt('dtl')},
@@ -71,11 +78,10 @@ const S=[
   ['fx','FX fee',[['None (0%)',c=>c.fx===0],['< 2.5%',c=>c.fx!=null&&c.fx<2.5],['≥ 2.5%',c=>c.fx>=2.5]]],
   ['apr','Purchase APR',le('apr',[12.99,15,19.99,20.99])],
   ['inc','Income required',[['None stated',c=>!c.inc],...le('inc',[15000,40000,60000,80000],'$')]]]},
- {id:'rw',name:'Rewards',cols:['kind','cpp',...RWTOP.map(k=>'r_'+k),'r_other','best','store','rmore'],f:[
-  ...RC.map(k=>['r_'+k,CN[k],ge('r_'+k,k=='other'?[0.5,1,1.25,1.5,2]:RATES)]),['best','Best earn %',ge('best',RATES)],
-  ['store','Store',[['Any store',c=>stOf(c).length>0],...STKS.map(k=>[CN[k],c=>stOf(c).includes(k)])],1],
-  ['rt2','Reward type',eq('rt',['Points','Cash back','Travel/airline miles','Store dollars','No rewards','Unconfirmed'])],['prog','Program',eq('prog',uniq(c=>c.kind=='Points'?c.prog:null))],
-  ['tag','¢/pt tag',eq('tag',['CITED','ESTIMATE','REPORTED'])]]},
+ {id:'rw',name:'Rewards',cols:[],f:[]},/* nav entry: the views are the third-level rows rwS (Summary), rwL (Living) and rwF (Lifestyle), see GROUPS; one filter set for all three */
+ {id:'rwS',name:'Summary',cols:['kind','prog','cpp','other','best','pcn','caps','ofv','exp'],f:RWF.rwS},
+ {id:'rwL',name:'Living',cols:[...RWLIV.map(k=>'r_'+k),'store'],f:RWF.rwL},
+ {id:'rwF',name:'Lifestyle',cols:RWLIF.map(k=>'r_'+k),f:RWF.rwF},
  {id:'ins',name:'Insurance',cols:[],f:[]},/* nav entry: the views are the third-level rows trv (Travel) and prot (Protection), see GROUPS */
  {id:'trv',name:'Travel',cols:['covT','ptt','x_uw',...INS_T.map(x=>'ins_'+x[0])],f:[
   ...INS_T.map(([k,l])=>['ins_'+k,l,[['Included',c=>c.ins[k]===1],['Not included',c=>c.ins[k]===0]]]),
@@ -115,6 +121,9 @@ const COL={i:['Issuer','l',c=>c.i,c=>esc(c.i)],nw:['Network','ic',c=>c.nw,c=>ico
  credits:['Credits & bonuses','wrapt',c=>-c.credits.length,c=>c.credits.length?esc(c.credits.join(' · ')):'<span class=u>—</span>'],
  perks:['Partner perks','wrapt',c=>-c.perks.length,c=>c.perks.length?esc(c.perks.join(' · ')):'<span class=u>—</span>'],
  exp:['Expiry','l',c=>c.exp||'z',c=>c.exp?esc(c.exp):'<span class=u>—</span>']};
+/* Summary columns (Andrew 2026-10-30), existing sourced fields only: caps = the card's bonus-category annual spend caps (the same caps the Wallet uses), ofv = the welcome offer's dollar value as already computed for the card detail (basis in the title) */
+COL.caps=['Bonus cap','',c=>{const v=Object.values(c.caps||{});return v.length?Math.min(...v):null},c=>{const E=Object.entries(c.caps||{});if(!E.length)return '<span class=u>—</span>';const m=Math.min(...E.map(x=>x[1]));return `<span title="${esc(E.map(([k,v])=>(CN[k]||k)+': $'+v.toLocaleString()+' / year').join(' · '))}">$${m.toLocaleString()}/yr${E.some(x=>x[1]!=m)?'+':''}</span>`}];
+COL.ofv=['Offer value','',c=>c.ofv?.[0]??null,c=>c.ofv?.[0]!=null?`<span title="${esc(c.ofv[1]||'')}">$${c.ofv[0].toLocaleString()}</span>`:'<span class=u>—</span>'];
 const rmoreOf=c=>RWMORE.filter(k=>c['r_'+k]!=null&&c['r_'+k]>(c.other??0)).sort((a,b)=>c['r_'+b]-c['r_'+a]);
 COL.store=['Store','l',c=>Math.max(0,...stOf(c).map(k=>c['r_'+k])),c=>{const L=stOf(c);return L.length?L.map(k=>`<span title="${esc(CN[k])}">${esc(CN[k])} ${c['r_'+k].toFixed(1)}%</span>`).join(', '):'<span class=u>—</span>'}];
 COL.rmore=['More categories','l',c=>Math.max(0,...rmoreOf(c).map(k=>c['r_'+k])),c=>{const L=rmoreOf(c);return L.length?L.map(k=>`<span title="${esc(CN[k])}">${esc(CN[k].replace(/ \(.*/,''))} ${fhi('r_'+k)!=null&&c['r_'+k]>=fhi('r_'+k)?`<b>${c['r_'+k].toFixed(1)}%</b>`:c['r_'+k].toFixed(1)+'%'}</span>`).join(', '):'<span class=u>—</span>'}];
@@ -688,8 +697,8 @@ VIEWS.profile=renderProfile;VIEWS.wallet=renderWallet;VIEWS.subscriptions=render
 /* per-line config read by the shared shell (super banner #pl, sub banner #tabs, filter panel, table). Super label: PLINES_ALL (bank.js). Sub-tabs, their columns and their filters: the line's tab defs (cards: S, via tabs()). Presets: pre(). A new line adds its entry here and its own tab defs; the shell code does not change. */
 const LINECFG={cards:{tabs:()=>CTABS(),pre:()=>PRE}},PRESETS=(pl=st.pl||'cards')=>(LINECFG[pl]?.pre||(()=>[]))();
 const PRE=[{id:'no-fee-cash-back',n:'Best no-fee cash back',s:'ov',f:{fee:'$0',rt:'Cash back'},sort:'other'},
- {id:'top-grocery',n:'Top grocery',s:'rw',f:{},sort:'r_groc'},
- {id:'no-fx-travel',n:'No FX fee travel',s:'rw',f:{fx:'None (0%)'},sort:'r_trav'},
+ {id:'top-grocery',n:'Top grocery',s:'rwL',f:{},sort:'r_groc'},
+ {id:'no-fx-travel',n:'No FX fee travel',s:'rwF',f:{fx:'None (0%)'},sort:'r_trav'},
  {id:'business',n:'Business cards',s:'ov',f:{acct:'Business'},sort:'best'},
  {id:'apply-by-soon',n:'Apply by soon',s:'perks',f:{soon:'Within 30 days'},sort:'odl',dir:1}];
 function presetState(p){const f={};for(const[id,l]of Object.entries(p.f)){const i=FI[id]?.o.findIndex(x=>x[0]==l);if(i>=0)f[id]=i}return{s:p.s,f,q:'',sort:p.sort,dir:p.dir||-1,card:null}}
@@ -809,7 +818,7 @@ const INFOP={about:['About',`<p>Reading the fine print on account documents is b
 const INFOK=Object.keys(INFOP),TITLE0=document.title;
 function renderInfo(){const[t,b]=INFOP[st.s]||INFOP.about;['#pre','#page','.wrap','#bar','#filters','#fhead','#grp','#vh'].forEach(q=>{const e=$(q);if(e)e.hidden=true});$('#tabs').innerHTML='';const v=$('#view');v.hidden=false;v.innerHTML=`<article class=infopg aria-labelledby=infoh><h1 id=infoh>${st.s=='soon_pyt'?'<span class=pytw>Per<b>Your</b>Terms</span>':t}</h1>${st.s=='soon_pyt'?'<div class="prof wsimple pytres">'+wResultHTML()+'</div>':''}${b}</article>`;document.title=t+' · PerTheTerms'}
 document.addEventListener('click',e=>{const a=e.target.closest('[data-info]');if(a){e.preventDefault();st.pl='info';st.s=a.dataset.info;st.card=null;render();scrollTo(0,0)}});
-function render0(){if(st.pl=='info'){if(!INFOK.includes(st.s))st.s='about';$('#grp').hidden=true;syncLabels();save();BANK.bar();return renderInfo()}if(document.title!==TITLE0)document.title=TITLE0;$('#grp').hidden=true;$('#grp').innerHTML='';if(st.s=='trv'||st.s=='prot'){st.g={...(st.g||{}),ins:st.s};st.s='ins'}if(!PL.has(st.pl))st.pl='cards';if(!USR.has(st.s)&&!(S.some(s=>s.id==st.s)&&!HIDE.has(st.s)&&!SUBONLY.has(st.s)&&(!CTV()||CTV().includes(st.s)||st.s=='wfolder')))st.s='ov';syncLabels();save();BANK.bar();
+function render0(){if(st.pl=='info'){if(!INFOK.includes(st.s))st.s='about';$('#grp').hidden=true;syncLabels();save();BANK.bar();return renderInfo()}if(document.title!==TITLE0)document.title=TITLE0;$('#grp').hidden=true;$('#grp').innerHTML='';{const P=Object.keys(GROUPS).find(p=>GROUPS[p].some(x=>x[0]==st.s));if(P){st.g={...(st.g||{}),[P]:st.s};st.s=P}}/* a group screen id (trv, prot, pkT, pkE, rwS, rwL, rwF) opens its parent sub-tab on that group */if(!PL.has(st.pl))st.pl='cards';if(!USR.has(st.s)&&!(S.some(s=>s.id==st.s)&&!HIDE.has(st.s)&&!SUBONLY.has(st.s)&&(!CTV()||CTV().includes(st.s)||st.s=='wfolder')))st.s='ov';syncLabels();save();BANK.bar();
  if(st.card&&st.pl=='home')st.pl='cards';
  if(st.pl=='home'&&!st.card&&!USR.has(st.s)){['#pre','#page','.wrap','#bar','#filters','#view'].forEach(q=>{const e=$(q);if(e)e.hidden=true});$('#tabs').innerHTML='';return}
  if(!st.card&&!USR.has(st.s)&&(st.pl=='broker'||st.pl=='tel')){['#pre','#page','.wrap','#bar','#filters'].forEach(q=>{const e=$(q);if(e)e.hidden=true});$('#view').hidden=false;$('#tabs').innerHTML=LTABS(st.pl);return renderLine(st.pl)}
@@ -1483,7 +1492,7 @@ addEventListener('resize',rotQ);addEventListener('orientationchange',rotQ);windo
 
 /* PUSH 4 (Andrew 2026-10-29): sticky table chrome. Header stays; filters scroll away; the count line (+ its sub-sub-tabs) and the column header row stick under the header. No frozen columns: a wide table scrolls the page sideways. */
 /* PUSH 14 (Andrew 2026-10-30): one width per column key in every Credit Cards view (a shared column is the same width everywhere; Card is 210px in every view). Widths come from measured content (header min-content and the p50/p90 cell widths; tools: /tmp measurement) so short values get narrow columns and every view fits 1230px (1280 window) with no horizontal scroll. Fixed layout: the table is the sum of its columns, nothing stretches. */
-const CW={n:210,pk_n:210,fee:80,add:96,other:130,pcn:100,best:130,nins:72,kind:115,ofc:64,fyf:110,fx:70,apr:110,inc:120,hinc:110,cpp:60,r_groc:80,r_gas:62,r_dine:72,r_transit:80,r_bills:92,r_trav:72,r_other:100,store:60,rmore:96,covT:80,covP:80,ptt:120,x_uw:170,ins_emergency_medical:84,ins_trip_cancellation:76,ins_trip_interruption:92,ins_flight_delay:70,ins_baggage:82,ins_travel_accident:88,ins_hotel_burglary:90,ins_rental_car_cdw:76,ins_purchase_protection:90,ins_extended_warranty:94,ins_mobile_device:76,ins_price_protection:70,ins_roadside:84,pk_perk:300,pm_perk:240,pm_val:110,pm_rec:100,pm_en:60,pm_rg:80,pm_ex:76,pm_ev:110,pk_cat:110,pk_val:130,pk_rec:101,pk_en:60,pk_rg:90,pk_ex:76,pk_ev:133};
+const CW={prog:150,caps:90,ofv:80,exp:76,r_ev:76,r_deliv:80,r_util:84,r_drug:92,r_fly:76,r_hotel:70,r_portal:72,r_ride:84,r_stream:92,r_ent:124,r_fxsp:80,r_whole:100,r_memb:112,r_office:84,r_online:76,n:210,pk_n:210,fee:80,add:96,other:130,pcn:100,best:130,nins:72,kind:115,ofc:64,fyf:110,fx:70,apr:110,inc:120,hinc:110,cpp:60,r_groc:80,r_gas:62,r_dine:72,r_transit:80,r_bills:92,r_trav:72,r_other:100,store:60,rmore:96,covT:80,covP:80,ptt:120,x_uw:170,ins_emergency_medical:84,ins_trip_cancellation:76,ins_trip_interruption:92,ins_flight_delay:70,ins_baggage:82,ins_travel_accident:88,ins_hotel_burglary:90,ins_rental_car_cdw:76,ins_purchase_protection:90,ins_extended_warranty:94,ins_mobile_device:76,ins_price_protection:70,ins_roadside:84,pk_perk:300,pm_perk:240,pm_val:110,pm_rec:100,pm_en:60,pm_rg:80,pm_ex:76,pm_ev:110,pk_cat:110,pk_val:130,pk_rec:101,pk_en:60,pk_rg:90,pk_ex:76,pk_ev:133};
 /* TEMPORARY layout mode (Andrew 2026-10-30): ?layout=1 only. Andrew drags column edges in every Credit Cards view at desktop width; widths are kept per view and column key in localStorage (ptt.layout.widths), Card stays 210px; a floating panel shows the total vs the table area (warns on horizontal scroll) and exports ptt-column-widths.json. A later push bakes the export into CW and deletes this block, the .lgrip/#lpanel CSS and tests/test_layout.py. */
 const LAYOUT=/[?&]layout=1(&|$)/.test(location.search),LKEY='ptt.layout.widths';
 let LW={};if(LAYOUT){try{LW=JSON.parse(localStorage.getItem(LKEY)||'{}')||{}}catch(e){LW={}}}
