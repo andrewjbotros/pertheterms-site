@@ -942,3 +942,11 @@ html.tz #csw{zoom:calc(1 / var(--tz))}
 #pyt-page .pytwrap{background:none;border:1px solid var(--line);border-radius:10px}
 #pyt-page .pytt thead th{background:none}#pyt-page .pytt tfoot>tr>*{background:none}
 @media(max-width:900px){#pyt-page .pytwrap{border:0}#pyt-page .pytt tr{background:var(--bg)}}
+/* Spending page, one tile style (Andrew 2026-10-30: "Monthly Spend tiles should match the Stores with their own card rewards tiles"): Monthly Spend tiles take the Stores tile treatment - plain card, no tinted icon chip, icon and name in the institution-logo gray (ink at --lgo over the card) like the store wordmarks; same size, border, radius, grid and footer. Both sections carry the same remove x (top right). */
+#pw-spend,#pw-merch{--lgg:color-mix(in srgb,var(--ink) calc(var(--lgo,.55)*100%),var(--card))}
+#view #pw-spend>.ptiles>.btile.sptile .blogo.bico{background:none;border:0;color:var(--lgg);height:42%;border-radius:0}
+#view #pw-spend>.ptiles>.btile.sptile .blogo.bico svg{width:100%;height:100%;stroke-width:2.2}
+#view #pw-spend>.ptiles>.btile.sptile .bn{color:var(--lgg);font-weight:800;font-size:13px;letter-spacing:.04em;text-transform:uppercase}
+#view #pw-merch>.ptiles>.btile,#view #pw-subs>.ptiles>.btile{position:relative}
+#pw-spend .btile .sprm,#pw-merch .btile .sprm,#pw-subs .btile .sprm{position:absolute;top:6px;right:6px;width:26px;height:26px;border:0;border-radius:13px;background:transparent;color:var(--mute);font-size:14px;line-height:1;cursor:pointer;z-index:1}
+#pw-spend .btile .sprm:hover,#pw-merch .btile .sprm:hover,#pw-subs .btile .sprm:hover{background:var(--bg);color:var(--ink)}#pw-merch .btile .sprm:focus-visible,#pw-subs .btile .sprm:focus-visible{outline:2px solid var(--acc)}
