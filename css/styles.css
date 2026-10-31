@@ -903,3 +903,6 @@ body.co #pbtn:hover .pbw,body.co #pbtn[aria-expanded=true] .pbw{color:var(--ink)
 #wiz .wzt .btile .bf{margin-top:0;font-size:12px;font-weight:600;color:inherit;opacity:.75;text-transform:uppercase;letter-spacing:.04em}
 #wiz .wzt .btile .bmk{color:inherit;font-size:14px;font-weight:800;right:10px;top:8px;bottom:auto}
 @media(max-width:640px){#wiz .wzbd .tiles.ptiles.wzt{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px}#wiz .wzt .btile{aspect-ratio:auto!important;min-height:118px;padding:10px 4px;gap:6px}#wiz .wzt .btile.on{padding:10px 4px}#wiz .wzt .btile .blogo.bico{width:44px;height:44px}#wiz .wzt .btile .cico{width:28px;height:28px}#wiz .wzt .btile .bn{font-size:12px;letter-spacing:.02em;overflow-wrap:anywhere}#wiz .wzt .btile .bf{font-size:9.5px;letter-spacing:0;white-space:normal}}
+
+/* captured but not yet verified (class b): the value with a subtle dotted underline in --mute (follows light and dark theme); title 'Not yet verified' (Docs/naming.md) */
+.nyv{text-decoration:underline dotted var(--mute);text-decoration-thickness:1px;text-underline-offset:3px;cursor:help}

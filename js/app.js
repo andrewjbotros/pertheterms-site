@@ -59,41 +59,45 @@ FIELDS.perk=pkCols;FDEF.perk=PKF;
 const pkFilt=()=>[...FIELDS.perk,'pk_i','pk_st'].filter(k=>PKF[k][2]).map(k=>{const[i,l,o,m]=PKF[k];return m?[i,l,o(),1]:[i,l,o()]});
 /* Rewards fits one window: the six most-carried categories and the base rate get their own column; every other category is merged into one 'More categories' cell (its filters stay) */
 /* Store (Andrew backlog, 2026-10-30): single-store rates the card has its own earn row for (build 'own' st_* keys), e.g. Canadian Tire 4%; column + multi-select filter, in header order after Best earn % */
+const EXPNA=c=>!c.exp&&!c.expt&&(c.rk=='none'||(c.kind=='Cash back'&&c.rt=='Cash back'));/* Points expiry n/a: no rewards, or a true cash-back card (no points programme) */
 const stOf=c=>(c.own||[]).filter(k=>k.startsWith('st_')&&c['r_'+k]!=null).sort((a,b)=>c['r_'+b]-c['r_'+a]),STKS=Object.keys(CN).filter(k=>k.startsWith('st_')&&C.some(c=>stOf(c).includes(k))).sort((a,b)=>CN[a].localeCompare(CN[b]));
 const RWTOP=RC.filter(k=>k!='other').slice(0,6),RWMORE=RC.filter(k=>k!='other'&&!RWTOP.includes(k));
 /* Rewards split (Andrew 2026-10-30): Living = everyday essentials (food, getting around, the household's bills and pharmacy), Lifestyle = discretionary and travel spend. Only categories with >= 2 cards on record (RC) get a column; the rest stay in the database and the card detail */
 const RWLIV=['groc','dine','deliv','gas','ev','transit','bills','util','drug'].filter(k=>RC.includes(k)),RWLIF=RC.filter(k=>k!='other'&&!RWLIV.includes(k));
 /* Rewards filters (Andrew 2026-10-30): each third-level view lists the filters for its own columns, in column order, then the type filters; st.f is shared, so a filter set on one view keeps narrowing the one row set on all three */
-const RWE=k=>['r_'+k,CN[k],ge('r_'+k,k=='other'?[0.5,1,1.25,1.5,2]:RATES)],RWSTORE=['store','Store',[['Any store',c=>stOf(c).length>0],...STKS.map(k=>[CN[k],c=>stOf(c).includes(k)])],1];
-const RWF={rwS:[['prog','Program',eq('prog',uniq(c=>c.kind=='Points'?c.prog:null))],['other','Base earn %',ge('other',[0.5,1,1.25,1.5,2])],['best','Best earn %',ge('best',RATES)],
+const NCF=f=>['Not captured',c=>c[f]==null],RWE=k=>['r_'+k,CN[k],[...ge('r_'+k,k=='other'?[0.5,1,1.25,1.5,2]:RATES),NCF('r_'+k)]],RWSTORE=['store','Store',[['Any store',c=>stOf(c).length>0],...STKS.map(k=>[CN[k],c=>stOf(c).includes(k)])],1];
+const RWF={rwS:[['prog','Program',eq('prog',uniq(c=>c.kind=='Points'?c.prog:null))],['other','Base earn %',[...ge('other',[0.5,1,1.25,1.5,2]),NCF('other')]],['best','Best earn %',[...ge('best',RATES),NCF('best')]],
   ['rt2','Reward type',eq('rt',['Points','Cash back','Travel/airline miles','Store dollars','No rewards','Unconfirmed'])],['tag','¢/pt tag',eq('tag',['CITED','ESTIMATE','REPORTED'])]],
  rwL:[...RWLIV.map(RWE),RWSTORE],rwF:RWLIF.map(RWE)};
+/* insurance coverage filters (dash audit 2026-10-30): the same state rule as the cells (insV); blank never counts as Not included */
+const UNV=h=>`<span class=nyv title="Not yet verified">${h}</span>`;
+const INSF=k=>[['Included',c=>insV(c,k)===1],['Not included',c=>insV(c,k)===0],['Not captured',c=>insV(c,k)==null]];
 const S=[
  {id:'ov',name:'Overview',cols:fcols('ov'),f:ffilt('ov')},
  {id:'dtl',name:'Full Detail',cols:fcols('dtl'),f:ffilt('dtl')},
  {id:'fees',name:'Fees',cols:['fee','fyf','add','fx','apr','inc','hinc'],f:[
   ['fee','Annual Cost',FEEO],
   ['fyf','First-year fee',[['Waived',c=>c.fyf]]],
-  ['add','Extra cards',[['$0',c=>c.add===0],['≤ $50',c=>c.add!=null&&c.add<=50]]],
-  ['fx','FX fee',[['None (0%)',c=>c.fx===0],['< 2.5%',c=>c.fx!=null&&c.fx<2.5],['≥ 2.5%',c=>c.fx>=2.5]]],
-  ['apr','Purchase APR',le('apr',[12.99,15,19.99,20.99])],
-  ['inc','Income required',[['None stated',c=>!c.inc],...le('inc',[15000,40000,60000,80000],'$')]]]},
+  ['add','Extra cards',[['$0',c=>c.add===0],['≤ $50',c=>c.add!=null&&c.add<=50],['Not captured',c=>c.add==null&&!/^not offered/i.test(c.addt||'')]]],
+  ['fx','FX fee',[['None (0%)',c=>c.fx===0],['< 2.5%',c=>c.fx!=null&&c.fx<2.5],['≥ 2.5%',c=>c.fx>=2.5],['Not captured',c=>c.fx==null]]],
+  ['apr','Purchase APR',[...le('apr',[12.99,15,19.99,20.99]),['Not captured',c=>c.apr==null&&!c.aprd]]],
+  ['inc','Income required',[['None stated',c=>c.inc===0||c.inc==null&&/^none\b/i.test(c.inct||'')],...le('inc',[15000,40000,60000,80000],'$'),['Not captured',c=>c.inc==null&&!/^none\b/i.test(c.inct||'')]]]]},
  {id:'rw',name:'Rewards',cols:[],f:[]},/* nav entry: the views are the third-level rows rwS (Summary), rwL (Living) and rwF (Lifestyle), see GROUPS; one filter set for all three */
  {id:'rwS',name:'Summary',cols:['kind','prog','cpp','other','best','pcn','caps','ofv','exp'],f:RWF.rwS},
  {id:'rwL',name:'Living',cols:[...RWLIV.map(k=>'r_'+k),'store'],f:RWF.rwL},
  {id:'rwF',name:'Lifestyle',cols:RWLIF.map(k=>'r_'+k),f:RWF.rwF},
  {id:'ins',name:'Insurance',cols:[],f:[]},/* nav entry: the views are the third-level rows trv (Travel) and prot (Protection), see GROUPS */
  {id:'trv',name:'Travel',cols:['covT','ptt','x_uw',...INS_T.map(x=>'ins_'+x[0])],f:[
-  ...INS_T.map(([k,l])=>['ins_'+k,l,[['Included',c=>c.ins[k]===1],['Not included',c=>c.ins[k]===0]]]),
-  ['nt','Covers',[2,3,4,5,6].map(v=>['Covers ≥ '+v,c=>insN(c,INS_T)>=v])],['med','Medical limit',ge('med',[1000000,2000000,5000000],'$')],
+  ...INS_T.map(([k,l])=>['ins_'+k,l,INSF(k)]),
+  ['nt','Covers',[2,3,4,5,6].map(v=>['Covers ≥ '+v,c=>insN(c,INS_T)>=v])],['med','Medical limit',[1000000,2000000,5000000].map(v=>['≥ $'+v.toLocaleString(),c=>AMV(c,'med')!=null&&AMV(c,'med')>=v])],
   ['ptt','PTT Score',[['Good (≥ $200)',c=>c.ptt.v>=200],['Fair ($75–199)',c=>c.ptt.v>=75&&c.ptt.v<200],['Weak (< $75)',c=>c.ptt.v<75],['Fully verified (no *)',c=>!c.ptt.u]]],
-  ['x_uw','Underwriter',[...new Set(C.flatMap(c=>c.ix.insurers?c.ix.insurers[0]:[]))].sort().map(n=>[n,c=>!!c.ix.insurers&&c.ix.insurers[0].includes(n)]).concat([['No included insurance',c=>!!c.ix.insurers&&!c.ix.insurers[0].length],['Not stated (?)',c=>!c.ix.insurers]]),1],
-  ['x_cc','Common carrier AD&D',[['Stated',c=>X(c,'cc_add_max')!=null],...[250000,500000,1000000].map(v=>['≥ $'+v.toLocaleString(),c=>X(c,'cc_add_max')>=v])]]]},
+  ['x_uw','Underwriter',[...new Set(C.flatMap(c=>c.ix.insurers?c.ix.insurers[0]:[]))].sort().map(n=>[n,c=>!!c.ix.insurers&&c.ix.insurers[0].includes(n)]).concat([['No included insurance',c=>!!c.ix.insurers&&!c.ix.insurers[0].length||!c.ix.insurers&&ALLNO(c)],['Not captured',c=>!c.ix.insurers&&!ALLNO(c)]]),1],
+  ['x_cc','Common carrier AD&D',[['Stated',c=>AMV(c,'x_cc')>0],...[250000,500000,1000000].map(v=>['≥ $'+v.toLocaleString(),c=>AMV(c,'x_cc')>=v])]]]},
  {id:'prot',name:'Protection',cols:['covP','ptt','x_uw',...INS_P.map(x=>'ins_'+x[0])],f:[
-  ...INS_P.map(([k,l])=>['ins_'+k,l,[['Included',c=>c.ins[k]===1],['Not included',c=>c.ins[k]===0]]]),
+  ...INS_P.map(([k,l])=>['ins_'+k,l,INSF(k)]),
   ['np','Covers',[2,3,4,5,6,7].map(v=>['Covers ≥ '+v,c=>insN(c,INS_P)>=v])],['mob','Mobile cover',ge('mob',[500,1000,1500],'$')],
   ['ptt','PTT Score',[['Good (≥ $200)',c=>c.ptt.v>=200],['Fair ($75–199)',c=>c.ptt.v>=75&&c.ptt.v<200],['Weak (< $75)',c=>c.ptt.v<75],['Fully verified (no *)',c=>!c.ptt.u]]],
-  ['x_uw','Underwriter',[...new Set(C.flatMap(c=>c.ix.insurers?c.ix.insurers[0]:[]))].sort().map(n=>[n,c=>!!c.ix.insurers&&c.ix.insurers[0].includes(n)]).concat([['No included insurance',c=>!!c.ix.insurers&&!c.ix.insurers[0].length],['Not stated (?)',c=>!c.ix.insurers]]),1],
+  ['x_uw','Underwriter',[...new Set(C.flatMap(c=>c.ix.insurers?c.ix.insurers[0]:[]))].sort().map(n=>[n,c=>!!c.ix.insurers&&c.ix.insurers[0].includes(n)]).concat([['No included insurance',c=>!!c.ix.insurers&&!c.ix.insurers[0].length||!c.ix.insurers&&ALLNO(c)],['Not captured',c=>!c.ix.insurers&&!ALLNO(c)]]),1],
   ['x_rad','Rental AD&D',[['Stated',c=>X(c,'rental_add_max')!=null]]],
   ['x_ppd','Price prot. window',[['Stated',c=>X(c,'pp_days')!=null],['≥ 60 days',c=>X(c,'pp_days')>=60]]],
   ['x_ppi','Price prot. per item',[['Stated',c=>X(c,'pp_item')!=null],['≥ $500',c=>X(c,'pp_item')>=500]]],
@@ -102,17 +106,17 @@ const S=[
  {id:'perk',name:'Perks',cols:[],f:pkFilt()},/* nav entry (after its two groups so the chips name Perks): the views are the third-level rows pkT (Travel) and pkE (Everyday), see GROUPS */
  {id:'perks',name:'Perks',cols:['fee','offer','tpo','odl','credits','perks','exp'],f:[
   ['offer','Welcome offer',OFFO],['tpo','Sign-up bonus',[['Has third-party offer',c=>c.tpo.length>0],...[25,50,100,150,200].map(v=>['≥ $'+v,c=>(c.tpo[0]?.a||0)>=v])]],['soon','Apply by',[['Within 30 days',SOON],['Within 60 days',c=>{const d=ODAYS(c);return d!=null&&d>=0&&d<=60}]]],['credits','Credits & bonuses',[['Any',c=>c.credits.length>0]]],
-  ['perks','Partner perks',[['Any',c=>c.perks.length>0]]],['exp','Points expiry',[['None',c=>c.exp=='none']]]]},
+  ['perks','Partner perks',[['Any',c=>c.perks.length>0]]],['exp','Points expiry',[['None',c=>c.exp=='none'],['n/a (cash back or no rewards)',c=>EXPNA(c)],['Not captured',c=>!c.exp&&!c.expt&&!EXPNA(c)]]]]},
  {id:'val',name:'Point Conversion',cols:[],f:[]},
  {id:'prom',name:'Promotions',cols:[],f:[]},
  {id:'wfolder',name:'Wallet folder',cols:[],f:[]}
 ];
 const COL={i:['Issuer','l',c=>c.i,c=>esc(c.i)],nw:['Network','ic',c=>c.nw,c=>icoCell('nw',c.nw)],kind:['Type','l',c=>c.rt,c=>(c.rk=='none'?'No rewards':c.rt?esc(c.rt):'<span class=u>Not yet captured</span>')+VE(c,'reward_type')],
- prog:['Program','l',c=>c.prog,c=>esc(c.prog)],fee:['Annual Cost','',c=>c.fee,c=>{if(c.fee==null)return money(null);const r=cmods(c).find(r=>(r.when||[]).some(w=>w.f=='tier'));return r?'$'+effFee0(c).toLocaleString()+' → <b>$'+Math.max(0,c.fee+(r.value||0))+'</b>'+rateMark({...r,when:[{v:provTier(c.i)}]}):'$'+c.fee.toLocaleString()}],best:['Best earn %','',c=>c.best,c=>rwNull(c,c.best)??pct(c.best,fhi('best'))+(c.bestn&&c.bestn.includes('% at ')?`<small class=mute> ${esc(c.bestn.slice(c.bestn.indexOf('% at ')+2))}</small>`:'')+upTo(c)],
+ prog:['Program','l',c=>c.prog,c=>c.prog=='—'&&(c.rk=='none'||c.rt=='No rewards')?'<span class=mute>No rewards</span>':esc(c.prog)],fee:['Annual Cost','',c=>c.fee,c=>{if(c.fee==null)return money(null);const r=cmods(c).find(r=>(r.when||[]).some(w=>w.f=='tier'));return r?'$'+effFee0(c).toLocaleString()+' → <b>$'+Math.max(0,c.fee+(r.value||0))+'</b>'+rateMark({...r,when:[{v:provTier(c.i)}]}):'$'+c.fee.toLocaleString()}],best:['Best earn %','',c=>c.best,c=>rwNull(c,c.best)??pct(c.best,fhi('best'))+(c.bestn&&c.bestn.includes('% at ')?`<small class=mute> ${esc(c.bestn.slice(c.bestn.indexOf('% at ')+2))}</small>`:'')+upTo(c)],
  other:['Base earn %','',c=>c.other,c=>rwNull(c,c.other)??pct(c.other,fhi('other'))+onPay(c)],pcn:['Spend Categories','',c=>c.npc,c=>c.npc==null?'<span class=u title="No base earn rate on record, so no count">—</span>':`<span title="Count of reward categories that earn strictly more than the base rate. Derived at build time from this card's sourced category rates (CITED data); a count, not a rate.">${c.npc}</span>`],nins:['Ins.','',c=>c.nins,c=>c.nins+'<span class=mute>/'+INS.length+'</span>'],
  offer:['Welcome offer','l',c=>c.offer?0:1,c=>c.offer?`<span class=ofr tabindex=0 role=button aria-haspopup=dialog data-ofr="${C.indexOf(c)}">${esc(c.offer.slice(0,46))}${c.offer.length>46?'…':''}</span>`:'<span class=u>—</span>'],
- fyf:['1st yr','',c=>c.fyf?0:1,c=>c.fyf?'<span class=y>Waived</span>':'<span class=u>—</span>'],add:['Extra cards','',c=>c.add,c=>c.add==null?(/^not offered/i.test(c.addt||'')?'<span class=u title="'+esc(c.addt)+'">Not offered</span>':'<span class=u>—</span>'):'$'+c.add.toLocaleString()],
- fx:['FX','',c=>c.fx,c=>c.fx==null?'<span class=u>—</span>':c.fx==0?'<span class=y>0%</span>':c.fx+'%'],apr:['APR','',c=>c.apr,c=>c.apr==null?'<span class=u>—</span>':c.apr.toFixed(2)+'%'],
+ fyf:['1st yr','',c=>c.fyf?0:1,c=>c.fyf?'<span class=y>Waived</span>':c.fee===0?'<span class=mute title="No annual fee to waive">n/a ($0 fee)</span>':'<span class=mute title="No first-year fee waiver in the record">Not waived</span>'],add:['Extra cards','',c=>c.add,c=>c.add==null?(/^not offered/i.test(c.addt||'')?'<span class=u title="'+esc(c.addt)+'">Not offered</span>':'<span class=u>—</span>'):'$'+c.add.toLocaleString()],
+ fx:['FX','',c=>c.fx,c=>c.fx==null?'<span class=u>—</span>':c.fx==0?'<span class=y>0%</span>':c.fx+'%'],apr:['APR','',c=>c.apr,c=>c.aprd?`<span title="${esc(c.aprt||'')}">${esc(c.aprd)}</span>`:c.apr==null?'<span class=u title="Not yet captured">—</span>':c.apr.toFixed(2)+'%'],
  inc:['Income','',c=>c.inc??0,c=>c.inc?'$'+c.inc.toLocaleString():c.inc===0||/^none\b/i.test(c.inct||'')?'$0':'<span class=u>—</span>'],hinc:['Household','',c=>c.hinc??0,c=>c.hinc?'$'+c.hinc.toLocaleString():c.hinc===0||/^none\b/i.test(c.inct||'')?'$0':'<span class=u>—</span>'],
  cpp:['¢/pt','',c=>c.kind=='Points'?c.cpp:-1,c=>c.kind=='Points'?`${c.cpp}<span class=t>${c.tag[0]}</span>`:'<span class=mute>cash</span>'],
  gas:['Gas','',c=>c.gas,c=>pct(c.gas,fhi('gas'))],groc:['Grocery','',c=>c.groc,c=>pct(c.groc,fhi('groc'))],dine:['Dining','',c=>c.dine,c=>pct(c.dine,fhi('dine'))],trav:['Travel','',c=>c.trav,c=>pct(c.trav,fhi('trav'))],
@@ -120,12 +124,13 @@ const COL={i:['Issuer','l',c=>c.i,c=>esc(c.i)],nw:['Network','ic',c=>c.nw,c=>ico
  odl:['Apply by','',c=>c.odl||'9',c=>c.odl?esc(c.odl):'<span class=u>—</span>'],
  credits:['Credits & bonuses','wrapt',c=>-c.credits.length,c=>c.credits.length?esc(c.credits.join(' · ')):'<span class=u>—</span>'],
  perks:['Partner perks','wrapt',c=>-c.perks.length,c=>c.perks.length?esc(c.perks.join(' · ')):'<span class=u>—</span>'],
- exp:['Expiry','l',c=>c.exp||'z',c=>c.exp?esc(c.exp):'<span class=u>—</span>']};
+ exp:['Expiry','l',c=>c.exp||(c.expt?'y':EXPNA(c)?'x':'z'),c=>c.exp?esc(c.exp):c.expt?`<span title="${esc(c.expt)}">${esc(c.expt.split(/;|\. /)[0])}</span>`:EXPNA(c)?`<span class=mute title="${c.rk=='none'?'No rewards: nothing to expire':'Cash back: no points to expire'}">n/a</span>`:'<span class=u title="Not yet captured">—</span>']};
 /* Summary columns (Andrew 2026-10-30), existing sourced fields only: caps = the card's bonus-category annual spend caps (the same caps the Wallet uses), ofv = the welcome offer's dollar value as already computed for the card detail (basis in the title) */
-COL.caps=['Bonus cap','',c=>{const v=Object.values(c.caps||{});return v.length?Math.min(...v):null},c=>{const E=Object.entries(c.caps||{});if(!E.length)return '<span class=u>—</span>';const m=Math.min(...E.map(x=>x[1]));return `<span title="${esc(E.map(([k,v])=>(CN[k]||k)+': $'+v.toLocaleString()+' / year').join(' · '))}">$${m.toLocaleString()}/yr${E.some(x=>x[1]!=m)?'+':''}</span>`}];
-COL.ofv=['Offer value','',c=>c.ofv?.[0]??null,c=>c.ofv?.[0]!=null?`<span title="${esc(c.ofv[1]||'')}">$${c.ofv[0].toLocaleString()}</span>`:'<span class=u>—</span>'];
+const CAPS=c=>Object.entries(Object.keys(c.caps||{}).length?c.caps:(c.xcaps||{})),CAPTXT=c=>!CAPS(c).length&&(c.erows||[]).some(e=>/\bcap|up to|first \$|maximum/i.test((e.cond||'')+' '+(e.txt||'')));
+COL.caps=['Bonus cap','',c=>{const v=CAPS(c).map(x=>x[1]);return v.length?Math.min(...v):null},c=>{const E=CAPS(c);if(!E.length)return c.rk=='nyc'||CAPTXT(c)?`<span class=u title="${CAPTXT(c)?'A cap is stated in the earn text only':'Not yet captured'}">—</span>`:'<span class=mute title="No bonus spend cap in the record">None</span>';const m=Math.min(...E.map(x=>x[1]));return `<span title="${esc(E.map(([k,v])=>(CN[k]||k)+': $'+v.toLocaleString()+' / year').join(' · '))}">$${m.toLocaleString()}/yr${E.some(x=>x[1]!=m)?'+':''}</span>`}];
+COL.ofv=['Offer value','',c=>c.ofv?.[0]??null,c=>c.ofv?.[0]!=null?`<span title="${esc(c.ofv[1]||'')}">$${c.ofv[0].toLocaleString()}</span>`:c.ofa?'<span class=mute title="The record states there is no public welcome offer">None</span>':c.offer?`<span class=mute title="${esc((c.ofv?.[1]||'')+': '+c.offer)}">Not valued</span>`:'<span class=u title="Not yet captured">—</span>'];
 const rmoreOf=c=>RWMORE.filter(k=>c['r_'+k]!=null&&c['r_'+k]>(c.other??0)).sort((a,b)=>c['r_'+b]-c['r_'+a]);
-COL.store=['Store','l',c=>Math.max(0,...stOf(c).map(k=>c['r_'+k])),c=>{const L=stOf(c);return L.length?L.map(k=>`<span title="${esc(CN[k])}">${esc(CN[k])} ${c['r_'+k].toFixed(1)}%</span>`).join(', '):'<span class=u>—</span>'}];
+COL.store=['Store','l',c=>Math.max(0,...stOf(c).map(k=>c['r_'+k])),c=>{const L=stOf(c);return L.length?L.map(k=>`<span title="${esc(CN[k])}">${esc(CN[k])} ${c['r_'+k].toFixed(1)}%</span>`).join(', '):c.rk=='nyc'?'<span class=u title="No earn rate captured for this card yet">—</span>':'<span class=n title="No store-specific earn rate">✗</span>'}];
 COL.rmore=['More categories','l',c=>Math.max(0,...rmoreOf(c).map(k=>c['r_'+k])),c=>{const L=rmoreOf(c);return L.length?L.map(k=>`<span title="${esc(CN[k])}">${esc(CN[k].replace(/ \(.*/,''))} ${fhi('r_'+k)!=null&&c['r_'+k]>=fhi('r_'+k)?`<b>${c['r_'+k].toFixed(1)}%</b>`:c['r_'+k].toFixed(1)+'%'}</span>`).join(', '):'<span class=u>—</span>'}];
 RC.forEach(k=>COL['r_'+k]=[CN[k]+(k=='other'?'':` <span class=mute>(${CC[k]})</span>`),'',c=>c['r_'+k],c=>rwNull(c,c['r_'+k])??pct(c['r_'+k],fhi('r_'+k))+(k=='other'?onPay(c):'')]);
 /* G4 (Andrew 2026-10-29) Rewards cells never show the dash: a category with no rate of its own already carries the base rate (build); 'No rewards' cards show 0%; a card with no base rate on record says so. Payment-based earn gets an "on payments" marker; higher routes are a secondary "Up to" note, never the headline. */
@@ -159,7 +164,7 @@ COL.pk_ev=['Evidence','l',r=>r.ec||null,r=>(r.ec?`<span class=t title="Evidence 
    roadside (rarely a card benefit) not listed in an otherwise-captured coverage list shows '—' (not listed), not '?'. */
 const NOINS=c=>c.ix.insurers&&c.ix.insurers[0]&&c.ix.insurers[0].length==0;
 const insV=(c,k)=>c.ins[k]!=null?c.ins[k]:NOINS(c)?0:(k=='roadside'&&c.nins>0)?'nl':null;
-const ynI=(c,k)=>{const v=insV(c,k);return v=='nl'?'<span class=mute title="Not listed in this card’s insurance terms">—</span>':yn(v)};
+const ynI=(c,k)=>{const v=insV(c,k);if(v==null&&c.insu&&c.insu[k])return `<span class=nyv title="Not yet verified">${yn(1).replace(/ title="[^"]*"/,'')}</span>`;return v=='nl'?'<span class=mute title="Not listed in this card’s insurance terms">—</span>':yn(v)};
 INS.forEach(([k,l])=>COL['ins_'+k]=[l,'ctr',c=>{const v=insV(c,k);return -(v===1?1:v===0||v=='nl'?0:-.5)},c=>insCell(c,k)]);
 /* v3.5.2 single source of label truth: FIELD_LABEL names a field once; table headers and filters both read it, so they cannot drift. */
 const FIELD_LABEL={kind:'Reward type',acct:'Account type',fyf:'First-year fee',add:'Extra cards',fx:'FX fee',apr:'Purchase APR',inc:'Income required',best:'Best earn %',nins:'Covers',nt:'Covers',np:'Covers',med:'Medical limit',mob:'Mobile cover',x_cc:'Carrier AD&D',x_ppd:'Price protection window',x_ppi:'Price protection per item',x_ppy:'Price protection per year',exp:'Points expiry'};
@@ -173,17 +178,18 @@ const syncLabels=()=>{Object.entries(FIELD_LABEL).forEach(([k,l])=>{if(COL[k])CO
  s.f=s.f.map((f,i)=>[f,i]).sort((a,b)=>pos(a[0])-pos(b[0])||a[1]-b[1]).map(x=>x[0])})};syncLabels();
 const X=(c,k)=>c.ix[k]?c.ix[k][0]:null,XT=(c,k)=>c.ix[k]?`<span class=t>${c.ix[k][1][0]}</span>`:'';
 const xm=k=>c=>X(c,k)==null?'<span class=u>—</span>':'$'+(X(c,k)>=1e6?X(c,k)/1e6+'M':X(c,k).toLocaleString())+XT(c,k);
-COL.x_uw=['Underwriter','wrapt',c=>c.ix.insurers?(c.ix.insurers[0].join('; ')||'~'):'~~',c=>!c.ix.insurers?'<span class=u title="Underwriter not stated in the record">—</span>':!c.ix.insurers[0].length?'<span class=mute>No included insurance</span>':esc(c.ix.insurers[0].join('; '))+XT(c,'insurers')];
+const ALLNO=c=>INS.every(([k])=>c.ins[k]===0);
+COL.x_uw=['Underwriter','wrapt',c=>c.ix.insurers?(c.ix.insurers[0].join('; ')||'~'):ALLNO(c)?'~':'~~',c=>!c.ix.insurers?(ALLNO(c)?'<span class=mute>No included insurance</span>':'<span class=u title="Underwriter not stated in the record">—</span>'):!c.ix.insurers[0].length?'<span class=mute>No included insurance</span>':esc(c.ix.insurers[0].join('; '))+XT(c,'insurers')];
 COL.x_cc=['Carrier AD&D','',c=>X(c,'cc_add_max'),xm('cc_add_max')];COL.x_rad=['Rental AD&D','',c=>X(c,'rental_add_max'),xm('rental_add_max')];
 COL.x_ppd=['PP days','',c=>X(c,'pp_days'),c=>X(c,'pp_days')==null?'<span class=u>—</span>':X(c,'pp_days')+XT(c,'pp_days')+(X(c,'pp_tier')?`<span class=t title="Only on the ${esc(X(c,'pp_tier'))} tier">${esc(X(c,'pp_tier'))} only</span>`:'')];
 COL.x_ppi=['PP / item','',c=>X(c,'pp_item'),xm('pp_item')];COL.x_ppy=['PP / year','',c=>X(c,'pp_year'),xm('pp_year')];
 const RM=matchMedia('(prefers-reduced-motion: reduce)');
 // $0 = the record says the coverage is not included; ? = not stated / unverified. Unknown is never shown as $0.
 const AMC={med:['med','emergency_medical'],mob:['mob','mobile_device'],x_cc:['cc_add_max','travel_accident'],x_rad:['rental_add_max',null],x_ppd:['pp_days','price_protection'],x_ppi:['pp_item','price_protection'],x_ppy:['pp_year','price_protection']};
-const AMV=(c,k)=>{const[f,cov]=AMC[k],v=k=='med'||k=='mob'?c[f]:X(c,f);if(v!=null&&v!==0)return v;if(cov&&c.ins[cov]===0)return 0;return null};
+const AMV=(c,k)=>{const[f,cov]=AMC[k],v=k=='med'&&c.medu?Infinity:k=='med'||k=='mob'?c[f]:k=='x_cc'&&X(c,f)==null&&typeof c.insr?.travel_accident?.[1]=='number'&&c.ins.travel_accident===1?c.insr.travel_accident[1]:X(c,f);if(v!=null&&v!==0)return v;if(cov&&c.ins[cov]===0)return 0;return null};
 const AMT=(c,k)=>{const v=AMV(c,k),f=AMC[k][0];if(v===0)return '<span class=z title="Not included per the record">$0</span>';if(v==null)return '<span class=q title="Not stated or unverified">—</span>';
- const tag=k=='med'||k=='mob'?'':XT(c,f);if(k=='x_ppd')return v+tag+(X(c,'pp_tier')?`<span class=t title="Only on the ${esc(X(c,'pp_tier'))} tier">${esc(X(c,'pp_tier'))} only</span>`:'');return '$'+(v>=1e6?v/1e6+'M':v.toLocaleString())+tag};
-Object.keys(AMC).forEach(k=>{COL[k]=[COL[k][0],'',c=>AMV(c,k),c=>AMT(c,k)];const fl=S.filter(x=>SUBONLY.has(x.id)).flatMap(x=>x.f).find(x=>x[0]==k);if(fl)fl[2].push(['$0 (not included)',c=>AMV(c,k)===0],['? (not stated)',c=>AMV(c,k)==null])});
+ if(v===Infinity)return 'Unlimited';const tag=k=='med'||k=='mob'||(k=='x_cc'&&X(c,f)==null)?'':XT(c,f);if(k=='x_ppd')return v+tag+(X(c,'pp_tier')?`<span class=t title="Only on the ${esc(X(c,'pp_tier'))} tier">${esc(X(c,'pp_tier'))} only</span>`:'');return '$'+(v>=1e6?v/1e6+'M':v.toLocaleString())+tag};
+Object.keys(AMC).forEach(k=>{COL[k]=[COL[k][0],'',c=>AMV(c,k),c=>AMT(c,k)];const fl=S.filter(x=>SUBONLY.has(x.id)).flatMap(x=>x.f).find(x=>x[0]==k);if(fl)fl[2].push(['$0 (not included)',c=>AMV(c,k)===0],['Not captured',c=>AMV(c,k)==null])});
 // ---- Wallet ----
 const LS=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},LSW=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
 const SK='ptt.state',SV=3,NOW=()=>new Date().toISOString(),OLDK=['ptt.st','ptt.wallet','ptt.match'];let PERSIST=true;
@@ -366,7 +372,7 @@ const icol=c=>c.col||['#334155','#0f172a'];
 const ctile=o=>`<div class="ctile${o.on?' on':''}" role=button tabindex=0 ${o.attrs} style="background:linear-gradient(135deg,${o.a},${o.b})">${IMGB&&o.img?`<img class=tart src="${IMGB}${o.img}" alt="${esc(o.alt||'')}" loading=lazy>`:''}${o.rm?`<button class=trm ${o.rm}>×</button>`:''}<span class=ti>${esc(o.top)}</span><span class=tn>${esc(o.name)}</span><span class=tchip></span><span class=tf>${esc(o.foot)}</span><span class=tw>${esc(o.mark||'')}</span></div>`;
 const FCOL=D.fcol||{};
 function walletIns(cs){return INS.map(([k,l])=>{const has=cs.filter(c=>c.ins[k]===1),st=has.length?1:cs.length&&cs.every(c=>c.ins[k]===0)?0:null;
- let best=null;has.forEach(c=>{const v=(c.insr||{})[k]?.[1];if(v!=null&&(!best||v>best.v))best={v,c}});return{k,l,st,has,best}})}
+ let best=null;has.forEach(c=>{const v0=(c.insr||{})[k]?.[1],v=v0==='Unlimited'?Infinity:typeof v0=='number'?v0:null;if(v!=null&&(!best||v>best.v))best={v,c}});return{k,l,st,has,best}})}
 const COVI={"emergency_medical": "<path d='M12 6v12M6 12h12'/>", "trip_cancellation": "<path d='M3 17h18M6 14l3-8h2l1 5 5-2c1-.4 2.5.2 2.5 1.2 0 .6-.5 1-1.2 1.2L7 16'/><path d='M15 3l6 6M21 3l-6 6'/>", "trip_interruption": "<path d='M2 16h20M5 13l2.5-6h2l1 4 5-1.8c1.2-.4 2.5.2 2.5 1.2s-.6 1.2-1.4 1.4L6 15'/><path d='M12 19v2M9 19v2M15 19v2'/>", "flight_delay": "<circle cx='12' cy='12' r='7.5'/><path d='M12 8v4l3 2'/>", "baggage": "<rect x='5' y='8' width='14' height='11' rx='2'/><path d='M9 8V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V8M9 12v3M15 12v3'/>", "hotel_burglary": "<path d='M4 20V9l8-5 8 5v11'/><rect x='9' y='12' width='6' height='8' rx='1'/><circle cx='13.2' cy='16' r='.6'/>", "rental_car_cdw": "<path d='M4 15l1.5-5A2 2 0 0 1 7.4 8.5h9.2a2 2 0 0 1 1.9 1.5L20 15v3H4z'/><circle cx='8' cy='18' r='1.5'/><circle cx='16' cy='18' r='1.5'/><path d='M4 15h16'/>", "purchase_protection": "<path d='M6 8h12l-1 12H7z'/><path d='M9 8V6.5a3 3 0 0 1 6 0V8'/><path d='M10 14l1.6 1.6L15 12'/>", "extended_warranty": "<path d='M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z'/><path d='M9 12l2 2 4-4'/>", "mobile_device": "<rect x='7' y='3' width='10' height='18' rx='2'/><path d='M11 17.5h2'/>", "price_protection": "<path d='M20 12l-8 8-8-8V4h8z'/><circle cx='8' cy='8' r='1.4'/><path d='M11 13l4-4'/>", "travel_accident": "<path d='M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z'/><path d='M8 12h2l1-2 2 4 1-2h2'/>", "roadside": "<path d='M14.5 6.5a4 4 0 0 0-5 5L4 17l3 3 5.5-5.5a4 4 0 0 0 5-5L15 12l-3-3z'/>"};
 const covI=(k,l,on)=>`<span class="covi${on===1?' on':on===0?' off':' unk'}" role=img aria-label="${esc(l)}: ${on===1?'covered by a wallet card':on===0?'not covered':'unconfirmed'}" title="${esc(l)}: ${on===1?'covered by a wallet card':on===0?'not covered by any wallet card':'unconfirmed'}"><svg viewBox="0 0 24 24" aria-hidden=true>${COVI[k]||'<circle cx="12" cy="12" r="6"/>'}</svg></span>`;
 function renderCardsFolder(){const R=walletCalc(),cs=R.cs,IN=walletIns(cs),gaps=IN.filter(x=>x.st!==1),pb=cs.filter(c=>c.ptt&&c.ptt.v!=null).sort((a,b)=>b.ptt.v-a.ptt.v)[0];
@@ -869,14 +875,14 @@ const pkDet=(r,n)=>`<tr class="det pkd"><td colspan=${n}>${r.qt?`<p class=pkq>�
 /* PUSH 6 (Andrew 2026-10-30): Perks mirrors Insurance. Rows are the shared card rows (they stay put); file-folder tabs in the count line pick the perk category the columns show: Travel = Lounge | Nexus | Statement Credit, Everyday = Statement Credit | Membership (membership + discount perks). */
 const PKMODES={pkT:[['lounge','Lounge',['lounge']],['nexus','Nexus',['nexus_global_entry']],['sc','Statement Credit',['statement_credit']]],pkE:[['sc','Statement Credit',['statement_credit']],['mem','Membership',['membership','discount']]]};
 const PMG=()=>st.s=='perk'?GKEY():((st.g||{}).perk||'pkT'),PMODE=(g=PMG())=>{const L=PKMODES[g]||PKMODES.pkT;return L.find(m=>m[0]==(st.pm||{})[g])||L[0]};
-const pmRows=c=>{const g=PMG(),m=PMODE(g);return c.cp.filter(r=>r.g==PKG[g]&&m[2].includes(r.cat))},pmU=a=>[...new Set(a.filter(Boolean))],PMD='<span class=u>—</span>';
-COL.pm_perk=['Perk','l pkn',c=>{const L=pmRows(c);return L.length?L[0].n:null},c=>{const L=pmRows(c);return L.length?`<button type=button class=pkb data-pki="${CIX.get(c)}" aria-expanded=false title="Quote and source">${L.map(r=>esc(r.n)).join(' · ')}</button>`:PMD}];
-COL.pm_val=['Value','l',c=>{const L=pmRows(c).filter(r=>r.a!=null);return L.length?L.reduce((t,r)=>t+r.a,0):null},c=>{const L=pmRows(c);return L.length?L.map(pkVal).join(' · '):PMD}];
-COL.pm_rec=['Recurrence','l',c=>{const L=pmRows(c);return L.length?PKREC.findIndex(x=>x[0]==L[0].rec):null},c=>{const L=pmU(pmRows(c).map(r=>r.rec&&pkLab(PKREC,r.rec)));return L.length?esc(L.join(' · ')):PMD}];
-COL.pm_en=['Enrol','ctr',c=>pmRows(c).some(r=>r.en===1)?1:0,c=>pmRows(c).some(r=>r.en===1)?'<span class=y title="Enrolment is required">✓</span>':PMD];
-COL.pm_rg=['Region','l',c=>pmRows(c)[0]?.rg||null,c=>{const L=pmU(pmRows(c).map(r=>r.rg));return L.length?esc(L.join(' · ')):PMD}];
-COL.pm_ex=['Expiry','l',c=>{const r=pmRows(c)[0];return r?(PKDAYS(r)!=null?r.ex:r.ex=='ongoing'?'9999':null):null},c=>{const L=pmRows(c);return L.length?pmU(L.map(r=>COL.pk_ex[3](r))).join(' · ')||PMD:PMD}];
-COL.pm_ev=['Evidence','l',c=>pmRows(c)[0]?.ec||null,c=>{const L=pmRows(c);return L.length?pmU(L.map(r=>COL.pk_ev[3](r))).join(' '):PMD}];
+const pmRows=c=>{const g=PMG(),m=PMODE(g);return c.cp.filter(r=>r.g==PKG[g]&&m[2].includes(r.cat))},pmU=a=>[...new Set(a.filter(Boolean))],PMD='<span class=u title="Not stated">—</span>';
+COL.pm_perk=['Perk','l pkn',c=>{const L=pmRows(c);return L.length?L[0].n:null},c=>{const L=pmRows(c);return L.length?`<button type=button class=pkb data-pki="${CIX.get(c)}" aria-expanded=false title="Quote and source">${L.map(r=>esc(r.n)).join(' · ')}</button>`:`<span class=n title="No ${esc(PMODE()[1])} perk on this card">✗</span>`}];
+COL.pm_val=['Value','l',c=>{const L=pmRows(c).filter(r=>r.a!=null);return L.length?L.reduce((t,r)=>t+r.a,0):null},c=>{const L=pmRows(c);return L.length?L.map(pkVal).join(' · '):''}];
+COL.pm_rec=['Recurrence','l',c=>{const L=pmRows(c);return L.length?PKREC.findIndex(x=>x[0]==L[0].rec):null},c=>{const R0=pmRows(c),L=pmU(R0.map(r=>r.rec&&pkLab(PKREC,r.rec)));return L.length?esc(L.join(' · ')):R0.length?PMD:''}];
+COL.pm_en=['Enrol','ctr',c=>pmRows(c).some(r=>r.en===1)?1:0,c=>pmRows(c).some(r=>r.en===1)?'<span class=y title="Enrolment is required">✓</span>':pmRows(c).length?PMD:''];
+COL.pm_rg=['Region','l',c=>pmRows(c)[0]?.rg||null,c=>{const R0=pmRows(c),L=pmU(R0.map(r=>r.rg));return L.length?esc(L.join(' · ')):R0.length?PMD:''}];
+COL.pm_ex=['Expiry','l',c=>{const r=pmRows(c)[0];return r?(PKDAYS(r)!=null?r.ex:r.ex=='ongoing'?'9999':null):null},c=>{const L=pmRows(c);return L.length?pmU(L.map(r=>COL.pk_ex[3](r))).join(' · ')||PMD:''}];
+COL.pm_ev=['Evidence','l',c=>pmRows(c)[0]?.ec||null,c=>{const L=pmRows(c);return L.length?pmU(L.map(r=>COL.pk_ev[3](r))).join(' '):''}];
 document.addEventListener('click',e=>{const b=e.target.closest('[data-pm]');if(!b)return;e.stopImmediatePropagation();const KP=posGet();st.pm={...(st.pm||{}),[GKEY()]:b.dataset.pm};render();posSet(KP)},true);
 document.addEventListener('click',e=>{const b=e.target.closest('.pkb[data-pki]');if(!b||st.s!='perk')return;e.stopPropagation();const t=b.closest('tr');
  if(t.nextElementSibling?.classList.contains('pkd')){while(t.nextElementSibling?.classList.contains('pkd'))t.nextElementSibling.remove();t.classList.remove('op');b.setAttribute('aria-expanded','false');return}
@@ -904,7 +910,8 @@ const IMODES=[['cov','Coverage'],['ded','Deductible'],['lim','Limit'],['cond','C
 function insCell(c,cv){const m=IMODE(),st0=insV(c,cv);if(m=='cov'||st.s!='ins')return ynI(c,cv);const j={ded:0,lim:1,cond:2}[m],r=(c.insr||{})[cv];
  if(st0=='nl')return '<span class=mute title="Not listed in this card’s insurance terms">—</span>';
  if(st0===0)return '<span class=n>✗</span>';
- if(st0==null)return '<span class=u>—</span>';const v=r?r[j]:null;
+ const v=st0==null&&c.insu&&c.insu[cv]?c.insu[cv][j]:r?r[j]:null;
+ if(st0==null)return v==null||(j==1&&typeof v!='number'&&v!=='Unlimited')?'<span class=u title="Not yet captured">—</span>':UNV(j==2?esc(v):j==1&&typeof v=='number'?'$'+(v>=1e6?v/1e6+'M':v.toLocaleString()):esc(v));/* class b (Andrew 2026-10-30): captured in the card's insurance text but the coverage is not yet verified -> the value, dotted underline, title 'Not yet verified' */
  if(v==null&&j==0&&!DEDK.has(cv))return '<span class=mute title="No deductible applies to this coverage type">$0</span>';
  if(j==2&&cv=='emergency_medical'&&c.medage)return medAgeCell(c,v);
  if(v==null)return '<span class=u>—</span>';
