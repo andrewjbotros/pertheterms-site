@@ -891,18 +891,19 @@ body.co #pbtn:hover .pbw,body.co #pbtn[aria-expanded=true] .pbw{color:var(--ink)
  .pytt td[data-l]::before{content:attr(data-l);color:var(--mute);font-size:12px;text-align:left;flex:none;max-width:45%}.pytt td.pytbig{display:block;text-align:left;padding:4px 12px}.pytt td.pytlot{display:none}
  .pytt tfoot>tr>*{border:0;background:none}.pytt tfoot tr{background:var(--bg)}}
 .pytt td{white-space:normal;overflow-wrap:anywhere}.pytt td.num{white-space:nowrap}.pytt{table-layout:auto}
-/* Accounts + wizard step 1 type tiles (Andrew 2026-10-30): bigger, bolder, grayscale. Three across and centred at every width (desktop, tablet, phone); solid ink icon block, firm 2px ink border, square corners, heavy uppercase name; selected = inverted (ink fill). Light and dark both use --ink/--card. */
-#wiz .wzbd .tiles.ptiles.wzt{grid-template-columns:repeat(3,minmax(0,220px))!important;justify-content:center;gap:16px;padding:8px 0}
-#wiz .wzt .btile{min-width:0;aspect-ratio:1!important;align-items:center;justify-content:center;text-align:center;gap:10px;padding:16px 10px;border:2px solid var(--ink);border-radius:4px;box-shadow:none;background:var(--card);color:var(--ink)}
-#wiz .wzt .btile:hover{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
-#wiz .wzt .btile.on{border:2px solid var(--ink);padding:16px 10px;background:var(--ink);color:var(--card)}
-#wiz .wzt .btile .blogo.bico{width:72px;height:72px;border-radius:4px;border:0;background:var(--ink);color:var(--card)}
-#wiz .wzt .btile.on .blogo.bico{background:var(--card);color:var(--ink)}
-#wiz .wzt .btile .cico{width:44px;height:44px;stroke-width:2.4}
-#wiz .wzt .btile .bn{font-size:18px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;line-height:1.15}
-#wiz .wzt .btile .bf{margin-top:0;font-size:12px;font-weight:600;color:inherit;opacity:.75;text-transform:uppercase;letter-spacing:.04em}
+/* Accounts + wizard step 1 type tiles (Andrew 2026-10-30, rev 2 "more grayscale like the corporate logos, less square"): bold tiles in the institution-logo gray (ink at the logo opacity --lgo over the card: 55% light, 62% dark), 3:2 landscape, 8px corners; centred, 3 across at every width; selected = filled logo gray. */
+#wiz .wzt{--wzg:color-mix(in srgb,var(--ink) calc(var(--lgo,.55)*100%),var(--card));--wzg2:color-mix(in srgb,var(--ink) calc(var(--lgo,.55)*35%),var(--card))}
+#wiz .wzbd .tiles.ptiles.wzt{grid-template-columns:repeat(3,minmax(0,240px))!important;justify-content:center;gap:16px;padding:8px 0}
+#wiz .wzt .btile{min-width:0;aspect-ratio:3/2!important;align-items:center;justify-content:center;text-align:center;gap:8px;padding:14px 10px;border:2px solid var(--wzg2);border-radius:8px;box-shadow:none;background:var(--card);color:var(--wzg)}
+#wiz .wzt .btile:hover{border-color:var(--wzg)}
+#wiz .wzt .btile.on{border:2px solid var(--wzg);padding:14px 10px;background:var(--wzg);color:var(--card)}
+#wiz .wzt .btile .blogo.bico{width:56px;height:56px;border-radius:6px;border:0;background:var(--wzg);color:var(--card)}
+#wiz .wzt .btile.on .blogo.bico{background:var(--card);color:var(--wzg)}
+#wiz .wzt .btile .cico{width:34px;height:34px;stroke-width:2.4}
+#wiz .wzt .btile .bn{font-size:17px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;line-height:1.15;color:inherit}
+#wiz .wzt .btile .bf{margin-top:0;font-size:11.5px;font-weight:600;color:inherit;opacity:.8;text-transform:uppercase;letter-spacing:.04em}
 #wiz .wzt .btile .bmk{color:inherit;font-size:14px;font-weight:800;right:10px;top:8px;bottom:auto}
-@media(max-width:640px){#wiz .wzbd .tiles.ptiles.wzt{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px}#wiz .wzt .btile{aspect-ratio:auto!important;min-height:118px;padding:10px 4px;gap:6px}#wiz .wzt .btile.on{padding:10px 4px}#wiz .wzt .btile .blogo.bico{width:44px;height:44px}#wiz .wzt .btile .cico{width:28px;height:28px}#wiz .wzt .btile .bn{font-size:12px;letter-spacing:.02em;overflow-wrap:anywhere}#wiz .wzt .btile .bf{font-size:9.5px;letter-spacing:0;white-space:normal}}
+@media(max-width:640px){#wiz .wzbd .tiles.ptiles.wzt{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px}#wiz .wzt .btile{aspect-ratio:auto!important;min-height:0!important;padding:10px 4px;gap:4px;border-radius:6px}#wiz .wzt .btile.on{padding:10px 4px}#wiz .wzt .btile .blogo.bico{width:30px;height:30px;border-radius:4px}#wiz .wzt .btile .cico{width:20px;height:20px}#wiz .wzt .btile .bn{font-size:11px;letter-spacing:.02em;overflow-wrap:anywhere}#wiz .wzt .btile .bf{font-size:9px;letter-spacing:0;white-space:normal}}
 
 /* captured but not yet verified (class b): the value with a subtle dotted underline in --mute (follows light and dark theme); title 'Not yet verified' (Docs/naming.md) */
 .nyv{text-decoration:underline dotted var(--mute);text-decoration-thickness:1px;text-underline-offset:3px;cursor:help}
