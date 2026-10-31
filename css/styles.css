@@ -843,3 +843,31 @@ body.co header{display:grid!important;grid-template-columns:1fr auto 1fr;align-i
 /* TEMPORARY layout mode (?layout=1, Andrew 2026-10-30): column drag handles and the floating widths panel; removed with the feature */
 .wrap thead th{position:relative}.lgrip{position:absolute;top:0;right:0;width:8px;height:100%;cursor:col-resize;z-index:6;background:linear-gradient(90deg,transparent 5px,#7c5cff 5px,#7c5cff 8px);opacity:.45}.lgrip:hover,html.ldrag .lgrip{opacity:1}html.ldrag,html.ldrag *{cursor:col-resize!important;user-select:none}
 #lpanel{position:fixed;right:16px;bottom:16px;z-index:9999;background:#fff;border:2px solid #7c5cff;border-radius:10px;padding:10px 12px;font:12px/1.5 system-ui,sans-serif;display:flex;flex-direction:column;gap:2px;box-shadow:0 6px 24px rgba(0,0,0,.18);max-width:320px}#lpanel.over{border-color:#d33}#lpanel [data-lw]{color:#d33;font-weight:700}#lpanel button{font:inherit;padding:3px 8px;border:1px solid #bbb;border-radius:6px;background:#f6f6f6;cursor:pointer;margin-top:4px}
+/* Active item bar (Andrew 2026-10-30): the vertical equivalent of an underline, left of the active item's text in the logo menu and the profile drawer */
+body.co #pml #pl button,body.co #snav #pfl button{position:relative}
+body.co #pml #pl button.on::before,body.co #snav #pfl button.on::before{content:'';position:absolute;left:2px;top:6px;bottom:6px;width:3px;border-radius:2px;background:var(--acc)}
+body.co #snav #pfl button.on{color:var(--acc)}body.co #snav #pfl button.on .ti{color:var(--acc)}
+/* Store tiles (Andrew 2026-10-30: "the logo is enough"): logo only; the name stays as aria-label + tooltip */
+#pw-merch .btile .bn{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* Top-bar icons one size (Andrew 2026-10-30: "meet in the middle"): before, profile circle 36px (44 on touch) vs logo mark 24px; now both draw at the midpoint, 30px (34 on touch). Buttons keep 36 / 44px tap targets. */
+body.co{--tbi:30px}
+@media(max-width:640px),(pointer:coarse){body.co{--tbi:34px}}
+body.co header>#rtog{border:0!important;background:none!important;position:relative}
+body.co header>#rtog::before{content:'';position:absolute;left:50%;top:50%;width:var(--tbi);height:var(--tbi);margin:calc(var(--tbi)/-2) 0 0 calc(var(--tbi)/-2);box-sizing:border-box;border:1px solid var(--line);border-radius:50%;background:var(--bg)}
+body.co header>#rtog:hover::before,body.co header>#rtog[aria-expanded=true]::before{border-color:var(--acc)}
+body.co header>#rtog svg{position:relative;width:calc(var(--tbi)/2);height:calc(var(--tbi)/2)}
+body.co #pbtn .lmark{width:var(--tbi);height:var(--tbi)}
+/* PerYourTerms wordmark (Andrew 2026-10-30: "instead of the blue The it's a red Your"): like the PerTheTerms wordmark, Your in the site red (--bad, the red of the X marks) */
+.pytw{font-weight:800;letter-spacing:-.02em}.pytw b{color:var(--bad);font-weight:800}
+#snav #pfl .pytb{margin-top:6px;border-top:1px solid var(--line)!important;border-radius:0 0 7px 7px;padding-top:10px;background:color-mix(in srgb,var(--bad) 7%,transparent)}
+#snav #pfl .pytb .ti{color:var(--bad)}
+#snav #pfl .pytb .pyts{margin-left:auto;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--bad);border:1px solid color-mix(in srgb,var(--bad) 45%,transparent);border-radius:999px;padding:2px 7px}
+#snav #pfl .pytb.on .pytw{color:inherit}
+
+/* Andrew 2026-10-30: wordmark right-aligned, immediately left of the logo; together one menu button */
+body.co header>#logo{display:none!important}
+body.co header{grid-template-columns:auto 1fr auto!important}
+body.co #pbtn{width:auto!important;min-width:44px;height:44px;gap:8px;padding:0 0 0 8px!important;border-radius:22px!important}
+body.co #pbtn .pbw{font-weight:800;letter-spacing:-.02em;font-size:17px;color:var(--ink);white-space:nowrap;cursor:pointer}
+body.co #pbtn .pbw b{color:var(--acc)}
+body.co #pbtn:hover .pbw,body.co #pbtn[aria-expanded=true] .pbw{color:var(--ink)}

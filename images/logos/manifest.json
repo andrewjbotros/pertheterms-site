@@ -1119,6 +1119,61 @@
     270,
     270
    ]
+  },
+  "m-wholefoods": {
+   "file": "m-wholefoods.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Whole%20Foods%20Market%20logo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Whole_Foods_Market_logo.svg",
+   "fetched": "2026-10-30",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
+   "px": [
+    960,
+    657
+   ]
+  },
+  "m-mobil": {
+   "file": "m-mobil.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Mobil%20logo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Mobil_logo.svg",
+   "fetched": "2026-10-30",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
+   "px": [
+    960,
+    293
+   ]
+  },
+  "m-safeway": {
+   "file": "m-safeway.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Safeway%20Logo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Safeway_Logo.svg",
+   "fetched": "2026-10-30",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
+   "px": [
+    960,
+    177
+   ]
+  },
+  "m-iga": {
+   "file": "m-iga.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/IGA%20logo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:IGA_logo.svg",
+   "fetched": "2026-10-30",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
+   "px": [
+    960,
+    622
+   ]
+  },
+  "m-freshco": {
+   "file": "m-freshco.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/FreshCo%20logo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:FreshCo_logo.svg",
+   "fetched": "2026-10-30",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
+   "px": [
+    960,
+    386
+   ]
   }
  },
  "missing": {
