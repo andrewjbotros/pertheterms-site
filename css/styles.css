@@ -965,3 +965,6 @@ html.tz #csw{zoom:calc(1 / var(--tz))}
 .pxb{color:var(--mute);font-weight:700;font-size:11px}
 #ofp tr.psep td{padding:0;border-top:1px solid var(--line);height:4px}
 .wrap td.ic:has(.ptos){max-width:none;overflow-wrap:normal}
+
+/* First-Year Fee Charged: red, legible in light and dark (--bad is set per theme) */
+.fyc{color:var(--bad);font-weight:700}
