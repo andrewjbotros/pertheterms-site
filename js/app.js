@@ -184,7 +184,19 @@ COL.pk_ev=['Evidence','l',r=>r.ec||null,r=>(r.ec?`<span class=t title="Evidence 
 const NOINS=c=>c.ix.insurers&&c.ix.insurers[0]&&c.ix.insurers[0].length==0;
 const insV=(c,k)=>c.ins[k]!=null?c.ins[k]:NOINS(c)?0:(k=='roadside'&&c.nins>0)?'nl':null;
 const ynI=(c,k)=>{const v=insV(c,k);if(v==null&&c.insu&&c.insu[k])return `<span class=nyv title="Not yet verified">${yn(1).replace(/ title="[^"]*"/,'')}</span>`;return v=='nl'?'<span class=mute title="Not listed in this card’s insurance terms">—</span>':yn(v)};
-INS.forEach(([k,l])=>COL['ins_'+k]=[l,'ctr',c=>{const v=insV(c,k);return -(v===1?1:v===0||v=='nl'?0:-.5)},c=>insCell(c,k)]);
+/* Insurance sort by level (Andrew 2026-10-31: Limit / Medical limit did not sort). Coverage keeps the included > not captured > not included key; Deductible and Limit sort by the dollar amount shown, Conditions by the length in days (emergency medical with age bands: the longest band). Unlimited = +Infinity (top when descending, just above the blanks when ascending); not included, not listed, None stated, N/A, Not published, not captured and the dash = null, which nlast keeps at the bottom in both directions. */
+const INSAMT=v=>{if(v==null)return null;if(typeof v=='number')return v;const t=String(v);if(/unlimited/i.test(t)&&!/\$/.test(t))return Infinity;const m=/\$\s?(\d[\d,]*(?:\.\d+)?)\s*([kKmM]\b)?/.exec(t);if(m){const n=parseFloat(m[1].replace(/,/g,''));return n*({k:1e3,m:1e6}[(m[2]||'').toLowerCase()]||1)}
+ const y=/^\+?(\d+(?:\.\d+)?)\s*yr/i.exec(t);if(y)return +y[1]/1000;/* extended warranty '+1 yr': a time extension, not dollars: below every dollar limit, ordered by years */
+ const km=/tow\s+(\d[\d,]*)\s*km/i.exec(t);if(km)return +km[1].replace(/,/g,'');return null};
+const INSDAYS=v=>{if(v==null)return null;const t=String(v);let m=/(\d[\d,]*)\s*days?\b/i.exec(t);if(m)return +m[1].replace(/,/g,'');m=/(\d+(?:\.\d+)?)\s*years?\b/i.exec(t);if(m)return +m[1]*365;m=/(\d+(?:\.\d+)?)\+?\s*hours?\b/i.exec(t);if(m)return +m[1]/24;return null};
+function insKey(c,k){const m=IMODE(),v0=insV(c,k);if(m=='cov'||st.s!='ins')return v0===1?1:v0===0||v0=='nl'?0:null;/* included first on the first (descending) click, not captured at the bottom both ways (was a negated key, so the first click put not captured on top) */if(v0===0||v0=='nl')return null;const j={ded:0,lim:1,cond:2}[m],r=(c.insr||{})[k];
+ const v=v0==null&&c.insu&&c.insu[k]?c.insu[k][j]:r?r[j]:null;
+ if(v0==null&&(v==null||(j==1&&typeof v!='number'&&v!=='Unlimited')))return null;
+ if(j==0)return v==null?(v0!=null&&!DEDK.has(k)?0:null):INSAMT(v);
+ if(j==1)return INSAMT(v);
+ if(k=='emergency_medical'&&c.medage)return Math.max(0,...c.medage.map(x=>x[2]||0))||null;/* age bands: the longest cover any age band gets */
+ return INSDAYS(v)}
+INS.forEach(([k,l])=>COL['ins_'+k]=[l,'ctr',c=>insKey(c,k),c=>insCell(c,k)]);
 /* v3.5.2 single source of label truth: FIELD_LABEL names a field once; table headers and filters both read it, so they cannot drift. */
 const FIELD_LABEL={kind:'Reward type',acct:'Account type',fyf:'First-year fee',add:'Extra cards',fx:'FX fee',apr:'Purchase APR',inc:'Income required',best:'Best earn %',nins:'Covers',nt:'Covers',np:'Covers',med:'Medical limit',mob:'Mobile cover',x_cc:'Carrier AD&D',x_ppd:'Price protection window',x_ppi:'Price protection per item',x_ppy:'Price protection per year',exp:'Points expiry'};
 Object.entries(FIELD_LABEL).forEach(([k,l])=>{if(COL[k])COL[k][0]=l});
