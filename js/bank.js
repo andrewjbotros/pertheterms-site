@@ -36,34 +36,53 @@ const BANK=(()=>{
   atmc:['Refund cap','l',o=>{const a=o.atmr;return !a||a.st==null?null:a.st!==1?1e9:a.unl?0:(a.ev||99)*(a.n||99)},o=>{const a=o.atmr;if(!a||a.st==null)return '<span class=q title="Not stated">—</span>';if(a.st===0)return '<span class=mute>N/A</span>';if(a.unl)return '<span class=y>No cap</span>';const p=[a.ev!=null?'$'+a.ev+'/withdrawal':null,a.n!=null?a.n+'/month':null].filter(Boolean);return p.length?esc(p.join(' · ')):'<span class=q title="Cap not stated">—</span>'}],
   atms:['Refund scope','l',o=>o.atmr?.sc||'~',o=>{const a=o.atmr;if(!a||a.st!==1)return a&&a.st===0?'<span class=mute>N/A</span>':'<span class=q>—</span>';return ({CANADA:'Canada only',OUTSIDE_CANADA:'Outside Canada only',WORLDWIDE:'Worldwide',UNSTATED:'<span class=q>—</span>'})[a.sc]||'<span class=q>—</span>'}],
   atmp:['Refund conditions','wrapt',o=>o.atmr?.plan||'~',o=>o.atmr&&o.atmr.st===1?cut(o.atmr.plan+'. '+(o.atmr.cond||''),70):'<span class=mute>—</span>'],
-  intr:['Pays interest','',o=>-(o.intr??-.5),o=>`<span title="${esc(o.intt||'Not stated')}">${yn(o.intr)}</span>`]};
+  intr:['Pays interest','',o=>-(o.intr??-.5),o=>`<span title="${esc(o.intt||'Not stated')}">${yn(o.intr)}</span>`],
+  ty:['Type','l',o=>BTYN(o),o=>esc(BTYN(o))+(o.seg&&o.seg!='personal'?` <span class=fam>${esc(BSEGN(o))}</span>`:'')],
+  tag:['Tag','l',o=>o.tag,o=>o.tag?`<span class=t>${esc(o.tag)}</span>`:'<span class=q>—</span>'],
+  rate:['Interest rate','',o=>rateOf(o).rate,o=>{const r=rateOf(o);return r.rate==null&&!r.range?'<span class=q title="Not stated in the record">—</span>':`<span title="${esc(r.why)}">${esc(r.label)}</span>`}]};
+ const BTYN=o=>(BATY.find(x=>x[0]==o.ty)||[0,'—'])[1],BSEGN=o=>(BSEG.find(x=>x[0]==o.seg)||[0,'—'])[1];
  const fb=(l,f)=>[l,f],FEEB=[fb('$0',o=>o.fee===0),fb('≤ $5/mo',o=>o.fee!=null&&o.fee<=5),fb('≤ $15/mo',o=>o.fee!=null&&o.fee<=15),fb('> $15/mo',o=>o.fee>15),fb('Not stated',o=>o.fee==null)];
  const BLBL=k=>BCOL[k]?String(BCOL[k][0]).replace(/<[^>]+>.*$/,'').replace(/<[^>]+>/g,'').trim():null;
  const BF=()=>BFS(BF0());
  const BFS=o=>{for(const k in o){const l=BLBL(k);if(l)o[k][0]=l}return o};
- const BF0=()=>({fam:['Family',BD().fam.map(f=>[f.n,o=>o.fam==f.id])],inst:['Institution',[...new Set(A().map(o=>o.i))].sort().map(i=>[i,o=>o.i==i])],fee:['Monthly fee',FEEB],
+ const BF0=()=>({ty:['Account type',BATY.map(([k,l])=>[l,o=>o.ty==k])],seg:['Segment',BSEG.map(([k,l])=>[l,o=>o.seg==k])],fam:['Family',BD().fam.map(f=>[f.n,o=>o.fam==f.id])],inst:['Institution',[...new Set(A().map(o=>o.i))].sort().map(i=>[i,o=>o.i==i])],fee:['Monthly fee',FEEB],
   wv:['Waives a card fee',[['Yes',o=>o.wv.length>0],['None on record',o=>!o.wv.length]]],rule:['Product-count rebate',[['Yes',o=>o.rules.length>0]]],
   mb:['Min. balance',[['$0 / none needed',o=>o.mbk=='none-needed'],['≤ $4,000',o=>o.mbk=='waive'&&o.mb<=4000],['No balance waiver',o=>o.mbk=='no-waiver']]],
   pr:['Sign-up offer',[['Yes',o=>o.pr.length>0]]],et:['e-Transfer',[['Send free',o=>o.et===1]]],atmr:['ATM fee refund',[['Yes',o=>o.atmr?.st===1],['No',o=>o.atmr?.st===0],['? (unconfirmed)',o=>!o.atmr||o.atmr.st==null],['No cap',o=>o.atmr?.unl===1]]],intr:['Interest',[['Pays interest',o=>o.intr===1],['No interest',o=>o.intr===0]]]});
- const BS=[{id:'bov',name:'Overview',cols:['fam','i','fee','feey','tx'],f:['fam','inst','fee']},
-  {id:'bfees',name:'Fees & waivers',cols:['fee','feey','mb','rule','wv','wvt'],f:['fee','mb','rule','wv','inst']},
-  {id:'bperks',name:'Perks & sign-up',cols:['pr','svc','uf'],f:['pr','inst']},
-  {id:'bacc',name:'Access',cols:['et','etl','atmr','atmc','atms','atmp','nets','atm','intr'],f:['et','atmr','intr','inst']},
-  {id:'binst',name:'Institutions',cols:[],f:[]},
-  {id:'bprom',name:'Promotions',cols:[],f:[]}];
+ /* bank build-out batch 1 (Andrew 2026-11-01): chequing, savings, HISA and USD accounts share these tabs; the Account type and Segment filters lead every tab (symmetry: no per-type sub-tab) */
+ const BS=[{id:'bov',name:'Overview',cols:['i','ty','fee','mb','tx','et','rate','pr','tag'],f:['inst','ty','fee','seg']}/* Andrew 2026-11-03: Overview = the bank snapshot fields (best CI coverage) + Tag */,
+  {id:'bfees',name:'Fees',cols:['fee','feey','mb','rule','wv','wvt'],f:['ty','seg','fee','mb','rule','wv','inst']},
+  {id:'bperks',name:'Perks & sign-up',cols:['pr','svc','uf'],f:['ty','seg','pr','inst']},
+  {id:'bacc',name:'Access',cols:['et','etl','atmr','atmc','atms','atmp','nets','atm','intr','rate'],f:['ty','seg','et','atmr','intr','inst']},
+  {id:'binst',name:'Institutions',cols:[],f:[]}];/* Andrew 2026-11-05: no Banking Promotions view (promos live on PerYourTerms › Promotions) */
  const HELP={wv:'<h2>Waives card fee</h2><p>From the record’s fee-waiver links (<code>edges</code>, type WAIVES) and <code>waiver_chains</code>: holding this account rebates or waives the annual fee on the named credit card(s). “None on record” means no link is recorded, not that one is impossible.</p>',
   rule:'<h2>Product-count rebates</h2><p>Some banks lower the monthly fee by how many of their other products you hold. Each cell reads “N products → fee after rebate”. Rows come from <code>conditional_fee_rules</code>; <b>C</b> = CITED to the issuer’s terms. RBC Value Program: an enrolled account plus 2 product categories rebates $6/mo, 3 or more rebates $12.95/mo (capped at the account fee), and needs one monthly activity (direct deposit, pre-authorized payment or eligible bill payment). “legacy” rows are the grandfathered MultiProduct Rebate, closed to accounts opened on or after April 27, 2021. ? = the product count is not stated.</p>'};
  HELP.atmr='<h2>ATM fee reimbursement</h2><p>Whether the institution pays back the fee another ATM operator charges you. From <code>account_perk_facts</code> (perk ATM_FEE_REIMBURSEMENT), CITED to the institution\'s own terms, archived. ✓ offered (see the plan or tier it needs), ✗ the official text says other operators\' surcharges may still apply, ? not confirmed in an official source. A bank waiving its <i>own</i> ATM fee is not a reimbursement.</p>';
  const on=()=>st.pl=='bank';
  function bar(){const el=$('#pl');if(!el)return;const cur=st.pl||'cards',on=k=>cur==k&&!USR.has(st.s);el.hidden=false;el.classList.remove('one');/* super banner: one enabled line shows as the single current item (hidden lines are not shown) */const lg=$('#logo');if(lg){lg.classList.toggle('on',cur=='home'&&!USR.has(st.s));lg.setAttribute('aria-current',String(cur=='home'&&!USR.has(st.s)))}/* Andrew 2026-10-29: the product lines live in the left sidebar (opened from the logo/name): Home first, then each line */const IC={home:'<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/>',cards:'<rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 10h19M6 15h4"/>',bank:'<path d="M3 9.5 12 4l9 5.5z"/><path d="M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20.5h18"/>',invest:'<circle cx="12" cy="12" r="8.5"/><path d="M12 3.5V12l6 6"/>',broker:'<path d="M3 20.5h18"/><path d="M4 16l5-5 4 3 7-8"/><path d="M15 6h5v5"/>',tel:'<rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/>'},ico=k=>`<span class=ti><svg viewBox="0 0 24 24" width=18 height=18 aria-hidden=true focusable=false fill=none stroke=currentColor stroke-width=1.8 stroke-linecap=round stroke-linejoin=round>${IC[k]||''}</svg></span>`,soonOn=k=>st.pl=='info'&&st.s=='soon_'+k;
- el.innerHTML=PLINES.map(([k,n])=>`<button data-pl=${k} class="${on(k)?'on':''}" aria-current=${on(k)}>${ico(k)}${k=='home'?'Home':n}</button>`).join('')+PLINES_ALL.filter(([k])=>(k=='bank'||k=='broker')&&!PLINES.some(p=>p[0]==k)).map(([k,n])=>`<button data-soon=${k} class="soonb${soonOn(k)?' on':''}" aria-current=${soonOn(k)}>${ico(k)}${n}<small>Soon</small></button>`).join('');}
+ /* Andrew 2026-11-04: Home is not in the site menu (the wordmark/logo mark and the footer logo go home), so the cards-only shell never renders its row; bar() rebuilds this list on every render, which is why the filter lives here rather than at startup */
+ el.innerHTML=PLINES.filter(([k])=>!(CARDS_ONLY&&k=='home')).map(([k,n])=>`<button data-pl=${k} class="${on(k)?'on':''}" aria-current=${on(k)}>${ico(k)}${n}</button>`).join('')+PLINES_ALL.filter(([k])=>(k=='bank'||k=='broker')&&!PLINES.some(p=>p[0]==k)).map(([k,n])=>`<button data-soon=${k} class="soonb${soonOn(k)?' on':''}" aria-current=${soonOn(k)}>${ico(k)}${n}<small>Soon</small></button>`).join('');}
  function rows(){const q=(st.q||'').toLowerCase(),F=BF(),f=st.bf||{};return A().filter(o=>o.st!='discontinued'&&Object.entries(f).every(([k,i])=>!F[k]||F[k][1][i]?.[1](o))&&(!q||(o.n+' '+o.i+' '+(famN(o.fam)||'')).toLowerCase().includes(q)))}
  function tabs(cur){const nb=(STO.wallet.banks||[]).length,nw=W.cards.length+nb;return BS.filter(x=>!x.hide).map(x=>{const k=x.f.filter(id=>(st.bf||{})[id]!=null).length;return `<button data-bs="${x.id}" class="${x.id==cur?'on':''}">${x.name}${k?`<span class=dot>${k}</span>`:''}</button>`}).join('')}
- function bSplit(o,inp){const l=o.fee==null?null:o.fee*12;if(l==null)return{l:null,bw:0,rb:0,paid:null};const c=bCost(o,inp);const bw=o.mbk=='waive'&&o.mb!=null&&inp.bal>=o.mb?l:0;return{l,bw,rb:Math.max(0,l-bw-c.c),paid:c.c}}
+ function bSplit(o,inp){const l=o.fee==null?null:o.fee*12;if(l==null)return{l:null,bw:0,rb:0,paid:null};const c=bCost(o,inp);const BB=bankBal(o),bal=BB.bal;const bw=o.mbk=='waive'&&o.mb!=null&&bal!=null&&bal>=o.mb?l:0;return{l,bw,rb:Math.max(0,l-bw-c.c),paid:c.c,bal,balSrc:BB.src}}
+ const bankBal=o=>{/* Andrew 2026-11-06: derived from Kubera-linked or entered balance — never ask minbal */
+  const id=o&&o.id; if(!id)return{bal:null,src:null};
+  try{ if(typeof kubOn=='function'&&kubOn()&&typeof kubMap=='function'&&typeof kubTiles=='function'&&typeof IKEY=='function'&&typeof KUB!='undefined'&&KUB&&KUB.d){
+    const key=((STO.wallet.banks||[]).find(x=>x&&x.id==id)||{});
+    const ik=key.k||IKEY('banks',key.id?key:{id});
+    const L=(kubMap(KUB.d.items||[],kubTiles(),STO.wallet.kmap).by||{})[ik];
+    if(L&&L.length){const v=L.reduce((s,it)=>s+(+it.value||0),0); return{bal:v,src:'kubera'};}
+  }}catch(e){}
+  const row=(STO.wallet.banks||[]).find(x=>x&&x.id==id)||{};
+  if(row.bal!=null&&row.bal!==''&&isFinite(+row.bal))return{bal:+row.bal,src:'entered'};
+  return{bal:null,src:null}};
  const binp=()=>{const P=PRF();return{bal:+(P.bal||0),np:+(P.np||0)}};
  const nAt=(o,inp)=>(W.cards.map(i=>C[BYID[i]]).filter(Boolean).some(c=>c.i==o.i)?1:0)+((STO.wallet.brokerage||[]).some(x=>x&&x.i==o.i)?1:0)+(inp.np||0);
  function bCost(o,inp){if(o.fee==null)return{c:null,why:'Fee not stated'};let m=o.fee,why=[];
-  if(o.mbk=='waive'&&o.mb!=null&&inp.bal>=o.mb){m=0;why.push('waived at your '+m0(inp.bal)+' balance')}
+  const BB=bankBal(o),bal=BB.bal;/* Andrew 2026-11-06: Kubera/entered only — no profile-bal fallback, no minbal ask */
+  if(o.mbk=='waive'&&o.mb!=null){if(bal!=null&&bal>=o.mb){m=0;why.push('Fee waived: balance $'+Math.round(bal).toLocaleString()+' >= $'+Math.round(o.mb).toLocaleString()+' min'+(BB.src=='kubera'?' (Kubera)':BB.src=='entered'?' (entered)':''))}
+   else if(bal!=null){why.push('Fee applies: balance $'+Math.round(bal).toLocaleString()+' below $'+Math.round(o.mb).toLocaleString()+' min')}
+   else why.push('unknown balance — fee shown at list rate')}
   else if(o.mbk=='none-needed')why.push('no condition');
   const rs=(o.rules||[]).filter(r=>r.t=='PRODUCT_COUNT_REBATE'&&r.new==1);
   if(m>0&&rs.length){const n=nAt(o,inp);if(0)(W.cards.map(i=>C[BYID[i]]).filter(Boolean).some(c=>c.i==o.i)?1:0)+((STO.wallet.brokerage||[]).some(x=>x&&x.i==o.i)?1:0)+(inp.np||0);
@@ -93,14 +112,13 @@ const BANK=(()=>{
   <aside class=wside><h3>Your accounts <span class=mute>(${os.length})</span></h3><div class=tiles>${os.map(o=>btile(o,{rm:false})).join('')||'<div class=wempty><span class=wei aria-hidden=true>＋</span><b>Start your banking wallet</b><p>Add the chequing and savings accounts you hold. Credit cards live in Cards › Wallet.</p></div>'}</div>
   ${pgoLink('banks','Add or remove accounts in Wallet ›')}${connHTML()}</aside></div>`}
  function bRender(){const s=BS.find(x=>x.id==st.bs)||BS[0];st.bs=s.id;closeM();
-  $('#tabs').innerHTML=tabs(st.s=='wfolder'?'wallet':s.id);
+  $('#tabs').innerHTML=secOn()?'':tabs(st.s=='wfolder'?'wallet':s.id);/* the section nav replaces the strip in Banking where the rail fits (Andrew 2026-11-04) */
   $('#pre').hidden=true;$('#page').hidden=true;
   if(s.id=='binst')return renderInst();
-  if(s.id=='bprom'){$('.wrap').hidden=true;$('#bar').hidden=true;$('#filters').hidden=true;$('#view').hidden=false;return renderPromos('bank')}
   $('#view').hidden=true;$('.wrap').hidden=false;$('#bar').hidden=false;$('#filters').hidden=false;
   const F=BF(),bf=st.bf||{};
   $('#filters').innerHTML=s.f.map(id=>`<label>${F[id][0]}<select data-bf="${id}" class="${bf[id]!=null?'set':''}"><option value="">Any</option>${F[id][1].map((x,i)=>`<option value="${i}" ${bf[id]==i?'selected':''}>${esc(x[0])}</option>`).join('')}</select></label>`).join('');
-  $('#filters').style.display='';
+  $('#filters').style.display='';fheadSet(Object.keys(bf).filter(k=>F[k]).length,'data-bx');
   const R=rows(),chips=Object.entries(bf).filter(([k])=>F[k]).map(([k,i])=>`<span class=chip><i>Banking ·</i> ${F[k][0]} ${esc(F[k][1][i]?.[0]||'')}<button data-bx="${k}" aria-label="Remove">×</button></span>`);
   if(st.q)chips.push(`<span class=chip><i>Search ·</i> “${esc(st.q)}”<button data-x="__q">×</button></span>`);
   const sk=st.bsort&&(st.bsort=='n'||BCOL[st.bsort])?st.bsort:'fee',dir=st.bsort==sk?(st.bdir||1):1;
@@ -111,7 +129,7 @@ const BANK=(()=>{
   $('#th').innerHTML='<tr>'+cols.map(k=>{const[l,cl]=k=='n'?['Account','l nm']:BCOL[k];return `<th data-bk="${k}" class="${cl=='wrapt'?'l':cl} ${k==sk?'s'+(dir>0?' asc':''):''}">${l}</th>`}).join('')+'</tr>';
   $('#tb').innerHTML=R.length?R.map(o=>`<tr data-bi="${o.id}">`+cols.map(k=>k=='n'?`<td class="l nm"><button type=button class=nmb data-bm="${o.id}" aria-haspopup=dialog title="All details"><b class=cl>${esc(o.n)}</b></button>${o.st=='discontinued'?'<span class=disc>Discontinued</span>':''}${(STO.wallet.banks||[]).some(x=>x.id==o.id)?'<span class=held>In wallet</span>':''}<small>${esc(o.i)}${o.fam?' · '+esc(famN(o.fam)):''}</small></td>`:`<td class="${BCOL[k][1]}">${BCOL[k][3](o)}</td>`).join('')+'</tr>').join(''):`<tr><td class=empty colspan=${cols.length}>No accounts match. Remove a filter.</td></tr>`}
  function renderInst(){$('.wrap').hidden=true;$('#bar').hidden=true;$('#filters').hidden=true;$('#view').hidden=false;
-  const I=BD().inst;$('#view').innerHTML=`<div class=vhead><h2>Institutions</h2><span class=mute>${I.length} Canadian institutions · ${A().length} chequing accounts</span></div>
+  const I=BD().inst;$('#view').innerHTML=`<div class=vhead><h2>Institutions</h2><span class=mute>${I.length} Canadian institutions · ${A().length} accounts (chequing, savings, HISA, USD)</span></div>
   <div class=bwrap><table class=vt><tr><th class=l>Institution</th><th>Accounts</th><th>Lowest monthly fee</th><th>$0 accounts</th><th>Waive a card fee</th><th>Product rebates</th><th>Waiver chains</th><th>Sign-up offers</th></tr>
   ${I.map(x=>`<tr><td class=l><button class=lnk data-binst="${esc(x.i)}">${esc(x.i)}</button></td><td>${x.n}</td><td>${m2(x.lo)}</td><td>${x.free}</td><td>${x.wv?'<span class=y>✓</span> '+x.wv:'<span class=mute>0</span>'}</td><td>${x.rules?'<span class=y>✓</span> '+x.rules:'<span class=mute>0</span>'}</td><td>${x.ch}</td><td>${x.pr}</td></tr>`).join('')}</table></div>
   <p class=mute>Derived from the record at build time (no institutions table in the database). Waiver chains = rows in <code>waiver_chains</code> for the institution.</p>`}
@@ -139,9 +157,11 @@ const BANK=(()=>{
  function init(){if(inited)return;inited=true;A().forEach(o=>BI[o.id]=o);STO.wallet.banks=(STO.wallet.banks||[]).filter(x=>x&&BI[x.id]);
   const rw=VIEWS.wfolder;VIEWS.wfolder=()=>on()?bFolder():rw();
   document.addEventListener('click',e=>{const t=e.target;
-   const pl=t.closest('[data-pl]');if(pl){e.stopPropagation();snavSet(false);const k=pl.dataset.pl;if(k=='home'){st.pl='home';st.s='ov';st.card=null;st.q='';if($('#q'))$('#q').value='';render();scrollTo(0,0);return}st.card=null;if(k!=st.pl||USR.has(st.s)){if(k!=st.pl)st.bs='bov';st.s='ov'}st.pl=k;render();scrollTo(0,0);return}
+   const pl=t.closest('[data-pl]');if(pl){e.stopPropagation();const k=pl.dataset.pl;if(k=='home'){st.pl='home';st.s='ov';st.card=null;st.q='';if($('#q'))$('#q').value='';render();scrollTo(0,0);return}st.card=null;if(k!=st.pl||USR.has(st.s)){if(k!=st.pl)st.bs='bov';st.s='ov'}st.pl=k;render();scrollTo(0,0);return}
    const bh=t.closest('[data-bh]');if(bh){e.stopPropagation();e.preventDefault();openH(bh.dataset.bh);return}
    const bw=t.closest('[data-bwal],[data-bwrm]');if(bw){e.stopPropagation();const id=bw.dataset.bwal||bw.dataset.bwrm,inM=bw.closest('#modal');setW(id,false);render();if(inM)openB(BI[id]);return}
+   /* 2026-11-01 (Andrew: the Accounts x did nothing on bank tiles): a wallet remove button inside a bank tile ([data-wrm][data-wk], app.js wRm) is not a details click; leave it to the app's wallet handler */
+   if(t.closest('[data-wrm][data-wk]'))return;
    const bm=t.closest('[data-bm]');if(bm){e.stopPropagation();openB(BI[bm.dataset.bm]);return}
    if(t.closest('#modal'))return;
    const bi=t.closest('[data-binst]');if(bi){e.stopPropagation();const ix=[...new Set(A().map(o=>o.i))].sort().indexOf(bi.dataset.binst);st.bf={inst:ix};st.bs='bov';render();return}
@@ -154,5 +174,7 @@ const BANK=(()=>{
   document.addEventListener('change',e=>{const k=e.target.dataset.bf;if(!k)return;e.stopPropagation();const f={...(st.bf||{})};if(e.target.value==='')delete f[k];else f[k]=+e.target.value;st.bf=f;render()},true);
   document.addEventListener('input',e=>{const k=e.target.dataset.bmi;if(k){e.stopPropagation();st[k]=Math.max(0,+e.target.value||0);const pos=e.target.value;save();render();const n=document.querySelector(`[data-bmi=${k}]`);if(n){n.focus();n.value=pos}return}},true);
   document.addEventListener('input',e=>{if(!e.target.dataset.bpick)return;e.stopPropagation();const o=A().find(x=>x.n.toLowerCase()==e.target.value.toLowerCase());if(o){setW(o.id,true);render();document.querySelector('[data-bpick]')?.focus()}},true)}
- return {init,bar,tabs,btile,render:bRender,on,wallet,open:openB,data:BD,cost:bCost,inp:binp};
+ /* sec(): the section menu (2026-11-04, Andrew): one row per Banking view for the left column, [id, label, active filter count]; tabs() above stays for the #tabs strip of any other build */
+ const sec=()=>BS.filter(x=>!x.hide).map(x=>[x.id,x.name,x.f.filter(id=>(st.bf||{})[id]!=null).length]);
+ return {init,bar,tabs,sec,btile,render:bRender,on,wallet,open:openB,data:BD,cost:bCost,inp:binp,bal:bankBal};
 })();

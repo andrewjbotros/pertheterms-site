@@ -1,0 +1,118 @@
+line,key,name,table,child,sql,cat,type,unit,cov,n,cov_pct,pts,CITED,ESTIMATE,REPORTED,VERIFIED,in_tables,suggested,desc
+Banking,issuer,Issuer,cards,,TEXT,Product,text,,198,198,100.0,198,0,0,0,0,Not shown,Banking › Overview,Product attribute: issuer
+Banking,card_name,Card name,cards,,TEXT,Product,text,,198,198,100.0,198,0,0,0,0,Not shown,Banking › Overview,Product attribute: card name
+Banking,product_status,Product status,cards,,TEXT,Account,enum,,198,198,100.0,198,0,0,0,0,Not shown,Banking › Overview,Account detail: product status
+Banking,notes,Notes,cards,,TEXT,Source & evidence,list,,198,198,100.0,198,0,0,0,0,Not shown,Banking › Institutions,Provenance: notes
+Banking,market,Market,cards,,TEXT,Account,enum,,198,198,100.0,198,0,0,0,0,Not shown,Banking › Overview,Account detail: market
+Banking,issuer_legal_name,Issuer legal name,cards,,TEXT,Product,text,,48,198,24.2,48,0,0,0,0,Not shown,Banking › Overview,Product attribute: issuer legal name
+Banking,issuer_brand,Issuer brand,cards,,TEXT,Product,text,,198,198,100.0,198,0,0,0,0,Not shown,Banking › Overview,Product attribute: issuer brand
+Banking,product_type,Product type,cards,,TEXT,Account,enum,,198,198,100.0,198,0,0,0,0,Banking › Overview,,Account detail: product type
+Banking,country,Country,cards,,TEXT,Product,enum,,198,198,100.0,198,0,0,0,0,Not shown,Banking › Overview,Product attribute: country
+Banking,currency,Currency,cards,,TEXT,Account,enum,,198,198,100.0,198,0,0,0,0,Not shown,Banking › Overview,Account detail: currency
+Banking,account_type,Account type,cards,,TEXT,Account,enum,,198,198,100.0,198,0,0,0,0,Not shown,Banking › Overview,Account detail: account type
+Banking,site_hidden,Site hidden,cards,,INTEGER,Product,boolean,,198,198,100.0,198,0,0,0,0,Not shown,Banking › Overview,1 = kept in the record but left out of the site export; 0 = shown
+Banking,segment,Segment,cards,,TEXT,Eligibility,enum,,198,198,100.0,198,0,0,0,0,Banking › Overview,,Client segment of an account or card: personal | youth | business.
+Banking,snapshot_date,Snapshot date,chequing_snapshots,,TEXT,Source & evidence,date,date,119,198,60.1,119,0,0,0,119,Not shown,Banking › Institutions,Provenance: snapshot date
+Banking,verification_status,Verification status,chequing_snapshots,,TEXT,Source & evidence,enum,,119,198,60.1,119,0,0,0,119,Banking › Overview,,Provenance: verification status
+Banking,notes,Notes,chequing_snapshots,,TEXT,Source & evidence,list,,119,198,60.1,119,0,0,0,119,Not shown,Banking › Institutions,Provenance: notes
+Banking,source_url,Source url,chequing_snapshots,,TEXT,Source & evidence,text,,119,198,60.1,119,0,0,0,119,Not shown,Banking › Institutions,Provenance: source url
+Banking,monthly_fee,Monthly fee,chequing_snapshots,,TEXT,Fee,text,months,118,198,59.6,118,0,0,0,118,Not shown,Banking › Fees & waivers,"What the account charges: monthly fee, as published"
+Banking,monthly_fee_amount,Monthly fee amount,chequing_snapshots,,REAL,Fee,$,CAD,116,198,58.6,116,0,0,0,116,Banking › Fees; Banking › Overview,,"What the account charges: monthly fee amount, as published"
+Banking,waiver_mechanics,Waiver mechanics,chequing_snapshots,,TEXT,Fee,text,,83,198,41.9,83,0,0,0,83,Banking › Fees; Banking › Overview,,"What the account charges: waiver mechanics, as published"
+Banking,opening_minimum,Opening minimum,chequing_snapshots,,TEXT,Eligibility,text,,12,198,6.1,12,0,0,0,12,Not shown,Banking › Fees & waivers,Who qualifies: opening minimum
+Banking,interest,Interest,chequing_snapshots,,TEXT,Rate,text,,45,198,22.7,45,0,0,0,45,Banking › Access,,Interest as published by the account
+Banking,included_transactions,Included transactions,chequing_snapshots,,TEXT,Capability,list,,93,198,47.0,93,0,0,0,93,Banking › Overview,,Whether and how the account offers included transactions
+Banking,per_transaction_fee,Per transaction fee,chequing_snapshots,,TEXT,Fee,text,,49,198,24.7,49,0,0,0,49,Not shown,Banking › Fees & waivers,"What the account charges: per transaction fee, as published"
+Banking,etransfer_fee,Etransfer fee,chequing_snapshots,,TEXT,Reward,text,,63,198,31.8,63,0,0,0,63,Banking › Access; Banking › Overview,,Rewards: etransfer fee
+Banking,etransfer_limits,Etransfer limits,chequing_snapshots,,TEXT,Reward,list,,13,198,6.6,13,0,0,0,13,Banking › Access,,Rewards: etransfer limits
+Banking,atm_fees,ATM fees,chequing_snapshots,,TEXT,Fee,list,,59,198,29.8,59,0,0,0,59,Banking › Access,,"What the account charges: atm fees, as published"
+Banking,nsf_fee,Nsf fee,chequing_snapshots,,TEXT,Fee,list,,78,198,39.4,78,0,0,0,78,Not shown,Banking › Fees & waivers,"What the account charges: nsf fee, as published"
+Banking,overdraft,Overdraft,chequing_snapshots,,TEXT,Fee,list,,52,198,26.3,52,0,0,0,52,Not shown,Banking › Fees & waivers,"What the account charges: overdraft, as published"
+Banking,stop_payment_fee,Stop payment fee,chequing_snapshots,,TEXT,Fee,list,,80,198,40.4,80,0,0,0,80,Not shown,Banking › Fees & waivers,"What the account charges: stop payment fee, as published"
+Banking,draft_fee,Draft fee,chequing_snapshots,,TEXT,Fee,text,,73,198,36.9,73,0,0,0,73,Not shown,Banking › Fees & waivers,"What the account charges: draft fee, as published"
+Banking,certified_cheque_fee,Certified cheque fee,chequing_snapshots,,TEXT,Fee,list,,56,198,28.3,56,0,0,0,56,Not shown,Banking › Fees & waivers,"What the account charges: certified cheque fee, as published"
+Banking,paper_statement_fee,Paper statement fee,chequing_snapshots,,TEXT,Fee,list,,61,198,30.8,61,0,0,0,61,Not shown,Banking › Fees & waivers,"What the account charges: paper statement fee, as published"
+Banking,fx_fee,FX fee,chequing_snapshots,,TEXT,Fee,text,,71,198,35.9,71,0,0,0,71,Not shown,Banking › Fees & waivers,"What the account charges: fx fee, as published"
+Banking,services_included,Services included,chequing_snapshots,,TEXT,Perk,list,,44,198,22.2,44,0,0,0,44,Banking › Perks & sign-up,,Perk or benefit: services included
+Banking,unique_feature,Unique feature,chequing_snapshots,,TEXT,Capability,text,,43,198,21.7,43,0,0,0,43,Banking › Perks & sign-up,,Whether and how the account offers unique feature
+Banking,opening_minimum_amount,Opening minimum amount,chequing_snapshots,,REAL,Eligibility,$,CAD,9,198,4.5,9,0,0,0,9,Not shown,Banking › Fees & waivers,"Amount required to open the account, CAD. 0 = the issuer states no minimum."
+Banking,snapshot_date,Snapshot date,savings_snapshots,,TEXT,Source & evidence,date,date,83,198,41.9,84,0,0,0,84,Not shown,Banking › Institutions,Provenance: snapshot date
+Banking,verification_status,Verification status,savings_snapshots,,TEXT,Source & evidence,enum,,83,198,41.9,84,0,0,0,84,Banking › Overview,,Provenance: verification status
+Banking,account_kind,Account kind,savings_snapshots,,TEXT,Account,enum,,83,198,41.9,84,0,0,0,84,Not shown,Banking › Overview,savings | HISA | USD chequing | USD savings
+Banking,currency,Currency,savings_snapshots,,TEXT,Account,enum,,83,198,41.9,84,0,0,0,84,Not shown,Banking › Overview,CAD or USD; currency in which the account is held
+Banking,source_id,Source id,savings_snapshots,,TEXT,Source & evidence,text,,69,198,34.8,70,0,0,0,70,Not shown,Banking › Institutions,SRC-<sha1(url)[:10]> of the primary cited page; joins to Docs/sources-manifest-savings.csv
+Banking,source_url,Source url,savings_snapshots,,TEXT,Source & evidence,text,,83,198,41.9,84,0,0,0,84,Not shown,Banking › Institutions,Provenance: source url
+Banking,base_rate,Base rate,savings_snapshots,,TEXT,Rate,text,,71,198,35.9,72,0,0,0,72,Not shown,Banking › Overview,"Posted (non-promotional) annual interest rate as published, text"
+Banking,base_rate_pct,Base rate %,savings_snapshots,,REAL,Rate,%,%,68,198,34.3,69,0,0,0,69,Not shown,Banking › Overview,"First numeric % in base_rate (headline posted rate), REAL; NULL when unknown"
+Banking,promo_rate,Promo rate,savings_snapshots,,TEXT,Promo,text,,50,198,25.3,51,0,0,0,51,Not shown,Banking › Promotions,"Promotional rate offer text incl. eligibility and end date; ""none found"" when none on captured pages"
+Banking,promo_rate_pct,Promo rate %,savings_snapshots,,REAL,Promo,%,%,11,198,5.6,11,0,0,0,11,Not shown,Banking › Promotions,First numeric % in promo_rate
+Banking,promo_duration,Promo duration,savings_snapshots,,TEXT,Promo,text,,13,198,6.6,13,0,0,0,13,Not shown,Banking › Promotions,"Length of promotional period (e.g. 3 months, 120 days) or ?"
+Banking,tiered_rates,Tiered rates,savings_snapshots,,TEXT,Rate,list,,56,198,28.3,57,0,0,0,57,Not shown,Banking › Overview,"Balance tiers and rates, and whether rate applies to whole balance or portion"
+Banking,interest_calculation,Interest calculation,savings_snapshots,,TEXT,Rate,text,,56,198,28.3,57,0,0,0,57,Not shown,Banking › Overview,How interest is calculated (daily closing balance etc.) and when paid
+Banking,monthly_fee,Monthly fee,savings_snapshots,,TEXT,Fee,text,months,71,198,35.9,72,0,0,0,72,Not shown,Banking › Fees & waivers,Monthly account fee and waiver
+Banking,minimum_balance,Minimum balance,savings_snapshots,,TEXT,Eligibility,text,,58,198,29.3,59,0,0,0,59,Not shown,Banking › Fees & waivers,"Minimum balance to open, earn interest or waive fees"
+Banking,transaction_limits,Transaction limits,savings_snapshots,,TEXT,Eligibility,list,,56,198,28.3,57,0,0,0,57,Not shown,Banking › Fees & waivers,Included free debits/withdrawals and restrictions
+Banking,extra_withdrawal_fee,Extra withdrawal fee,savings_snapshots,,TEXT,Fee,text,,48,198,24.2,49,0,0,0,49,Not shown,Banking › Fees & waivers,Fee per debit beyond included limit
+Banking,atm_fees,ATM fees,savings_snapshots,,TEXT,Fee,list,,55,198,27.8,56,0,0,0,56,Banking › Access,,ATM network fees on the account
+Banking,etransfer,Etransfer,savings_snapshots,,TEXT,Reward,list,,55,198,27.8,56,0,0,0,56,Not shown,Banking › Perks & sign-up,Interac e-Transfer availability and fee
+Banking,fx_terms,FX terms,savings_snapshots,,TEXT,Capability,text,,16,198,8.1,16,0,0,0,16,Not shown,Banking › Access,"FX conversion terms for USD accounts (published spread/markup, preferred-rate caps)"
+Banking,deposit_insurer,Deposit insurer,savings_snapshots,,TEXT,Insurance,enum,,64,198,32.3,65,0,0,0,65,Not shown,Banking › Perks & sign-up,Deposit protection scheme for the account.
+Banking,usd_deposits_insured,USD deposits insured,savings_snapshots,,TEXT,Insurance,enum,,47,198,23.7,48,0,0,0,48,Not shown,Banking › Perks & sign-up,Whether the deposit scheme covers USD balances in this account.
+Banking,registered_options,Registered options,savings_snapshots,,TEXT,Account,text,,52,198,26.3,53,0,0,0,53,Not shown,Banking › Overview,TFSA/RRSP/FHSA/RRIF availability of same product
+Banking,conditions,Conditions,savings_snapshots,,TEXT,Capability,list,,45,198,22.7,46,0,0,0,46,Not shown,Banking › Access,"Eligibility conditions (linked chequing, relationship balance, direct deposit)"
+Banking,notes,Notes,savings_snapshots,,TEXT,Source & evidence,list,,83,198,41.9,84,0,0,0,84,Not shown,Banking › Institutions,Provenance: notes
+Banking,captured_at,Captured at,savings_snapshots,,TEXT,Capability,date,date,83,198,41.9,84,0,0,0,84,Not shown,Banking › Access,Date the source was captured (ET)
+Banking,monthly_fee_amount,Monthly fee amount,savings_snapshots,,REAL,Fee,$,CAD,62,198,31.3,63,0,0,0,63,Banking › Fees; Banking › Overview,,Monthly account fee in the account currency. 0 = no fee. NULL = plan-based or not stated (listed in banking-residue.csv).
+Banking,minimum_balance_amount,Minimum balance amount,savings_snapshots,,REAL,Eligibility,$,CAD,47,198,23.7,48,0,0,0,48,Not shown,Banking › Fees & waivers,"First balance threshold the account states, in the account currency (to earn interest or avoid the fee). 0 = no minimum."
+Banking,promo_duration_value,Promo duration value,savings_snapshots,,REAL,Promo,$,CAD,9,198,4.5,9,0,0,0,9,Not shown,Banking › Promotions,"Length of the promotional rate period, in promo_duration_unit. NULL when there is no promotional rate (cash bonuses included)."
+Banking,promo_duration_unit,Promo duration unit,savings_snapshots,,TEXT,Promo,enum,,9,198,4.5,9,0,0,0,9,Not shown,Banking › Promotions,Unit of promo_duration_value.
+Banking,promo_end_date,Promo end date,savings_snapshots,,TEXT,Promo,date,date,9,198,4.5,9,0,0,0,9,Not shown,Banking › Promotions,"ISO date the promotional offer closes to new accounts, as the issuer states it. NULL = no end date stated (BK_NO_END residue)."
+Banking,deposit_insurer_note,Deposit insurer note,savings_snapshots,,TEXT,Source & evidence,text,,36,198,18.2,36,0,0,0,36,Not shown,Banking › Institutions,"Prose detail about deposit protection (aggregation, member entity, page wording) moved out of deposit_insurer."
+Banking,perk_key,Perk key,account_perk_facts,account_perk_facts,TEXT,Perk,enum,,37,198,18.7,37,37,0,0,0,Not shown,Banking › Perks & sign-up,Perk or benefit: perk key (one row per account perk fact)
+Banking,state,State,account_perk_facts,account_perk_facts,INTEGER,Capability,boolean,,37,198,18.7,37,37,0,0,0,Not shown,Banking › Access,Whether and how the account offers state (one row per account perk fact)
+Banking,cap_per_event,Cap per event,account_perk_facts,account_perk_facts,REAL,Reward,number,,2,198,1.0,2,2,0,0,0,Not shown,Banking › Perks & sign-up,Rewards: cap per event (one row per account perk fact)
+Banking,cap_count_per_month,Cap count per month,account_perk_facts,account_perk_facts,INTEGER,Reward,number,months,2,198,1.0,2,2,0,0,0,Not shown,Banking › Perks & sign-up,Rewards: cap count per month (one row per account perk fact)
+Banking,unlimited,Unlimited,account_perk_facts,account_perk_facts,INTEGER,Eligibility,boolean,,3,198,1.5,3,3,0,0,0,Not shown,Banking › Fees & waivers,Who qualifies: unlimited (one row per account perk fact)
+Banking,scope,Scope,account_perk_facts,account_perk_facts,TEXT,Capability,text,,4,198,2.0,4,4,0,0,0,Not shown,Banking › Access,Whether and how the account offers scope (one row per account perk fact)
+Banking,plan_or_tier,Plan or tier,account_perk_facts,account_perk_facts,TEXT,Capability,text,,4,198,2.0,4,4,0,0,0,Not shown,Banking › Access,Whether and how the account offers plan or tier (one row per account perk fact)
+Banking,conditions,Conditions,account_perk_facts,account_perk_facts,TEXT,Capability,text,,9,198,4.5,9,9,0,0,0,Not shown,Banking › Access,Whether and how the account offers conditions (one row per account perk fact)
+Banking,evidence_class,Evidence class,account_perk_facts,account_perk_facts,TEXT,Source & evidence,enum,,37,198,18.7,37,37,0,0,0,Not shown,Banking › Institutions,Provenance: evidence class (one row per account perk fact)
+Banking,source_url,Source url,account_perk_facts,account_perk_facts,TEXT,Source & evidence,text,,37,198,18.7,37,37,0,0,0,Not shown,Banking › Institutions,Provenance: source url (one row per account perk fact)
+Banking,local_evidence_path,Local evidence path,account_perk_facts,account_perk_facts,TEXT,Source & evidence,text,,37,198,18.7,37,37,0,0,0,Not shown,Banking › Institutions,Provenance: local evidence path (one row per account perk fact)
+Banking,recorded_date,Recorded date,account_perk_facts,account_perk_facts,TEXT,Source & evidence,date,date,37,198,18.7,37,37,0,0,0,Not shown,Banking › Institutions,Provenance: recorded date (one row per account perk fact)
+Banking,notes,Notes,account_perk_facts,account_perk_facts,TEXT,Source & evidence,enum,,37,198,18.7,37,37,0,0,0,Not shown,Banking › Institutions,Provenance: notes (one row per account perk fact)
+Banking,dedupe_key,Dedupe key,conditional_fee_rules,conditional_fee_rules,TEXT,Source & evidence,text,,4,198,2.0,15,15,0,0,0,Not shown,Banking › Institutions,Provenance: dedupe key (one row per fee rule)
+Banking,issuer,Issuer,conditional_fee_rules,conditional_fee_rules,TEXT,Capability,enum,,4,198,2.0,15,15,0,0,0,Not shown,Banking › Access,Whether and how the account offers issuer (one row per fee rule)
+Banking,program,Program,conditional_fee_rules,conditional_fee_rules,TEXT,Capability,enum,,4,198,2.0,15,15,0,0,0,Not shown,Banking › Access,Whether and how the account offers program (one row per fee rule)
+Banking,rule_type,Rule type,conditional_fee_rules,conditional_fee_rules,TEXT,Account,enum,,4,198,2.0,15,15,0,0,0,Not shown,Banking › Overview,Account detail: rule type (one row per fee rule)
+Banking,min_products,Min products,conditional_fee_rules,conditional_fee_rules,INTEGER,Eligibility,number,,4,198,2.0,14,14,0,0,0,Not shown,Banking › Fees & waivers,Who qualifies: min products (one row per fee rule)
+Banking,max_products,Max products,conditional_fee_rules,conditional_fee_rules,INTEGER,Capability,number,,4,198,2.0,8,8,0,0,0,Not shown,Banking › Access,Whether and how the account offers max products (one row per fee rule)
+Banking,product_unit,Product unit,conditional_fee_rules,conditional_fee_rules,TEXT,Capability,enum,,4,198,2.0,15,15,0,0,0,Not shown,Banking › Access,Whether and how the account offers product unit (one row per fee rule)
+Banking,counted_products,Counted products,conditional_fee_rules,conditional_fee_rules,TEXT,Capability,enum,,4,198,2.0,15,15,0,0,0,Not shown,Banking › Access,Whether and how the account offers counted products (one row per fee rule)
+Banking,activity_requirement,Activity requirement,conditional_fee_rules,conditional_fee_rules,TEXT,Eligibility,enum,,4,198,2.0,12,12,0,0,0,Not shown,Banking › Fees & waivers,Who qualifies: activity requirement (one row per fee rule)
+Banking,rebate_amount,Rebate amount,conditional_fee_rules,conditional_fee_rules,REAL,Fee,$,CAD,4,198,2.0,15,15,0,0,0,Not shown,Banking › Fees & waivers,"What the account charges: rebate amount, as published (one row per fee rule)"
+Banking,rebate_cap,Rebate cap,conditional_fee_rules,conditional_fee_rules,TEXT,Reward,enum,,4,198,2.0,12,12,0,0,0,Not shown,Banking › Perks & sign-up,Rewards: rebate cap (one row per fee rule)
+Banking,fee_after,Fee after,conditional_fee_rules,conditional_fee_rules,REAL,Fee,$,CAD,4,198,2.0,15,15,0,0,0,Not shown,Banking › Fees & waivers,"What the account charges: fee after, as published (one row per fee rule)"
+Banking,open_to_new,Open to new,conditional_fee_rules,conditional_fee_rules,INTEGER,Eligibility,boolean,,4,198,2.0,15,15,0,0,0,Not shown,Banking › Fees & waivers,Who qualifies: open to new (one row per fee rule)
+Banking,combinability,Combinability,conditional_fee_rules,conditional_fee_rules,TEXT,Capability,enum,,4,198,2.0,15,15,0,0,0,Not shown,Banking › Access,Whether and how the account offers combinability (one row per fee rule)
+Banking,evidence_class,Evidence class,conditional_fee_rules,conditional_fee_rules,TEXT,Source & evidence,enum,,4,198,2.0,15,15,0,0,0,Not shown,Banking › Institutions,Provenance: evidence class (one row per fee rule)
+Banking,source_url,Source url,conditional_fee_rules,conditional_fee_rules,TEXT,Source & evidence,enum,,4,198,2.0,15,15,0,0,0,Not shown,Banking › Institutions,Provenance: source url (one row per fee rule)
+Banking,source_id,Source id,conditional_fee_rules,conditional_fee_rules,INTEGER,Source & evidence,number,,4,198,2.0,15,15,0,0,0,Not shown,Banking › Institutions,Provenance: source id (one row per fee rule)
+Banking,local_evidence_path,Local evidence path,conditional_fee_rules,conditional_fee_rules,TEXT,Source & evidence,enum,,4,198,2.0,15,15,0,0,0,Not shown,Banking › Institutions,Provenance: local evidence path (one row per fee rule)
+Banking,recorded_date,Recorded date,conditional_fee_rules,conditional_fee_rules,TEXT,Source & evidence,date,date,4,198,2.0,15,15,0,0,0,Not shown,Banking › Institutions,Provenance: recorded date (one row per fee rule)
+Banking,notes,Notes,conditional_fee_rules,conditional_fee_rules,TEXT,Source & evidence,list,,4,198,2.0,15,15,0,0,0,Not shown,Banking › Institutions,Provenance: notes (one row per fee rule)
+Banking,family_id,Family id,account_family_members,account_family_members,TEXT,Source & evidence,enum,,35,198,17.7,35,0,0,0,0,Not shown,Banking › Institutions,Provenance: family id (one row per family link)
+Banking,basis,Basis,account_family_members,account_family_members,TEXT,Source & evidence,text,,35,198,17.7,35,0,0,0,0,Not shown,Banking › Institutions,Provenance: basis (one row per family link)
+Banking,snapshot_date,Snapshot date,promos,promos,TEXT,Source & evidence,date,date,35,198,17.7,35,0,0,0,0,Not shown,Banking › Institutions,Provenance: snapshot date (one row per promotion capture)
+Banking,promo_text,Promo text,promos,promos,TEXT,Promo,list,,35,198,17.7,35,0,0,0,0,Not shown,Banking › Promotions,Promotion: promo text (one row per promotion capture)
+Banking,spend_requirement,Spend requirement,promos,promos,TEXT,Promo,text,,3,198,1.5,3,0,0,0,0,Not shown,Banking › Promotions,Promotion: spend requirement (one row per promotion capture)
+Banking,deadline,Deadline,promos,promos,TEXT,Promo,date,date,20,198,10.1,20,0,0,0,0,Not shown,Banking › Promotions,Promotion: deadline (one row per promotion capture)
+Banking,source_url,Source url,promos,promos,TEXT,Source & evidence,text,,35,198,17.7,35,0,0,0,0,Not shown,Banking › Institutions,Provenance: source url (one row per promotion capture)
+Banking,issuer,Issuer,sources,sources,TEXT,Capability,text,,198,198,100.0,511,0,2,2,507,Not shown,Banking › Access,Whether and how the account offers issuer (one row per archived source)
+Banking,fields_covered,Fields covered,sources,sources,TEXT,Capability,list,,198,198,100.0,512,0,2,2,508,Not shown,Banking › Access,Whether and how the account offers fields covered (one row per archived source)
+Banking,source_type,Source type,sources,sources,TEXT,Source & evidence,text,,198,198,100.0,512,0,2,2,508,Not shown,Banking › Institutions,Provenance: source type (one row per archived source)
+Banking,url,Url,sources,sources,TEXT,Source & evidence,text,,198,198,100.0,512,0,2,2,508,Not shown,Banking › Institutions,Provenance: url (one row per archived source)
+Banking,retrieved_at,Retrieved at,sources,sources,TEXT,Source & evidence,date,date,198,198,100.0,512,0,2,2,508,Not shown,Banking › Institutions,Provenance: retrieved at (one row per archived source)
+Banking,snapshot_date,Snapshot date,sources,sources,TEXT,Source & evidence,date,date,198,198,100.0,512,0,2,2,508,Not shown,Banking › Institutions,Provenance: snapshot date (one row per archived source)
+Banking,local_evidence_path,Local evidence path,sources,sources,TEXT,Source & evidence,text,,198,198,100.0,512,0,2,2,508,Not shown,Banking › Institutions,Provenance: local evidence path (one row per archived source)
+Banking,verification_status,Verification status,sources,sources,TEXT,Source & evidence,enum,,198,198,100.0,512,0,2,2,508,Not shown,Banking › Institutions,Provenance: verification status (one row per archived source)

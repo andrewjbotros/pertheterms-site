@@ -157,14 +157,17 @@
   },
   "applemusic": {
    "file": "applemusic.png",
-   "source_url": "https://music.apple.com/assets/app-icons/pwa-manifest/music-icon_1024.png",
+   "color_file": "applemusic.svg",
+   "source_url": "https://cdn.jsdelivr.net/npm/simple-icons@16.36.0/icons/applemusic.svg",
    "official_page": "https://music.apple.com/ca",
-   "fetched": "2026-10-29",
-   "format": "PNG",
+   "fetched": "2026-11-05",
+   "format": "SVG (simple-icons mark, fill #FA243C, the Apple Music brand hex; not currentColor)",
+   "hex": "FA243C",
    "px": [
-    1024,
-    1024
-   ]
+    24,
+    24
+   ],
+   "note": "The music.apple.com touch icon on file is a black note on white. The subscription tile uses the simple-icons mark in the brand red so the tile reads as Apple Music."
   },
   "caa": {
    "file": "caa.png",
@@ -562,14 +565,17 @@
   },
   "appleone": {
    "file": "appleone.png",
-   "source_url": "https://www.apple.com/apple-touch-icon.png",
+   "color_file": "appleone.svg",
+   "source_url": "https://cdn.jsdelivr.net/npm/simple-icons@16.36.0/icons/apple.svg",
    "official_page": "https://www.apple.com/ca/apple-one/",
-   "fetched": "2026-10-29",
-   "format": "PNG",
+   "fetched": "2026-11-05",
+   "format": "SVG (simple-icons Apple mark, fill #000000; not currentColor)",
+   "hex": "000000",
    "px": [
-    152,
-    152
-   ]
+    24,
+    24
+   ],
+   "note": "apple.com's touch icon is a light grey apple on a light grey field, so the tile read as a grey circle. The subscription tile uses the Apple mark in black, on a white plate in dark mode."
   },
   "instacart": {
    "file": "instacart.png",
@@ -613,7 +619,12 @@
    "px": [
     180,
     180
-   ]
+   ],
+   "brand": {
+    "bg": "#e31d1a",
+    "fg": "#ffffff",
+    "source": "dominant brand colour sampled from the official logo file above (https://www.pcoptimum.ca/); text colour picked for >=4.5:1 contrast"
+   }
   },
   "scene-plus": {
    "file": "scene-plus.png",
@@ -624,7 +635,12 @@
    "px": [
     180,
     180
-   ]
+   ],
+   "brand": {
+    "bg": "#ff3b48",
+    "fg": "#111111",
+    "source": "dominant brand colour sampled from the official logo file above (https://www.sceneplus.ca/); text colour picked for >=4.5:1 contrast"
+   }
   },
   "starbucks-rewards": {
    "file": "starbucks-rewards.png",
@@ -635,7 +651,12 @@
    "px": [
     512,
     512
-   ]
+   ],
+   "brand": {
+    "bg": "#00a862",
+    "fg": "#111111",
+    "source": "dominant brand colour sampled from the official logo file above (https://www.starbucks.ca/rewards); text colour picked for >=4.5:1 contrast"
+   }
   },
   "accor-all": {
    "file": "accor-all.png",
@@ -646,7 +667,12 @@
    "px": [
     512,
     512
-   ]
+   ],
+   "brand": {
+    "bg": "#1e1852",
+    "fg": "#ffffff",
+    "source": "dominant brand colour sampled from the official logo file above (https://all.accor.com/); text colour picked for >=4.5:1 contrast"
+   }
   },
   "shell-go-plus": {
    "file": "shell-go-plus.png",
@@ -657,7 +683,12 @@
    "px": [
     180,
     180
-   ]
+   ],
+   "brand": {
+    "bg": "#fbce07",
+    "fg": "#111111",
+    "source": "dominant brand colour sampled from the official logo file above (https://www.shell.ca/); text colour picked for >=4.5:1 contrast"
+   }
   },
   "rakuten-ca": {
    "file": "rakuten-ca.png",
@@ -668,7 +699,12 @@
    "px": [
     192,
     192
-   ]
+   ],
+   "brand": {
+    "bg": "#8529cd",
+    "fg": "#ffffff",
+    "source": "dominant brand colour sampled from the official logo file above (https://www.rakuten.ca/); text colour picked for >=4.5:1 contrast"
+   }
   },
   "circle-k-inner-circle": {
    "file": "circle-k-inner-circle.ico",
@@ -679,7 +715,12 @@
    "px": [
     144,
     144
-   ]
+   ],
+   "brand": {
+    "bg": "#dc3545",
+    "fg": "#ffffff",
+    "source": "dominant brand colour sampled from the official logo file above (https://www.circlek.com/); text colour picked for >=4.5:1 contrast"
+   }
   },
   "costco-exec": {
    "file": "costco-exec.png",
@@ -690,7 +731,12 @@
    "px": [
     152,
     152
-   ]
+   ],
+   "brand": {
+    "bg": "#e21d39",
+    "fg": "#ffffff",
+    "source": "dominant brand colour sampled from the official logo file above (https://www.costco.ca/); text colour picked for >=4.5:1 contrast"
+   }
   },
   "irving-rewards": {
    "file": "irving-rewards.png",
@@ -701,7 +747,12 @@
    "px": [
     180,
     180
-   ]
+   ],
+   "brand": {
+    "bg": "#333399",
+    "fg": "#ffffff",
+    "source": "dominant brand colour sampled from the official logo file above (https://www.irvingoil.com/); text colour picked for >=4.5:1 contrast"
+   }
   },
   "club-transat": {
    "file": "club-transat.ico",
@@ -712,7 +763,12 @@
    "px": [
     256,
     256
-   ]
+   ],
+   "brand": {
+    "bg": "#00b3f0",
+    "fg": "#111111",
+    "source": "dominant brand colour sampled from the official logo file above (https://www.airtransat.com/); text colour picked for >=4.5:1 contrast"
+   }
   },
   "paymi": {
    "file": "paymi.png",
@@ -723,7 +779,12 @@
    "px": [
     256,
     256
-   ]
+   ],
+   "brand": {
+    "bg": "#85d1f6",
+    "fg": "#111111",
+    "source": "dominant brand colour sampled from the official logo file above (https://www.paymi.com/); text colour picked for >=4.5:1 contrast"
+   }
   },
   "caddle": {
    "file": "caddle.png",
@@ -734,7 +795,12 @@
    "px": [
     192,
     192
-   ]
+   ],
+   "brand": {
+    "bg": "#224c78",
+    "fg": "#ffffff",
+    "source": "dominant brand colour sampled from the official logo file above (https://www.caddle.ca/); text colour picked for >=4.5:1 contrast"
+   }
   },
   "chexy": {
    "file": "chexy.png",
@@ -745,7 +811,12 @@
    "px": [
     512,
     512
-   ]
+   ],
+   "brand": {
+    "bg": "#7a28d9",
+    "fg": "#ffffff",
+    "source": "dominant brand colour sampled from the official logo file above (https://www.chexy.co/); text colour picked for >=4.5:1 contrast"
+   }
   },
   "m-amazon": {
    "file": "m-amazon.png",
@@ -877,18 +948,12 @@
    "px": [
     960,
     130
-   ]
-  },
-  "air-miles": {
-   "file": "air-miles.png",
-   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Air%20Miles.svg?width=960",
-   "official_page": "https://commons.wikimedia.org/wiki/File:Air_Miles.svg",
-   "fetched": "2026-10-30",
-   "format": "PNG (Wikimedia Commons render of the SVG)",
-   "px": [
-    960,
-    174
-   ]
+   ],
+   "brand": {
+    "bg": "#000000",
+    "fg": "#ffffff",
+    "source": "dominant brand colour sampled from the official logo file above (https://commons.wikimedia.org/wiki/File:Aeroplan_2020_Logo.svg); text colour picked for >=4.5:1 contrast"
+   }
   },
   "westjet-rewards": {
    "file": "westjet-rewards.png",
@@ -899,7 +964,12 @@
    "px": [
     960,
     193
-   ]
+   ],
+   "brand": {
+    "bg": "#00467f",
+    "fg": "#ffffff",
+    "source": "dominant brand colour sampled from the official logo file above (https://commons.wikimedia.org/wiki/File:WestJetLogo2018.svg); text colour picked for >=4.5:1 contrast"
+   }
   },
   "world-of-hyatt": {
    "file": "world-of-hyatt.png",
@@ -910,7 +980,12 @@
    "px": [
     960,
     233
-   ]
+   ],
+   "brand": {
+    "bg": "#4e7baf",
+    "fg": "#111111",
+    "source": "dominant brand colour sampled from the official logo file above (https://commons.wikimedia.org/wiki/File:Hyatt_Logo.svg); text colour picked for >=4.5:1 contrast"
+   }
   },
   "ihg-one": {
    "file": "ihg-one.png",
@@ -921,7 +996,12 @@
    "px": [
     960,
     159
-   ]
+   ],
+   "brand": {
+    "bg": "#000000",
+    "fg": "#ffffff",
+    "source": "dominant brand colour sampled from the official logo file above (https://commons.wikimedia.org/wiki/File:IHG_Hotels_%26_Resorts_logo.svg); text colour picked for >=4.5:1 contrast"
+   }
   },
   "tims-rewards": {
    "file": "tims-rewards.png",
@@ -932,7 +1012,12 @@
    "px": [
     960,
     184
-   ]
+   ],
+   "brand": {
+    "bg": "#c8102f",
+    "fg": "#ffffff",
+    "source": "dominant brand colour sampled from the official logo file above (https://commons.wikimedia.org/wiki/File:Tim_Hortons_Logo.svg); text colour picked for >=4.5:1 contrast"
+   }
   },
   "petro-points": {
    "file": "petro-points.png",
@@ -943,7 +1028,12 @@
    "px": [
     960,
     727
-   ]
+   ],
+   "brand": {
+    "bg": "#ef293d",
+    "fg": "#111111",
+    "source": "dominant brand colour sampled from the official logo file above (https://commons.wikimedia.org/wiki/File:Petro-Canada_logo.svg); text colour picked for >=4.5:1 contrast"
+   }
   },
   "prioritypass": {
    "file": "prioritypass.png",
@@ -1000,7 +1090,12 @@
    "px": [
     512,
     512
-   ]
+   ],
+   "brand": {
+    "bg": "#0b0b0b",
+    "fg": "#ffffff",
+    "source": "dominant brand colour sampled from the official logo file above (https://apps.apple.com/ca/app/marriott-bonvoy/id455004730); text colour picked for >=4.5:1 contrast"
+   }
   },
   "hilton-honors": {
    "file": "hilton-honors.png",
@@ -1013,7 +1108,12 @@
    "px": [
     512,
     512
-   ]
+   ],
+   "brand": {
+    "bg": "#000000",
+    "fg": "#ffffff",
+    "source": "dominant brand colour sampled from the official logo file above (https://apps.apple.com/ca/app/hilton-honors-book-hotels/id635150066); text colour picked for >=4.5:1 contrast"
+   }
   },
   "triangle": {
    "file": "triangle.png",
@@ -1026,7 +1126,12 @@
    "px": [
     512,
     512
-   ]
+   ],
+   "brand": {
+    "bg": "#e7131a",
+    "fg": "#ffffff",
+    "source": "dominant brand colour sampled from the official logo file above (https://apps.apple.com/ca/app/triangle/id1343453471); text colour picked for >=4.5:1 contrast"
+   }
   },
   "headspace": {
    "file": "headspace.png",
@@ -1174,11 +1279,898 @@
     960,
     386
    ]
+  },
+  "Questrade": {
+   "file": "questrade.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Questrade%20logo.svg?width=512",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Questrade_logo.svg",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
+   "px": [
+    960,
+    447
+   ],
+   "fetched": "2026-11-01",
+   "kind": "institution",
+   "grey": [
+    "a",
+    1
+   ]
+  },
+  "Webull Canada": {
+   "file": "webull-canada.png",
+   "source_url": "https://wbstatic.webullfintech.com/app/picture/10013412eaf600e19ce46544f91cb5d8.png",
+   "official_page": "https://www.webull.com/",
+   "format": "PNG",
+   "px": [
+    180,
+    180
+   ],
+   "fetched": "2026-11-01",
+   "kind": "institution"
+  },
+  "Interactive Brokers Canada": {
+   "file": "interactive-brokers-canada.png",
+   "source_url": "https://www.interactivebrokers.ca/images/web/favicons/home-screen-icon-192x192.png",
+   "official_page": "https://www.interactivebrokers.ca/",
+   "format": "PNG",
+   "px": [
+    192,
+    192
+   ],
+   "fetched": "2026-11-01",
+   "kind": "institution"
+  },
+  "Moomoo Canada": {
+   "file": "moomoo-canada.png",
+   "source_url": "https://cdn.futustatic.com/moomoo_common/images/mm_logo.png",
+   "official_page": "https://www.moomoo.com/ca",
+   "format": "PNG",
+   "px": [
+    400,
+    400
+   ],
+   "fetched": "2026-11-01",
+   "kind": "institution"
+  },
+  "Qtrade Direct Investing": {
+   "file": "qtrade-direct-investing.png",
+   "source_url": "https://www.qtrade.ca/etc.clientlibs/qtrade/clientlibs/investor/resources/favicon-192x192.png",
+   "official_page": "https://www.qtrade.ca/",
+   "format": "PNG",
+   "px": [
+    192,
+    192
+   ],
+   "fetched": "2026-11-01",
+   "kind": "institution"
+  },
+  "Manulife Bank": {
+   "file": "manulife-bank.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Manulife%20Bank%20of%20Canada%20logo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Manulife_Bank_of_Canada_logo.svg",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
+   "px": [
+    960,
+    121
+   ],
+   "fetched": "2026-11-01",
+   "kind": "institution"
+  },
+  "Cambrian Credit Union": {
+   "file": "cambrian-credit-union.png",
+   "source_url": "https://cdn.prod.website-files.com/6311c84a0d09395f09cb68e2/6369a666fb2692f3b0313556_cambrian-favicon%402x.png",
+   "official_page": "https://www.cambrian.mb.ca/",
+   "format": "PNG",
+   "px": [
+    256,
+    256
+   ],
+   "fetched": "2026-11-01",
+   "kind": "institution"
+  },
+  "Prospera Credit Union": {
+   "file": "prospera-credit-union.ico",
+   "source_url": "https://www.prospera.ca/assets/favicon.png",
+   "official_page": "https://www.prospera.ca/",
+   "format": "ICO (served under a .png name)",
+   "px": [
+    256,
+    256
+   ],
+   "fetched": "2026-11-01",
+   "kind": "institution"
+  },
+  "First Nations Bank of Canada": {
+   "file": "first-nations-bank-of-canada.png",
+   "source_url": "https://www.fnbc.ca/assets/favicon.png",
+   "official_page": "https://www.fnbc.ca/",
+   "format": "PNG",
+   "px": [
+    16,
+    16
+   ],
+   "fetched": "2026-11-01",
+   "kind": "institution"
+  },
+  "viporter": {
+   "file": "viporter.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Porter%20Airlines%20Logo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Porter_Airlines_Logo.svg",
+   "fetched": "2026-11-03",
+   "format": "PNG (Wikimedia Commons render of the official logo)",
+   "px": [
+    960,
+    350
+   ],
+   "brand": {
+    "bg": "#231f20",
+    "fg": "#ffffff",
+    "source": "dominant brand colour sampled from the official logo file above (https://commons.wikimedia.org/wiki/File:Porter_Airlines_Logo.svg); text colour picked for >=4.5:1 contrast"
+   },
+   "note": "program has no standalone logo on file; operator brand logo (Porter Airlines)"
+  },
+  "best-western": {
+   "file": "best-western.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Best%20Western%20Hotels%20%26%20Resorts%20logo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Best_Western_Hotels_%26_Resorts_logo.svg",
+   "fetched": "2026-11-03",
+   "format": "PNG (Wikimedia Commons render of the official logo)",
+   "px": [
+    960,
+    191
+   ],
+   "brand": {
+    "bg": "#1e407c",
+    "fg": "#ffffff",
+    "source": "dominant brand colour sampled from the official logo file above (https://commons.wikimedia.org/wiki/File:Best_Western_Hotels_%26_Resorts_logo.svg); text colour picked for >=4.5:1 contrast"
+   }
+  },
+  "choice-privileges": {
+   "file": "choice-privileges.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Choice%20Hotels%20logo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Choice_Hotels_logo.svg",
+   "fetched": "2026-11-03",
+   "format": "PNG (Wikimedia Commons render of the official logo)",
+   "px": [
+    960,
+    248
+   ],
+   "brand": {
+    "bg": "#f57f29",
+    "fg": "#111111",
+    "source": "dominant brand colour sampled from the official logo file above (https://commons.wikimedia.org/wiki/File:Choice_Hotels_logo.svg); text colour picked for >=4.5:1 contrast"
+   }
+  },
+  "be-well": {
+   "file": "be-well.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Rexall%20Canada%20logo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Rexall_Canada_logo.svg",
+   "fetched": "2026-11-03",
+   "format": "PNG (Wikimedia Commons render of the official logo)",
+   "px": [
+    960,
+    322
+   ],
+   "brand": {
+    "bg": "#38a69a",
+    "fg": "#111111",
+    "source": "dominant brand colour sampled from the official logo file above (https://commons.wikimedia.org/wiki/File:Rexall_Canada_logo.svg); text colour picked for >=4.5:1 contrast"
+   },
+   "note": "program has no standalone logo on file; operator brand logo (Rexall)"
+  },
+  "savi": {
+   "file": "savi.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Value%20Village%20Logo.png?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Value_Village_Logo.png",
+   "fetched": "2026-11-03",
+   "format": "PNG (Wikimedia Commons render of the official logo)",
+   "px": [
+    586,
+    87
+   ],
+   "brand": {
+    "bg": "#e9221d",
+    "fg": "#111111",
+    "source": "dominant brand colour sampled from the official logo file above (https://commons.wikimedia.org/wiki/File:Value_Village_Logo.png); text colour picked for >=4.5:1 contrast"
+   },
+   "note": "program has no standalone logo on file; operator brand logo (Value Village)"
+  },
+  "plum": {
+   "file": "plum.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Indigo%20logo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Indigo_logo.svg",
+   "fetched": "2026-11-03",
+   "format": "PNG (Wikimedia Commons render of the official logo)",
+   "px": [
+    960,
+    488
+   ],
+   "brand": {
+    "bg": "#222222",
+    "fg": "#ffffff",
+    "source": "dominant brand colour sampled from the official logo file above (https://commons.wikimedia.org/wiki/File:Indigo_logo.svg); text colour picked for >=4.5:1 contrast"
+   },
+   "note": "program has no standalone logo on file; operator brand logo (Indigo)"
+  },
+  "sephora-bi": {
+   "file": "sephora-bi.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Sephora%20logo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Sephora_logo.svg",
+   "fetched": "2026-11-03",
+   "format": "PNG (Wikimedia Commons render of the official logo)",
+   "px": [
+    960,
+    125
+   ],
+   "brand": {
+    "bg": "#000000",
+    "fg": "#ffffff",
+    "source": "dominant brand colour sampled from the official logo file above (https://commons.wikimedia.org/wiki/File:Sephora_logo.svg); text colour picked for >=4.5:1 contrast"
+   },
+   "note": "program has no standalone logo on file; operator brand logo (Sephora)"
+  },
+  "hbc": {
+   "file": "hbc.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Hudson%27s%20Bay%20Wordmark%202013.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Hudson%27s_Bay_Wordmark_2013.svg",
+   "fetched": "2026-11-03",
+   "format": "PNG (Wikimedia Commons render of the official logo)",
+   "px": [
+    960,
+    97
+   ],
+   "brand": {
+    "bg": "#000000",
+    "fg": "#ffffff",
+    "source": "dominant brand colour sampled from the official logo file above (https://commons.wikimedia.org/wiki/File:Hudson%27s_Bay_Wordmark_2013.svg); text colour picked for >=4.5:1 contrast"
+   },
+   "note": "program has no standalone logo on file; operator brand logo (Hudson's Bay)"
+  },
+  "paysimply": {
+   "file": "paysimply.png",
+   "source_url": "https://www.paysimply.ca/images/logos/PaySimply-Lg.png",
+   "official_page": "https://www.paysimply.ca/",
+   "fetched": "2026-11-03",
+   "format": "PNG",
+   "px": [
+    2297,
+    658
+   ],
+   "brand": {
+    "bg": "#111111",
+    "fg": "#ffffff",
+    "source": "dominant brand colour sampled from the official logo file above (https://www.paysimply.ca/); text colour picked for >=4.5:1 contrast",
+    "onbrand": true
+   }
+  },
+  "plastiq": {
+   "file": "plastiq.png",
+   "source_url": "https://www.plastiq.com/wp-content/themes/pq2021/assets/iq/favicons/apple-touch-icon.png",
+   "official_page": "https://www.plastiq.com/",
+   "fetched": "2026-11-03",
+   "format": "PNG",
+   "px": [
+    152,
+    152
+   ],
+   "brand": {
+    "bg": "#081f2d",
+    "fg": "#ffffff",
+    "source": "dominant brand colour sampled from the official logo file above (https://www.plastiq.com/); text colour picked for >=4.5:1 contrast"
+   }
+  },
+  "journie": {
+   "file": "journie.png",
+   "source_url": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/f8/7a/37/f87a3746-8bfb-c8ce-623a-d6e546d0d44a/AppIconProd-0-0-1x_U007ephone-0-1-85-220.png/512x512bb.png",
+   "official_page": "https://apps.apple.com/ca/app/journie-rewards/ (seller: Parkland Corporation)",
+   "fetched": "2026-11-03",
+   "format": "PNG",
+   "px": [
+    512,
+    512
+   ],
+   "brand": {
+    "bg": "#00023c",
+    "fg": "#ffffff",
+    "source": "dominant brand colour sampled from the official logo file above (https://apps.apple.com/ca/app/journie-rewards/ (seller: Parkland Corporation)); text colour picked for >=4.5:1 contrast"
+   },
+   "note": "official App Store app icon"
+  },
+  "gcr": {
+   "file": "gcr.png",
+   "source_url": "https://is1-ssl.mzstatic.com/image/thumb/Purple126/v4/20/1d/77/201d7784-9982-04a7-6a40-5e5f4bae472f/AppIcon-1x_U007ephone-85-220.png/512x512bb.png",
+   "official_page": "https://apps.apple.com/ca/app/great-canadian-rebates/ (seller: 1727486 Ontario Inc.)",
+   "fetched": "2026-11-03",
+   "format": "PNG",
+   "px": [
+    512,
+    512
+   ],
+   "brand": {
+    "bg": "#da3f33",
+    "fg": "#ffffff",
+    "source": "dominant brand colour sampled from the official logo file above (https://apps.apple.com/ca/app/great-canadian-rebates/ (seller: 1727486 Ontario Inc.)); text colour picked for >=4.5:1 contrast"
+   },
+   "note": "official App Store app icon"
+  },
+  "geniuscash": {
+   "file": "geniuscash.png",
+   "source_url": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/cf/14/17/cf1417ac-ab6b-2083-0a2b-9b1153c7c9b5/AppIcon-0-0-1x_U007ephone-0-1-85-220.png/512x512bb.png",
+   "official_page": "https://apps.apple.com/ca/app/geniuscash-money-rewards/ (seller: WeyMedia Inc.)",
+   "fetched": "2026-11-03",
+   "format": "PNG",
+   "px": [
+    512,
+    512
+   ],
+   "brand": {
+    "bg": "#13863f",
+    "fg": "#ffffff",
+    "source": "dominant brand colour sampled from the official logo file above (https://apps.apple.com/ca/app/geniuscash-money-rewards/ (seller: WeyMedia Inc.)); text colour picked for >=4.5:1 contrast"
+   },
+   "note": "official App Store app icon"
+  },
+  "co-op-fuel": {
+   "file": "co-op-fuel.png",
+   "source_url": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/3f/26/51/3f265161-8224-42df-8b0f-dc6ad2d76534/AppIcon-0-0-1x_U007emarketing-0-7-0-85-220.png/512x512bb.png",
+   "official_page": "https://apps.apple.com/ca/app/co-op-food-fuel-home/ (seller: Federated Co-operatives Limited)",
+   "fetched": "2026-11-03",
+   "format": "PNG",
+   "px": [
+    512,
+    512
+   ],
+   "brand": {
+    "bg": "#cc0000",
+    "fg": "#ffffff",
+    "source": "dominant brand colour sampled from the official logo file above (https://apps.apple.com/ca/app/co-op-food-fuel-home/ (seller: Federated Co-operatives Limited)); text colour picked for >=4.5:1 contrast"
+   },
+   "note": "official App Store app icon (Co-op: Food, Fuel, Home)"
+  },
+  "checkout51": {
+   "file": "checkout51.svg",
+   "source_url": "https://www.checkout51.com/assets/img/newhome/Checkout51_Logo_Screen_White.svg",
+   "official_page": "https://www.checkout51.com/",
+   "fetched": "2026-11-03",
+   "format": "SVG",
+   "px": [
+    1583,
+    434
+   ],
+   "brand": {
+    "bg": "#138667",
+    "fg": "#ffffff",
+    "source": "dominant brand colour sampled from the official logo file above (https://www.checkout51.com/); text colour picked for >=4.5:1 contrast",
+    "onbrand": true
+   },
+   "note": "white wordmark from the official site header; shown on the brand colour (brand.onbrand), colour sampled from the official App Store icon",
+   "grey": [
+    "a",
+    1
+   ]
+  },
+  "telus-rewards": {
+   "file": "telus-rewards.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Telus-Logo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Telus-Logo.svg",
+   "fetched": "2026-11-03",
+   "format": "PNG (Wikimedia Commons render of the official logo)",
+   "px": [
+    960,
+    197
+   ],
+   "brand": {
+    "bg": "#49266c",
+    "fg": "#ffffff",
+    "source": "dominant brand colour sampled from the official logo file above (https://commons.wikimedia.org/wiki/File:Telus-Logo.svg); text colour picked for >=4.5:1 contrast"
+   },
+   "note": "program has no standalone logo on file; operator brand logo (TELUS)"
+  },
+  "public-points": {
+   "file": "public-points.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Public%20Mobile%20logo.png?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Public_Mobile_logo.png",
+   "fetched": "2026-11-03",
+   "format": "PNG (Wikimedia Commons render of the official logo)",
+   "px": [
+    960,
+    340
+   ],
+   "brand": {
+    "bg": "#00474f",
+    "fg": "#ffffff",
+    "source": "dominant brand colour sampled from the official logo file above (https://commons.wikimedia.org/wiki/File:Public_Mobile_logo.png); text colour picked for >=4.5:1 contrast"
+   },
+   "note": "program has no standalone logo on file; operator brand logo (Public Mobile)"
+  },
+  "fizz-rewards": {
+   "file": "fizz-rewards.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Fizz%20Logo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Fizz_Logo.svg",
+   "fetched": "2026-11-03",
+   "format": "PNG (Wikimedia Commons render of the official logo)",
+   "px": [
+    960,
+    475
+   ],
+   "brand": {
+    "bg": "#00d672",
+    "fg": "#111111",
+    "source": "dominant brand colour sampled from the official logo file above (https://commons.wikimedia.org/wiki/File:Fizz_Logo.svg); text colour picked for >=4.5:1 contrast"
+   },
+   "note": "program has no standalone logo on file; operator brand logo (Fizz)"
+  },
+  "blue-rewards": {
+   "file": "blue-rewards.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Blue%20Rewards%20logo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Blue_Rewards_logo.svg",
+   "fetched": "2026-11-03",
+   "format": "PNG (Wikimedia Commons render of the official logo)",
+   "px": [
+    960,
+    512
+   ],
+   "brand": {
+    "bg": "#0075be",
+    "fg": "#ffffff",
+    "source": "dominant brand colour sampled from the official logo file above (https://commons.wikimedia.org/wiki/File:Blue_Rewards_logo.svg); text colour picked for >=4.5:1 contrast"
+   },
+   "note": "program logo (Blue Rewards, BMO; replaced AIR MILES 2026-06-02)"
+  },
+  "chatgpt": {
+   "file": "chatgpt.png",
+   "source_url": "https://chatgpt.com/cdn/assets/favicon-180x180.9e0103ce69.png",
+   "official_page": "https://chatgpt.com/",
+   "fetched": "2026-11-05",
+   "format": "PNG",
+   "px": [
+    180,
+    180
+   ]
+  },
+  "claude": {
+   "file": "claude.png",
+   "source_url": "https://claude.com/icon.png",
+   "official_page": "https://claude.com/",
+   "fetched": "2026-11-05",
+   "format": "PNG",
+   "px": [
+    192,
+    192
+   ]
+  },
+  "googleai": {
+   "file": "googleai.png",
+   "source_url": "https://www.gstatic.com/lamda/images/gemini_sparkle_4g_512_lt_f94943af3be039176192d.png",
+   "official_page": "https://gemini.google.com/",
+   "fetched": "2026-11-05",
+   "format": "PNG",
+   "px": [
+    512,
+    512
+   ]
+  },
+  "xsub": {
+   "file": "xsub.png",
+   "source_url": "https://grok.com/images/apple-touch-icon.png",
+   "official_page": "https://grok.com/",
+   "fetched": "2026-11-05",
+   "format": "PNG",
+   "px": [
+    180,
+    180
+   ],
+   "note": "Grok mark. The X Subscription also includes Cursor and X; x.ai returned 403 and did not serve an icon."
+  },
+  "microsoft365": {
+   "file": "microsoft365.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Microsoft%20365%20%282022%29.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Microsoft_365_(2022).svg",
+   "fetched": "2026-11-05",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
+   "px": [
+    960,
+    1056
+   ]
+  },
+  "copilotpro": {
+   "file": "copilotpro.png",
+   "source_url": "https://res.cdn.office.net/officehub/images/content/images/unauth-copilotcom/favicon-copilot-brand-refresh-23392c1f66.ico",
+   "official_page": "https://copilot.microsoft.com/",
+   "fetched": "2026-11-05",
+   "format": "PNG (largest image in the official ICO, 48px)",
+   "px": [
+    48,
+    48
+   ]
+  },
+  "ghcopilot": {
+   "file": "ghcopilot.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/GitHub%20Copilot%20logo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:GitHub_Copilot_logo.svg",
+   "fetched": "2026-11-05",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
+   "px": [
+    960,
+    121
+   ]
+  },
+  "midjourney": {
+   "file": "midjourney.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Midjourney%20Emblem.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Midjourney_Emblem.svg",
+   "fetched": "2026-11-05",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
+   "px": [
+    960,
+    960
+   ]
+  },
+  "mistral": {
+   "file": "mistral.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Mistral%20AI%20logo%20%282025%E2%80%93%29.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Mistral_AI_logo_(2025%E2%80%93).svg",
+   "fetched": "2026-11-05",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
+   "px": [
+    960,
+    678
+   ]
+  },
+  "perplexity": {
+   "file": "perplexity.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Perplexity%20AI%20logo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Perplexity_AI_logo.svg",
+   "fetched": "2026-11-05",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
+   "px": [
+    960,
+    231
+   ]
+  },
+  "discoveryplus": {
+   "file": "discoveryplus.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Discovery%20Plus%20logo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Discovery_Plus_logo.svg",
+   "fetched": "2026-11-05",
+   "format": "PNG (Wikimedia Commons render of the Discovery+ logo)",
+   "px": [
+    960,
+    193
+   ],
+   "note": "File:Discovery Plus logo.svg, the press.discoveryplus.com brand mark (colour D and the discovery+ word). Shown in those colours; the grey threshold is not applied on subscription tiles."
+  },
+  "cbcgem": {
+   "file": "cbcgem.png",
+   "source_url": "https://gem.cbc.ca/apple-touch-icon.png",
+   "official_page": "https://gem.cbc.ca/",
+   "fetched": "2026-11-05",
+   "format": "PNG",
+   "px": [
+    180,
+    180
+   ]
+  },
+  "starz": {
+   "file": "starz.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Starz%20HD%20logo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Starz_HD_logo.svg",
+   "fetched": "2026-11-05",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
+   "px": [
+    960,
+    209
+   ]
+  },
+  "amcplus": {
+   "file": "amcplus.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/AMC%2B%20logo.png",
+   "official_page": "https://commons.wikimedia.org/wiki/File:AMC%2B_logo.png",
+   "fetched": "2026-11-05",
+   "format": "PNG (Commons AMC+ mark, the white plus recolored to the brand teal #21d9d4 so the whole word reads on a white tile)",
+   "hex": "21D9D4",
+   "px": [
+    993,
+    566
+   ],
+   "note": "The Commons file is amc in teal and a white plus. The plus is drawn in the same teal, with a margin, so the full amc+ reads in the brand colour on a light or dark tile."
+  },
+  "britbox": {
+   "file": "britbox.png",
+   "source_url": "https://www.britbox.com/Content/img/favicon/apple-touch-icon-v2.png",
+   "official_page": "https://www.britbox.com/ca",
+   "fetched": "2026-11-05",
+   "format": "PNG",
+   "px": [
+    180,
+    180
+   ]
+  },
+  "paramountplus": {
+   "file": "paramountplus.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Paramount%2B%20logo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Paramount%2B_logo.svg",
+   "fetched": "2026-11-05",
+   "format": "PNG (Wikimedia Commons render of the SVG)",
+   "px": [
+    960,
+    222
+   ]
+  },
+  "dazn": {
+   "file": "dazn.png",
+   "source_url": "https://www.dazn.com/icons/apple-touch-icon-180x180.png",
+   "official_page": "https://www.dazn.com/en-CA/home",
+   "fetched": "2026-11-05",
+   "format": "PNG",
+   "px": [
+    180,
+    180
+   ]
+  },
+  "superchannel": {
+   "file": "superchannel.png",
+   "source_url": "https://superchannel.ca/assets/images/apple-touch-icon-61cc3fe508d426d733927935dfe32e80.png",
+   "official_page": "https://superchannel.ca/",
+   "fetched": "2026-11-05",
+   "format": "PNG",
+   "px": [
+    180,
+    180
+   ]
+  },
+  "acorn": {
+   "file": "acorn.jpg",
+   "source_url": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/22/93/68/22936840-60e1-6db1-89e1-8c86951f39d8/AppIcon-0-0-1x_U007epad-0-1-0-85-220.png/512x512bb.jpg",
+   "official_page": "https://apps.apple.com/ca/app/id896014310",
+   "fetched": "2026-11-05",
+   "format": "JPEG",
+   "px": [
+    512,
+    512
+   ]
+  },
+  "st-wealthsimple": {
+   "file": "wealthsimple.png",
+   "source_url": "https://www.wealthsimple.com/icon1.png?39b8825bd6a1a38d",
+   "official_page": "https://www.wealthsimple.com/en-ca",
+   "format": "PNG",
+   "px": [
+    196,
+    196
+   ],
+   "fetched": "2026-10-29",
+   "brand": {
+    "bg": "#1c1b1b",
+    "fg": "#ffffff",
+    "source": "dominant brand colour sampled from the official logo file above; text colour picked for >=4.5:1 contrast"
+   },
+   "note": "Loyalty > Status tile (Wealthsimple client status); same file as Wealthsimple"
+  },
+  "st-rbc": {
+   "file": "rbc-shield.png",
+   "source_url": "https://www.rbcroyalbank.com/dvl/assets/images/logos/rbc-logo-shield.svg",
+   "official_page": "https://www.rbcroyalbank.com/personal.html",
+   "format": "PNG (render of the official SVG)",
+   "px": [
+    207,
+    240
+   ],
+   "fetched": "2026-11-05",
+   "brand": {
+    "bg": "#0059b3",
+    "fg": "#ffffff",
+    "source": "dominant brand colour sampled from the official logo file above; text colour picked for >=4.5:1 contrast"
+   },
+   "note": "Loyalty > Status tile (RBC banking package)"
+  },
+  "st-telus": {
+   "file": "telus-rewards.png",
+   "source_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Telus-Logo.svg?width=960",
+   "official_page": "https://commons.wikimedia.org/wiki/File:Telus-Logo.svg",
+   "format": "PNG (Wikimedia Commons render of the official logo)",
+   "px": [
+    960,
+    197
+   ],
+   "fetched": "2026-11-03",
+   "brand": {
+    "bg": "#49266c",
+    "fg": "#ffffff",
+    "source": "dominant brand colour sampled from the official logo file above; text colour picked for >=4.5:1 contrast"
+   },
+   "note": "Loyalty > Status tile (TELUS client); same file as TELUS Rewards"
+  },
+  "st-koodo": {
+   "file": "streamplus.png",
+   "source_url": "https://www.koodomobile.com/apple-touch-icon-180x180.png",
+   "official_page": "https://www.koodomobile.com/",
+   "format": "PNG",
+   "px": [
+    180,
+    180
+   ],
+   "fetched": "2026-10-29",
+   "brand": {
+    "bg": "#ff0076",
+    "fg": "#ffffff",
+    "source": "dominant brand colour sampled from the official logo file above; text colour picked for >=4.5:1 contrast"
+   },
+   "note": "Loyalty > Status tile (Koodo client); same file as Koodo Stream+"
+  },
+  "nationalpost": {
+   "file": "nationalpost.png",
+   "source_url": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/78/a3/50/78a350d9-af00-b614-61d3-0b76aea9ba9f/AppIcon-0-0-1x_U007epad-0-1-85-220.png/512x512bb.jpg",
+   "official_page": "https://apps.apple.com/ca/app/id409444645",
+   "fetched": "2026-11-06",
+   "format": "PNG (App Store artworkUrl512)",
+   "px": [
+    512,
+    512
+   ]
+  },
+  "torontostar": {
+   "file": "torontostar.png",
+   "source_url": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/0d/c9/a7/0dc9a736-c79a-ff1c-bdf8-93a89eb657eb/AppIcon-1x_U007emarketing-0-8-0-85-220-0.png/512x512bb.jpg",
+   "official_page": "https://apps.apple.com/ca/app/id379481068",
+   "fetched": "2026-11-06",
+   "format": "PNG (App Store artworkUrl512)",
+   "px": [
+    512,
+    512
+   ]
+  },
+  "montrealgazette": {
+   "file": "montrealgazette.png",
+   "source_url": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/f4/ac/bb/f4acbbbd-a3c0-3ac2-8307-57d871b58446/AppIcon-0-0-1x_U007epad-0-1-85-220.png/512x512bb.jpg",
+   "official_page": "https://apps.apple.com/ca/app/id406389006",
+   "fetched": "2026-11-06",
+   "format": "PNG (App Store artworkUrl512)",
+   "px": [
+    512,
+    512
+   ]
+  },
+  "ottawacitizen": {
+   "file": "ottawacitizen.png",
+   "source_url": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/9f/7c/1d/9f7c1d91-a21a-1b03-9231-175bdbc540c2/AppIcon-0-0-1x_U007epad-0-1-85-220.png/512x512bb.jpg",
+   "official_page": "https://apps.apple.com/ca/app/id822338985",
+   "fetched": "2026-11-06",
+   "format": "PNG (App Store artworkUrl512)",
+   "px": [
+    512,
+    512
+   ]
+  },
+  "vancouversun": {
+   "file": "vancouversun.png",
+   "source_url": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/36/93/c2/3693c280-bc8a-4705-0775-d83fb5ff5ffe/AppIcon-0-0-1x_U007epad-0-1-85-220.png/512x512bb.jpg",
+   "official_page": "https://apps.apple.com/ca/app/id406561903",
+   "fetched": "2026-11-06",
+   "format": "PNG (App Store artworkUrl512)",
+   "px": [
+    512,
+    512
+   ]
+  },
+  "calgaryherald": {
+   "file": "calgaryherald.png",
+   "source_url": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/f4/11/c4/f411c499-e90e-6288-3170-7bca063fdb15/AppIcon-0-0-1x_U007epad-0-1-85-220.png/512x512bb.jpg",
+   "official_page": "https://apps.apple.com/ca/app/id406387666",
+   "fetched": "2026-11-06",
+   "format": "PNG (App Store artworkUrl512)",
+   "px": [
+    512,
+    512
+   ]
+  },
+  "edmontonjournal": {
+   "file": "edmontonjournal.png",
+   "source_url": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/82/fc/88/82fc88ee-c8b7-8cda-b1c7-74181497d07a/AppIcon-0-0-1x_U007epad-0-1-85-220.png/512x512bb.jpg",
+   "official_page": "https://apps.apple.com/ca/app/id406546228",
+   "fetched": "2026-11-06",
+   "format": "PNG (App Store artworkUrl512)",
+   "px": [
+    512,
+    512
+   ]
+  },
+  "ledevoir": {
+   "file": "ledevoir.png",
+   "source_url": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/90/df/12/90df12fa-2fba-8ff2-3137-b3894a3fbf8d/AppIcon-0-0-1x_U007ephone-0-1-85-220.png/512x512bb.jpg",
+   "official_page": "https://apps.apple.com/ca/app/id1119227195",
+   "fetched": "2026-11-06",
+   "format": "PNG (App Store artworkUrl512)",
+   "px": [
+    512,
+    512
+   ]
+  },
+  "lapresse": {
+   "file": "lapresse.png",
+   "source_url": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/05/84/cd/0584cd25-8dc8-995d-0737-d39da1681421/AppIcon-0-0-1x_U007ephone-0-1-0-85-220.png/512x512bb.jpg",
+   "official_page": "https://apps.apple.com/ca/app/id451829003",
+   "fetched": "2026-11-06",
+   "format": "PNG (App Store artworkUrl512)",
+   "px": [
+    512,
+    512
+   ]
+  },
+  "wrrecord": {
+   "file": "wrrecord.png",
+   "source_url": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/4a/cd/85/4acd8578-1271-d7e5-3e91-fe1c9dcc4653/AppIcon-0-1x_U007emarketing-0-11-0-85-220-0.png/512x512bb.jpg",
+   "official_page": "https://apps.apple.com/ca/app/id444565004",
+   "fetched": "2026-11-06",
+   "format": "PNG (App Store artworkUrl512)",
+   "px": [
+    512,
+    512
+   ]
+  },
+  "thelogic": {
+   "file": "thelogic.png",
+   "source_url": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/f5/0b/ed/f50bedb7-98ab-dbff-5969-9fdd57085bbf/AppIcon-0-0-1x_U007epad-0-1-85-220.png/512x512bb.jpg",
+   "official_page": "https://apps.apple.com/ca/app/id1637688600",
+   "fetched": "2026-11-06",
+   "format": "PNG (App Store artworkUrl512)",
+   "px": [
+    512,
+    512
+   ]
+  },
+  "winnipegfp": {
+   "file": "winnipegfp.png",
+   "source_url": "https://www.winnipegfreepress.com/favicon.ico",
+   "official_page": "https://www.winnipegfreepress.com/",
+   "fetched": "2026-11-06",
+   "format": "PNG (from site favicon.ico)",
+   "px": [
+    256,
+    256
+   ]
+  },
+  "walrus": {
+   "file": "walrus.png",
+   "source_url": "https://icons.duckduckgo.com/ip3/thewalrus.ca.ico",
+   "official_page": "https://thewalrus.ca/",
+   "fetched": "2026-11-06",
+   "format": "PNG (site favicon via DuckDuckGo icons)",
+   "px": [
+    48,
+    48
+   ]
+  },
+  "macleans": {
+   "file": "macleans.png",
+   "source_url": "https://www.google.com/s2/favicons?domain=macleans.ca&sz=128",
+   "official_page": "https://macleans.ca/",
+   "fetched": "2026-11-06",
+   "format": "PNG (site favicon)",
+   "px": [
+    256,
+    256
+   ]
+  },
+  "applenews": {
+   "file": "applenews.png",
+   "color_file": "applenews.svg",
+   "source_url": "https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/applenews.svg",
+   "official_page": "https://www.apple.com/ca/apple-news/",
+   "fetched": "2026-11-06",
+   "format": "PNG wordmark panel + SVG (simple-icons Apple News, fill #FA2D28)",
+   "hex": "#FA2D28",
+   "px": [
+    512,
+    512
+   ]
   }
  },
  "missing": {
   "Vancity": "no icon found on https://www.vancity.com/ (fetch 2026-10-29); tile shows a text monogram",
-  "Home Trust": "hometrust.ca serves a generic WordPress favicon, not a Home Trust logo (checked 2026-10-29); tile shows a text monogram"
+  "Home Trust": "hometrust.ca serves a generic WordPress favicon, not a Home Trust logo (checked 2026-10-29); tile shows a text monogram",
+  "CI Direct Trading": "cidirecttrading.com returns Cloudflare error 1016 to every fetch (2026-11-01); tile shows a text monogram",
+  "Drop": "joindrop.com does not resolve, earnwithdrop.com now serves an unrelated site, no Drop app on the Canadian App Store or Google Play (checked 2026-11-03); tile shows a text monogram"
  },
  "icons": {
   "set": "CICO in Website/src/app.js",

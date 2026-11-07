@@ -1,0 +1,86 @@
+line,key,name,table,child,sql,cat,type,unit,cov,n,cov_pct,pts,CITED,ESTIMATE,REPORTED,VERIFIED,in_tables,suggested,desc
+Brokers,issuer,Issuer,cards,,TEXT,Product,text,,16,16,100.0,16,0,0,0,0,Not shown,Brokers › Overview,Product attribute: issuer
+Brokers,issuer_parent,Issuer parent,cards,,TEXT,Product,text,,1,16,6.2,1,0,0,0,0,Not shown,Brokers › Overview,Product attribute: issuer parent
+Brokers,card_name,Card name,cards,,TEXT,Product,text,,16,16,100.0,16,0,0,0,0,Not shown,Brokers › Overview,Product attribute: card name
+Brokers,product_status,Product status,cards,,TEXT,Account,enum,,16,16,100.0,16,0,0,0,0,Not shown,Brokers › Accounts,Account detail: product status
+Brokers,notes,Notes,cards,,TEXT,Source & evidence,text,,16,16,100.0,16,0,0,0,0,Not shown,Brokers › Fees (Tag),Provenance: notes
+Brokers,market,Market,cards,,TEXT,Account,enum,,16,16,100.0,16,0,0,0,0,Not shown,Brokers › Accounts,Account detail: market
+Brokers,issuer_legal_name,Issuer legal name,cards,,TEXT,Product,text,,10,16,62.5,10,0,0,0,0,Not shown,Brokers › Overview,Product attribute: issuer legal name
+Brokers,issuer_brand,Issuer brand,cards,,TEXT,Product,text,,16,16,100.0,16,0,0,0,0,Not shown,Brokers › Overview,Product attribute: issuer brand
+Brokers,product_type,Product type,cards,,TEXT,Account,enum,,16,16,100.0,16,0,0,0,0,Not shown,Brokers › Accounts,Account detail: product type
+Brokers,country,Country,cards,,TEXT,Product,enum,,16,16,100.0,16,0,0,0,0,Not shown,Brokers › Overview,Product attribute: country
+Brokers,site_hidden,Site hidden,cards,,INTEGER,Product,boolean,,16,16,100.0,16,0,0,0,0,Not shown,Brokers › Overview,1 = kept in the record but left out of the site export; 0 = shown
+Brokers,snapshot_date,Snapshot date,brokerage_snapshots,,TEXT,Source & evidence,date,date,16,16,100.0,16,2,0,0,13,Not shown,Brokers › Fees (Tag),Provenance: snapshot date
+Brokers,verification_status,Verification status,brokerage_snapshots,,TEXT,Source & evidence,enum,,16,16,100.0,16,2,0,0,13,Brokers › Features; Brokers › Fees,,Provenance: verification status
+Brokers,notes,Notes,brokerage_snapshots,,TEXT,Source & evidence,list,,16,16,100.0,16,2,0,0,13,Not shown,Brokers › Fees (Tag),Provenance: notes
+Brokers,source_url,Source url,brokerage_snapshots,,TEXT,Source & evidence,text,,16,16,100.0,16,2,0,0,13,Not shown,Brokers › Fees (Tag),Provenance: source url
+Brokers,equity_commission,Equity commission,brokerage_snapshots,,TEXT,Fee,list,,14,16,87.5,14,0,0,0,13,Brokers › Fees,,"What the broker charges: equity commission, as published"
+Brokers,equity_commission_cad,Equity commission (CAD),brokerage_snapshots,,REAL,Fee,$,CAD,11,16,68.8,11,0,0,0,10,Not shown,Brokers › Fees,"What the broker charges: equity commission (cad), as published"
+Brokers,etf_commission,ETF commission,brokerage_snapshots,,TEXT,Fee,list,,14,16,87.5,14,0,0,0,13,Brokers › Fees,,"What the broker charges: etf commission, as published"
+Brokers,options_commission,Options commission,brokerage_snapshots,,TEXT,Fee,list,,14,16,87.5,14,0,0,0,13,Brokers › Fees,,"What the broker charges: options commission, as published"
+Brokers,options_assignment_exercise,Options assignment exercise,brokerage_snapshots,,TEXT,Capability,list,,10,16,62.5,10,0,0,0,10,Not shown,Brokers › Features,Whether and how the broker offers options assignment exercise
+Brokers,futures_commission,Futures commission,brokerage_snapshots,,TEXT,Fee,text,,10,16,62.5,10,0,0,0,9,Not shown,Brokers › Fees,"What the broker charges: futures commission, as published"
+Brokers,mutual_fund_commission,Mutual fund commission,brokerage_snapshots,,TEXT,Fee,list,,11,16,68.8,11,0,0,0,10,Not shown,Brokers › Fees,"What the broker charges: mutual fund commission, as published"
+Brokers,fixed_income_commission,Fixed income commission,brokerage_snapshots,,TEXT,Fee,list,,11,16,68.8,11,0,0,0,10,Not shown,Brokers › Fees,"What the broker charges: fixed income commission, as published"
+Brokers,transfer_out_fee,Transfer out fee,brokerage_snapshots,,TEXT,Reward,list,,12,16,75.0,12,0,0,0,11,Brokers › Fees,,Rewards: transfer out fee
+Brokers,transfer_out_fee_amount,Transfer out fee amount,brokerage_snapshots,,REAL,Reward,$,CAD,12,16,75.0,12,0,0,0,11,Not shown,Brokers › Features,Rewards: transfer out fee amount
+Brokers,deregistration_fee,Deregistration fee,brokerage_snapshots,,TEXT,Fee,list,,9,16,56.2,9,0,0,0,9,Not shown,Brokers › Fees,"What the broker charges: deregistration fee, as published"
+Brokers,transfer_in_reimbursement,Transfer in reimbursement,brokerage_snapshots,,TEXT,Reward,list,,7,16,43.8,7,0,0,0,6,Not shown,Brokers › Features,Rewards: transfer in reimbursement
+Brokers,admin_fees,Admin fees,brokerage_snapshots,,TEXT,Fee,list,,15,16,93.8,15,1,0,0,13,Brokers › Fees,,"What the broker charges: admin fees, as published"
+Brokers,inactivity_fees,Inactivity fees,brokerage_snapshots,,TEXT,Fee,text,,14,16,87.5,14,0,0,0,13,Brokers › Fees,,"What the broker charges: inactivity fees, as published"
+Brokers,minimums_waivers,Minimums waivers,brokerage_snapshots,,TEXT,Fee,list,,12,16,75.0,12,0,0,0,11,Not shown,Brokers › Fees,"What the broker charges: minimums waivers, as published"
+Brokers,account_types,Account types,brokerage_snapshots,,TEXT,Account,list,,13,16,81.2,13,0,0,0,12,Not shown,Brokers › Accounts,Account detail: account types
+Brokers,asset_classes,Asset classes,brokerage_snapshots,,TEXT,Eligibility,list,,14,16,87.5,14,0,0,0,13,Not shown,Brokers › Accounts,Who qualifies: asset classes
+Brokers,fractional_shares,Fractional shares,brokerage_snapshots,,TEXT,Capability,text,,14,16,87.5,14,0,0,0,13,Brokers › Features,,Whether and how the broker offers fractional shares
+Brokers,drip,Drip,brokerage_snapshots,,TEXT,Capability,list,,12,16,75.0,12,0,0,0,12,Brokers › Features,,Whether and how the broker offers drip
+Brokers,usd_accounts,USD accounts,brokerage_snapshots,,TEXT,Account,list,,12,16,75.0,12,0,0,0,12,Brokers › Features,,Account detail: usd accounts
+Brokers,market_access,Market access,brokerage_snapshots,,TEXT,Account,list,,9,16,56.2,9,0,0,0,8,Brokers › Features,,Account detail: market access
+Brokers,extended_hours,Extended hours,brokerage_snapshots,,TEXT,Capability,list,,12,16,75.0,12,0,0,0,11,Brokers › Features,,Whether and how the broker offers extended hours
+Brokers,ipo_access,Ipo access,brokerage_snapshots,,TEXT,Capability,list,,11,16,68.8,11,0,0,0,10,Brokers › Features,,Whether and how the broker offers ipo access
+Brokers,fx_conversion,FX conversion,brokerage_snapshots,,TEXT,Reward,list,,13,16,81.2,13,0,0,0,12,Brokers › Fees,,Rewards: fx conversion
+Brokers,norberts_gambit,Norberts gambit,brokerage_snapshots,,TEXT,Capability,list,,12,16,75.0,12,0,0,0,11,Not shown,Brokers › Features,Whether and how the broker offers norberts gambit
+Brokers,margin_offered,Margin offered,brokerage_snapshots,,TEXT,Promo,text,,14,16,87.5,14,0,0,0,13,Brokers › Features,,Promotion: margin offered
+Brokers,margin_rates,Margin rates,brokerage_snapshots,,TEXT,Rate,list,,14,16,87.5,14,0,0,0,13,Not shown,Brokers › Fees,Margin rates as published by the broker
+Brokers,margin_rate_min_cad,Margin rate min (CAD),brokerage_snapshots,,REAL,Rate,$,CAD,10,16,62.5,10,0,0,0,10,Not shown,Brokers › Fees,Margin rate min (CAD) as published by the broker
+Brokers,margin_requirements,Margin requirements,brokerage_snapshots,,TEXT,Rate,list,,5,16,31.2,5,0,0,0,5,Not shown,Brokers › Fees,Margin requirements as published by the broker
+Brokers,shorting,Shorting,brokerage_snapshots,,TEXT,Capability,list,,11,16,68.8,11,0,0,0,10,Brokers › Features,,Whether and how the broker offers shorting
+Brokers,borrow_fees,Borrow fees,brokerage_snapshots,,TEXT,Fee,list,,7,16,43.8,7,0,0,0,6,Not shown,Brokers › Fees,"What the broker charges: borrow fees, as published"
+Brokers,securities_lending,Securities lending,brokerage_snapshots,,TEXT,Capability,list,,5,16,31.2,5,0,0,0,5,Not shown,Brokers › Features,Whether and how the broker offers securities lending
+Brokers,cash_interest,Cash interest,brokerage_snapshots,,TEXT,Rate,list,,11,16,68.8,11,0,0,0,10,Brokers › Features,,Cash interest as published by the broker
+Brokers,partner_benefits,Partner benefits,brokerage_snapshots,,TEXT,Perk,list,,7,16,43.8,7,0,0,0,7,Not shown,Brokers › Features,Perk or benefit: partner benefits
+Brokers,unique_feature,Unique feature,brokerage_snapshots,,TEXT,Capability,list,,14,16,87.5,14,0,0,0,13,Not shown,Brokers › Features,Whether and how the broker offers unique feature
+Brokers,scope_type,Scope type,partner_perks,partner_perks,TEXT,Account,enum,,3,16,18.8,4,0,0,0,4,Not shown,Brokers › Accounts,Account detail: scope type (one row per partner perk)
+Brokers,partner,Partner,partner_perks,partner_perks,TEXT,Perk,text,,3,16,18.8,4,0,0,0,4,Not shown,Brokers › Features,Perk or benefit: partner (one row per partner perk)
+Brokers,perk_class,Perk class,partner_perks,partner_perks,TEXT,Perk,enum,,3,16,18.8,4,0,0,0,4,Not shown,Brokers › Features,Perk or benefit: perk class (one row per partner perk)
+Brokers,title,Title,partner_perks,partner_perks,TEXT,Capability,text,,3,16,18.8,4,0,0,0,4,Not shown,Brokers › Features,Whether and how the broker offers title (one row per partner perk)
+Brokers,benefit_text,Benefit text,partner_perks,partner_perks,TEXT,Perk,text,,3,16,18.8,4,0,0,0,4,Not shown,Brokers › Features,Perk or benefit: benefit text (one row per partner perk)
+Brokers,activation,Activation,partner_perks,partner_perks,TEXT,Capability,text,,3,16,18.8,4,0,0,0,4,Not shown,Brokers › Features,Whether and how the broker offers activation (one row per partner perk)
+Brokers,evidence_type,Evidence type,partner_perks,partner_perks,TEXT,Source & evidence,enum,,3,16,18.8,4,0,0,0,4,Not shown,Brokers › Fees (Tag),Provenance: evidence type (one row per partner perk)
+Brokers,source,Source,partner_perks,partner_perks,TEXT,Source & evidence,list,,3,16,18.8,4,0,0,0,4,Not shown,Brokers › Fees (Tag),Provenance: source (one row per partner perk)
+Brokers,recorded_date,Recorded date,partner_perks,partner_perks,TEXT,Source & evidence,date,date,3,16,18.8,4,0,0,0,4,Not shown,Brokers › Fees (Tag),Provenance: recorded date (one row per partner perk)
+Brokers,snapshot_date,Snapshot date,promos,promos,TEXT,Source & evidence,date,date,3,16,18.8,3,0,0,0,0,Not shown,Brokers › Fees (Tag),Provenance: snapshot date (one row per promotion capture)
+Brokers,promo_text,Promo text,promos,promos,TEXT,Promo,text,,3,16,18.8,3,0,0,0,0,Brokers › Promotions,,Promotion: promo text (one row per promotion capture)
+Brokers,source_url,Source url,promos,promos,TEXT,Source & evidence,text,,3,16,18.8,3,0,0,0,0,Not shown,Brokers › Fees (Tag),Provenance: source url (one row per promotion capture)
+Brokers,line,Line,referral_programs,referral_programs,TEXT,Capability,enum,,7,16,43.8,7,6,0,1,0,Not shown,Brokers › Features,Whether and how the broker offers line (one row per referral program)
+Brokers,institution,Institution,referral_programs,referral_programs,TEXT,Capability,text,,7,16,43.8,7,6,0,1,0,Not shown,Brokers › Features,Whether and how the broker offers institution (one row per referral program)
+Brokers,program,Program,referral_programs,referral_programs,TEXT,Capability,text,,7,16,43.8,7,6,0,1,0,Not shown,Brokers › Features,Whether and how the broker offers program (one row per referral program)
+Brokers,referrer_amount,Referrer amount,referral_programs,referral_programs,REAL,Promo,$,CAD,7,16,43.8,7,6,0,1,0,Not shown,Brokers › Promotions,Cash (or cash-equivalent) value paid to the existing client per qualifying referral. (one row per referral program)
+Brokers,referrer_currency,Referrer currency,referral_programs,referral_programs,TEXT,Promo,enum,,7,16,43.8,7,6,0,1,0,Not shown,Brokers › Promotions,Promotion: referrer currency (one row per referral program)
+Brokers,referee_amount,Referee amount,referral_programs,referral_programs,REAL,Promo,$,CAD,2,16,12.5,2,2,0,0,0,Not shown,Brokers › Promotions,Value paid to the referred friend. (one row per referral program)
+Brokers,referee_currency,Referee currency,referral_programs,referral_programs,TEXT,Promo,text,,2,16,12.5,2,2,0,0,0,Not shown,Brokers › Promotions,Promotion: referee currency (one row per referral program)
+Brokers,conditions,Conditions,referral_programs,referral_programs,TEXT,Capability,list,,7,16,43.8,7,6,0,1,0,Not shown,Brokers › Features,"Eligibility, funding thresholds, ladders and caps as published. (one row per referral program)"
+Brokers,status,Status,referral_programs,referral_programs,TEXT,Account,text,,7,16,43.8,7,6,0,1,0,Not shown,Brokers › Accounts,Program state on recorded_date. (one row per referral program)
+Brokers,start_date,Start date,referral_programs,referral_programs,TEXT,Capability,date,date,2,16,12.5,2,2,0,0,0,Not shown,Brokers › Features,Whether and how the broker offers start date (one row per referral program)
+Brokers,end_date,End date,referral_programs,referral_programs,TEXT,Capability,date,date,2,16,12.5,2,2,0,0,0,Not shown,Brokers › Features,Whether and how the broker offers end date (one row per referral program)
+Brokers,evidence_class,Evidence class,referral_programs,referral_programs,TEXT,Source & evidence,enum,,7,16,43.8,7,6,0,1,0,Not shown,Brokers › Fees (Tag),Comparability Standard class of the row. (one row per referral program)
+Brokers,evidence_path,Evidence path,referral_programs,referral_programs,TEXT,Source & evidence,text,,6,16,37.5,6,6,0,0,0,Not shown,Brokers › Fees (Tag),Provenance: evidence path (one row per referral program)
+Brokers,source_url,Source url,referral_programs,referral_programs,TEXT,Source & evidence,text,,6,16,37.5,6,5,0,1,0,Not shown,Brokers › Fees (Tag),Provenance: source url (one row per referral program)
+Brokers,recorded_date,Recorded date,referral_programs,referral_programs,TEXT,Source & evidence,date,date,7,16,43.8,7,6,0,1,0,Not shown,Brokers › Fees (Tag),Provenance: recorded date (one row per referral program)
+Brokers,issuer,Issuer,sources,sources,TEXT,Capability,text,,14,16,87.5,92,0,0,24,67,Not shown,Brokers › Features,Whether and how the broker offers issuer (one row per archived source)
+Brokers,fields_covered,Fields covered,sources,sources,TEXT,Capability,list,,14,16,87.5,92,0,0,24,67,Not shown,Brokers › Features,Whether and how the broker offers fields covered (one row per archived source)
+Brokers,source_type,Source type,sources,sources,TEXT,Source & evidence,text,,14,16,87.5,92,0,0,24,67,Not shown,Brokers › Fees (Tag),Provenance: source type (one row per archived source)
+Brokers,url,Url,sources,sources,TEXT,Source & evidence,text,,14,16,87.5,89,0,0,24,65,Not shown,Brokers › Fees (Tag),Provenance: url (one row per archived source)
+Brokers,retrieved_at,Retrieved at,sources,sources,TEXT,Source & evidence,date,date,14,16,87.5,92,0,0,24,67,Not shown,Brokers › Fees (Tag),Provenance: retrieved at (one row per archived source)
+Brokers,snapshot_date,Snapshot date,sources,sources,TEXT,Source & evidence,date,date,14,16,87.5,92,0,0,24,67,Not shown,Brokers › Fees (Tag),Provenance: snapshot date (one row per archived source)
+Brokers,local_evidence_path,Local evidence path,sources,sources,TEXT,Source & evidence,text,,14,16,87.5,92,0,0,24,67,Not shown,Brokers › Fees (Tag),Provenance: local evidence path (one row per archived source)
+Brokers,verification_status,Verification status,sources,sources,TEXT,Source & evidence,enum,,14,16,87.5,92,0,0,24,67,Not shown,Brokers › Fees (Tag),Provenance: verification status (one row per archived source)
